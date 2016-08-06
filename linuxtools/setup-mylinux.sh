@@ -76,9 +76,11 @@ git clone https://github.com/vim/vim.git ~/.vim/vimsrc
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tar.xz
 tar xf Python-2.7.12.tar.xz
 cd Python-2.7*
-./configure --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib" --enable-unicode=ucs4 --with-cxx-main=g++
 make clean distclean
-make && make altinstall
+./configure --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib" --enable-unicode=ucs4 --with-cxx-main=g++
+make
+sudo make altinstall
+sudo ln -sf /usr/local/bin/python2.7 /usr/local/bin/python
 
 pip install pexpect
 pip install autopep8
