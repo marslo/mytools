@@ -30,18 +30,31 @@ enabled=1
 gpgcheck=0
 EOF
 
-yum install htop libcurl expat gettext make openssl expat-devel docbook-style-xsl docbook2X xmlto perl-devel perl-CPAN net-tools wget jdk gcc gcc-c++ g++ rpm-build gifsicle cmake mkisofs sloccount parallel syslinux livecd-tools isomd5sum lsscsi ncftp kernel-devel glibc-devel.i686 libstdc++.i686 e2fsprogs-devel libuuid-devel glibc.i686 perl-XML-LibXML libxml2 libxml2-devel zlib zlib-devel curl-devel libcurl-devel pam-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel jq.x86_64 libudev-devel lapack lapack-devel blas blas-devel libpng-devel freetype-devel libtiff-devel libjpeg-devel tcl-devel tk-devel perl-HTML-Parser perl-Compress-Raw-Zlib perl-IO-Zlib perl-libxml-perl perl-XML-LibXML perl-Time-Duration perl-Number-Format perl-Config-IniFiles perl-DateTime perl-YAML perl-Devel-CheckLib perl-Crypt-SSLeay readline readline-devel libxslt libxslt-devel bc
+yum install htop libcurl expat gettext make openssl expat-devel docbook-style-xsl docbook2X xmlto perl-devel perl-CPAN net-tools wget jdk gcc gcc-c++ g++ rpm-build gifsicle cmake mkisofs sloccount parallel syslinux livecd-tools isomd5sum lsscsi ncftp kernel-devel glibc-devel.i686 libstdc++.i686 e2fsprogs-devel libuuid-devel glibc.i686 perl-XML-LibXML libxml2 libxml2-devel zlib zlib-devel curl-devel libcurl-devel pam-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel jq.x86_64 libudev-devel lapack lapack-devel blas blas-devel libpng-devel freetype-devel libtiff-devel libjpeg-devel tcl-devel tk-devel perl-HTML-Parser perl-Compress-Raw-Zlib perl-IO-Zlib perl-libxml-perl perl-XML-LibXML perl-Time-Duration perl-Number-Format perl-Config-IniFiles perl-DateTime perl-YAML perl-Devel-CheckLib perl-Crypt-SSLeay readline readline-devel libxslt libxslt-devel bc glibc-devel
 
+# Install docbook2X-texi
 ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
 
-wget git.zip wget https://github.com/git/git/archive/master.zip
-unzip git.zip
+# Install asciidoc
+wget http://downloads.sourceforge.net/project/asciidoc/asciidoc/8.6.9/asciidoc-8.6.9.tar.gz
+tar xf asciidoc-8.6.9.tar.gz
+cd asciidoc-*
+autoconfig
+./configure
+make
+sudo make install
+
+# Install Git
+wget https://github.com/git/git/archive/master.zip
+unzip master.zip
 cd git-*
 make prefix=${HOME}/.marslo/myprograms/git all doc info
 sudo make prefix=${HOME}/.marslo/myprograms/git install install-doc install-html install-info
 
-
+# Download repos from github
 mkdir -p ~/.marslo/Marslo/Tools/Git
+mkdir -p ~/.vim
+
 cd ~/.marslo/Marslo/Tools/Git
 git clone git@github.com:Marslo/LinuxStuff.git repo_marslo/LinuxStuff
 git clone git@github.com:Marslo/VimConfig.git repo_marslo/VimConfig
@@ -57,15 +70,14 @@ git clone git@github.com:jbarber/vmware-perl.git repo_tools/vmware-perl
 git clone git@github.com:vim/vim-win32-installer.git repo_tools/vim-win32-installer
 
 git clone git@github.com:chef-cookbooks/jenkins.git repo_jenkins/jenkins-cookbook
-
-mkdir -p ~/.vim
 git clone https://github.com/vim/vim.git ~/.vim/vimsrc
 
-wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tar.xz
-tar xf Python-2.7.11.tar.xz
-cd Python-2.7.11
-make clean distclean
+# Install Python
+wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tar.xz
+tar xf Python-2.7.12.tar.xz
+cd Python-2.7*
 ./configure --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib" --enable-unicode=ucs4 --with-cxx-main=g++
+make clean distclean
 make && make altinstall
 
 pip install pexpect
