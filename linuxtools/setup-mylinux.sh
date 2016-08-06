@@ -30,7 +30,14 @@ enabled=1
 gpgcheck=0
 EOF
 
-yum install htop libcurl expat gettext make openssl expat-devel docbook-style-xsl docbook2X xmlto perl-devel perl-CPAN net-tools wget jdk gcc gcc-c++ g++ rpm-build gifsicle cmake mkisofs sloccount parallel syslinux livecd-tools isomd5sum lsscsi ncftp kernel-devel glibc-devel.i686 libstdc++.i686 e2fsprogs-devel libuuid-devel glibc.i686 perl-XML-LibXML libxml2 libxml2-devel zlib zlib-devel curl-devel libcurl-devel pam-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel jq.x86_64 libudev-devel lapack lapack-devel blas blas-devel libpng-devel freetype-devel libtiff-devel libjpeg-devel tcl-devel tk-devel perl-HTML-Parser perl-Compress-Raw-Zlib perl-IO-Zlib perl-libxml-perl perl-XML-LibXML perl-Time-Duration perl-Number-Format perl-Config-IniFiles perl-DateTime perl-YAML perl-Devel-CheckLib perl-Crypt-SSLeay readline readline-devel libxslt libxslt-devel bc glibc-devel
+yum install htop libcurl expat gettext make openssl expat-devel docbook-style-xsl docbook2X xmlto perl-devel perl-CPAN net-tools wget jdk gcc gcc-c++ g++ rpm-build gifsicle cmake mkisofs sloccount parallel syslinux livecd-tools isomd5sum lsscsi ncftp kernel-devel glibc-devel.i686 libstdc++.i686 e2fsprogs-devel libuuid-devel glibc.i686 perl-XML-LibXML libxml2 libxml2-devel zlib zlib-devel curl-devel libcurl-devel pam-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel jq.x86_64 libudev-devel lapack lapack-devel blas blas-devel libpng-devel freetype-devel libtiff-devel libjpeg-devel tcl-devel tk-devel perl-HTML-Parser perl-Compress-Raw-Zlib perl-IO-Zlib perl-libxml-perl perl-XML-LibXML perl-Time-Duration perl-Number-Format perl-Config-IniFiles perl-DateTime perl-YAML perl-Devel-CheckLib perl-Crypt-SSLeay readline readline-devel libxslt libxslt-devel bc glibc-devel mlocate python-pip
+yum groupinstall 'Development Tools'
+
+wget http://ftp.wayne.edu/gnu/make/make-4.2.tar.gz
+tar xf make-*.tar.gz
+cd make-*
+./configure && make
+sudo make install
 
 # Install docbook2X-texi
 ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
@@ -77,9 +84,9 @@ wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tar.xz
 tar xf Python-2.7.12.tar.xz
 cd Python-2.7*
 make clean distclean
-./configure --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib" --enable-unicode=ucs4 --with-cxx-main=g++
+./configure --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib" --enable-unicode=ucs4 --with-cxx-main=g++ --with--ensurepip=install
 make
-sudo make altinstall
+sudo make altinstall install
 sudo ln -sf /usr/local/bin/python2.7 /usr/local/bin/python
 
 pip install pexpect
