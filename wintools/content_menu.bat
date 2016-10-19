@@ -79,3 +79,11 @@ REG DELETE "HKEY_CLASSES_ROOT\UserLibraryFolder\shellex\ContextMenuHandlers\Shar
 rem  BitLockerDrive
 REG DELETE "HKEY_CLASSES_ROOT\Drive\shell\encrypt-bde" /f
 REG DELETE "HKEY_CLASSES_ROOT\Drive\shell\encrypt-bde-elev" /f
+
+rem  QQ
+REG DELETE "HKEY_CLASSES_ROOT\AllFilesystemObjects\shellex\ContextMenuHandlers\QQShellExt" /f
+REG DELETE "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\QQShellExt" /f
+REG DELETE "HKEY_CLASSES_ROOT\lnkfile\shellex\ContextMenuHandlers\QQShellExt" /f
+REG DELETE "HKEY_CLASSES_ROOT\AllFilesystemObjects\shellex\ContextMenuHandlers\QQShellExt64" /f
+REG DELETE "HKEY_CLASSES_ROOT\Folder\shellex\ContextMenuHandlers\QQShellExt64" /f
+REG DELETE "HKEY_CLASSES_ROOT\lnkfile\shellex\ContextMenuHandlers\QQShellExt64" /f

@@ -188,6 +188,9 @@ REG ADD "HKEY_CURRENT_USER\Console" /v WindowAlpha /t REG_DWORD /d 0x000000eb /f
 REG ADD "HKEY_CURRENT_USER\Console\%%SystemRoot%%_System32_cmd.exe" /v "FaceName" /t REG_SZ /d "Consolas" /f
 REG ADD "HKEY_CURRENT_USER\Console\%%SystemRoot%%_SysWOW64_cmd.exe" /v "FaceName" /t REG_SZ /d "Consolas" /f
 
+rem  Disablea Narrator
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\Narrator.exe" /v "Debugger" /t REG_SZ /d "1"
+
 REM Settings > Personalization > Start > Choose which folders appear on Start
 DEL "C:\ProgramData\Microsoft\Windows\Start Menu Places\05 - Music.lnk"
 DEL "C:\ProgramData\Microsoft\Windows\Start Menu Places\06 - Pictures.lnk"

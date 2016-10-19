@@ -24,14 +24,12 @@ doskey desk=cd %HOMEPATH%\Desktop
 doskey prog=cd %PROGRAMFILES%
 doskey up=cd %USERPROFILE%
 doskey gh=cd %HOMEPATH%
-doskey gr=cd "c:\"
+doskey gr=cd "C:\"
 doskey mpr=cd "C:\Marslo\MyProgramFiles"
 doskey idlelib=cd "C:\Marslo\MyProgramFiles\Python27\Lib\idlelib"
-doskey jo=cd "C:\Marslo\Box Sync"
+doskey jo=cd "C:\Marslo\Job"
 doskey gi=cd "C:\Marslo\Tools\Git"
-doskey cdape=cd "C:\Marslo\Codes\appliance\"
-doskey rel=cd "C:\Marslo\Codes\appliance\releng\main\"
-doskey crf=cd "c:\Marslo\Study\Codes\RobotFramework\"
+doskey to=cd "C:\Marslo\Tools"
 doskey cal=gvim %WINDIR%\alias.cmd
 doskey alias=type %WINDIR%\alias.cmd
 doskey jt=java.exe junit.textui.TestRunner $1
@@ -44,5 +42,5 @@ doskey vim="C:\Marslo\MyProgramFiles\Vim\vim74\vim.exe" $1
 doskey gvim="C:\Marslo\MyProgramFiles\Vim\vim74\gvim.exe" $1
 doskey addalias=reg add "HKCU\SOFTWARE\Microsoft\Command Processor" /v AutoRun /t REG_SZ /d "%WINDIR%\alias.cmd"
 doskey runbat="C:\Windows\run.bat"
-doskey scp=C:\Marslo\MyProgramFiles\Git\usr\bin\scp.exe -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i "C:\Marslo\Box Sync\Backup\AuthorizedKeys\Marslo@Appliance" $*
-doskey ssh=C:\Marslo\MyProgramFiles\Git\usr\bin\ssh.exe -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i  "C:\Marslo\Box Sync\Backup\AuthorizedKeys\Marslo@Appliance" $*
+doskey scp=C:\Marslo\MyProgramFiles\Git\usr\bin\scp.exe -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i "c:\Marslo\Tools\Software\System\RemoteConnection\AuthorizedKeys\openssh\marslo@philips" $*
+doskey ssh=C:\Marslo\MyProgramFiles\Git\usr\bin\ssh.exe -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i "c:\Marslo\Tools\Software\System\RemoteConnection\AuthorizedKeys\openssh\marslo@philips" $*
