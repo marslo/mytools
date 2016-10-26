@@ -21,6 +21,54 @@ for /f "tokens=4-5 delims=. " %%i in ('ver') do set VERSION=%%i.%%j
     set lanname="Local Area Connection"
   )
 
+IF "%1"=="help" (
+  echo NAME:
+  echo    wifi.bat - Control or show information for both WLAN and LAN in Launchy.
+  echo=
+  echo USAGE:
+  echo    launchy:    wifi ^<tab^> [ on ^| off ^| st ^| show ^| allint ^| enableall ^| phi ^| pub ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
+  echo    cmd:        wifi.bat [ on ^| off ^| st ^| show ^| allint ^| enableall ^| phi ^| pub ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
+  echo=
+  echo Description:
+  echo    on:         enable wlan [current user need elevated permission]
+  echo    off:        disable wlan [current user need elevated permission]
+  echo    st:         show wlan and lan status
+  echo    show:       show wlan status
+  echo    allint:     show all available wifi
+  echo    phi:        connect to "WLAN-PHI"
+  echo    pub:        connect to "WLAN-PUB"
+  echo    enableall:  Enable WLAN and LAN interface and connect to WLAN-PHI
+  echo    lan on:     enable Local Area Connection [current user need elevated permission]
+  echo    lan off:    disable Local Area Connection [current user need elevated permission]
+  echo=
+  echo EXAMPLE:
+  echo    wifi ^<tab^> pub ^<enter^>        :  connect WLAN-PUB
+  echo    wifi ^<tab^> phi ^<enter^>        :  connect wlan-pub
+  echo    wifi ^<tab^> enableall ^<enter^>  :  Enable WLAN and LAN interface, and connect to WLAN-PHI automatically
+  echo    wifi ^<tab^> lanset ^<enter^>     :  Open Internet Propertites -^> Connections ^(For setup proxy^)
+  echo    wifi ^<tab^> lanwin ^<enter^>     :  Open Network Connections in Control Pannel ^(Control or check Network Interface status^)
+  echo=
+  echo AUTHOR:
+  echo    MarsloJiao@China ^(marslo.jiao@gmail.com^), Repo: https://github.com/Marslo/mytools/blob/master/wintools/wifi.bat
+  echo    Find more details:
+  echo        cmd: ^> wifi.bat whodidit  OR  launchy: wifi ^<tab^> whodidit ^<enter^>
+  echo=
+  pause
+ )
+
+ IF "%1"=="usage" (
+  echo=
+  echo How to use this script in Launchy:
+  echo    Launchy Options -^> Plugins -^> Runner -^> +
+  echo      Name: ^<whatever you want ^> ^(wifi for example^)
+  echo      Program:  ^<Full path of wifi.bat^>
+  echo      Arguments: $$
+  echo    OK -^> Catalog -^> Rescan Catalog
+  echo=
+  pause
+ )
+
+
 IF "%1"=="on" (
   net file 1>nul 2>nul && goto :runon || powershell -ex unrestricted -Command "Start-Process -Verb RunAs -FilePath '%comspec%' -ArgumentList '/c %~fnx0 %*'"
   goto :eof
@@ -70,53 +118,6 @@ IF "%1"=="showname" (
   for /f "delims=: tokens=2" %%j in ('netsh wlan show interface ^| findstr SSID ^| findstr /v B') DO (echo current wifi: %%j)
   pause
 )
-
-IF "%1"=="help" (
-  echo NAME:
-  echo    wifi.bat - Control or show information for both WLAN and LAN in Launchy.
-  echo=
-  echo USAGE:
-  echo    launchy:    wifi ^<tab^> [ on ^| off ^| st ^| show ^| allint ^| enableall ^| phi ^| pub ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
-  echo    cmd:        wifi.bat [ on ^| off ^| st ^| show ^| allint ^| enableall ^| phi ^| pub ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
-  echo=
-  echo Description:
-  echo    on:         enable wlan [current user need elevated permission]
-  echo    off:        disable wlan [current user need elevated permission]
-  echo    st:         show wlan and lan status
-  echo    show:       show wlan status
-  echo    allint:     show all available wifi
-  echo    phi:        connect to "WLAN-PHI"
-  echo    pub:        connect to "WLAN-PUB"
-  echo    enableall:  Enable WLAN and LAN interface and connect to WLAN-PHI
-  echo    lan on:     enable Local Area Connection [current user need elevated permission]
-  echo    lan off:    disable Local Area Connection [current user need elevated permission]
-  echo=
-  echo EXAMPLE:
-  echo    wifi ^<tab^> pub ^<enter^>        :  connect WLAN-PUB
-  echo    wifi ^<tab^> phi ^<enter^>        :  connect wlan-pub
-  echo    wifi ^<tab^> enableall ^<enter^>  :  Enable WLAN and LAN interface, and connect to WLAN-PHI automatically
-  echo    wifi ^<tab^> lanset ^<enter^>     :  Open Internet Propertites -^> Connections ^(For setup proxy^)
-  echo    wifi ^<tab^> lanwin ^<enter^>     :  Open Network Connections in Control Pannel ^(Control or check Network Interface status^)
-  echo=
-  echo AUTHOR:
-  echo    MarsloJiao@China ^(marslo.jiao@gmail.com^), Repo: https://github.com/Marslo/mytools/blob/master/wintools/wifi.bat
-  echo    Find more details:
-  echo        cmd: ^> wifi.bat whodidit  OR  launchy: wifi ^<tab^> whodidit ^<enter^>
-  echo=
-  pause
- )
-
- IF "%1"=="usage" (
-  echo=
-  echo How to use this script in Launchy:
-  echo    Launchy Options -^> Plugins -^> Runner -^> +
-  echo      Name: ^<whatever you want ^> ^(wifi for example^)
-  echo      Program:  ^<Full path of wifi.bat^>
-  echo      Arguments: $$
-  echo    OK -^> Catalog -^> Rescan Catalog
-  echo=
-  pause
- )
 
 IF "%1"=="st" (netsh interface show interface & netsh wlan show interface & net user & pause)
 IF "%1"=="show" (netsh wlan show profile & netsh wlan show settings & pause)
