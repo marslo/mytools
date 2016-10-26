@@ -76,25 +76,20 @@ IF "%1"=="help" (
   echo    wifi.bat - Control or show information for both WLAN and LAN in Launchy.
   echo=
   echo USAGE:
-  echo    wifi ^<tab^> [ on ^| off ^| st ^| show ^| allint ^| enableall ^| phi ^| pub ^| lan on ^| lan off ^| lanwin ^| lanset ]
+  echo    launchy:    wifi ^<tab^> [ on ^| off ^| st ^| show ^| allint ^| enableall ^| phi ^| pub ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
+  echo    cmd:        wifi.bat [ on ^| off ^| st ^| show ^| allint ^| enableall ^| phi ^| pub ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
   echo=
   echo Description:
-  echo    on:        enable wlan [current user need elevated permission]
-  echo    off:       disable wlan [current user need elevated permission]
-  echo    st:        show wlan and lan status
-  echo    show:      show wlan status
-  echo    allint:    show all available wifi
-  echo    phi:       connect to "WLAN-PHI"
-  echo    pub:       connect to "WLAN-PUB"
-  echo    lan on:    enable Local Area Connection
-  echo    lan off:   disable Local Area Connection
-  echo=
-  echo How to use this script in Launchy:
-  echo    Launchy Options -^> Plugins -^> Runner -^> +
-  echo      Name: ^<whatever you want ^> ^(runwifi for example^)
-  echo      Program:  ^<Full path of wifi.bat^>
-  echo      Arguments: $$
-  echo    OK -^> Catalog -^> Rescan Catalog
+  echo    on:         enable wlan [current user need elevated permission]
+  echo    off:        disable wlan [current user need elevated permission]
+  echo    st:         show wlan and lan status
+  echo    show:       show wlan status
+  echo    allint:     show all available wifi
+  echo    phi:        connect to "WLAN-PHI"
+  echo    pub:        connect to "WLAN-PUB"
+  echo    enableall:  Enable WLAN and LAN interface and connect to WLAN-PHI
+  echo    lan on:     enable Local Area Connection [current user need elevated permission]
+  echo    lan off:    disable Local Area Connection [current user need elevated permission]
   echo=
   echo EXAMPLE:
   echo    wifi ^<tab^> pub ^<enter^>        :  connect WLAN-PUB
@@ -103,9 +98,22 @@ IF "%1"=="help" (
   echo    wifi ^<tab^> lanset ^<enter^>     :  Open Internet Propertites -^> Connections ^(For setup proxy^)
   echo    wifi ^<tab^> lanwin ^<enter^>     :  Open Network Connections in Control Pannel ^(Control or check Network Interface status^)
   echo=
-  echo Author:
-  echo    MarsloJiao@China ^(marslo.jiao@gmail.com^)
-  echo    Repo: https://github.com/Marslo/mytools/blob/master/wintools/wifi.bat
+  echo AUTHOR:
+  echo    MarsloJiao@China ^(marslo.jiao@gmail.com^), Repo: https://github.com/Marslo/mytools/blob/master/wintools/wifi.bat
+  echo    Find more details:
+  echo        cmd: ^> wifi.bat whodidit  OR  launchy: wifi ^<tab^> whodidit ^<enter^>
+  echo=
+  pause
+ )
+
+ IF "%1"=="usage" (
+  echo=
+  echo How to use this script in Launchy:
+  echo    Launchy Options -^> Plugins -^> Runner -^> +
+  echo      Name: ^<whatever you want ^> ^(wifi for example^)
+  echo      Program:  ^<Full path of wifi.bat^>
+  echo      Arguments: $$
+  echo    OK -^> Catalog -^> Rescan Catalog
   echo=
   pause
  )
