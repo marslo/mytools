@@ -41,9 +41,12 @@ IF "%1"=="help" (
   echo    lan on:     enable Local Area Connection [current user need elevated permission]
   echo    lan off:    disable Local Area Connection [current user need elevated permission]
   echo=
+  echo HOW TO ADD IN LAUNCHY
+  echo    wifi.bat usage
+  echo=
   echo EXAMPLE:
   echo    wifi ^<tab^> pub ^<enter^>        :  connect WLAN-PUB
-  echo    wifi ^<tab^> phi ^<enter^>        :  connect wlan-pub
+  echo    wifi ^<tab^> phi ^<enter^>        :  connect WLAN-PUB
   echo    wifi ^<tab^> enableall ^<enter^>  :  Enable WLAN and LAN interface, and connect to WLAN-PHI automatically
   echo    wifi ^<tab^> lanset ^<enter^>     :  Open Internet Propertites -^> Connections ^(For setup proxy^)
   echo    wifi ^<tab^> lanwin ^<enter^>     :  Open Network Connections in Control Pannel ^(Control or check Network Interface status^)
@@ -129,6 +132,6 @@ IF "%1"=="pub" (%wlanconn% "WLAN-PUB" & pause)
 IF "%1"=="lanwin" (C:\Windows\System32\rundll32.exe shell32.dll,Control_RunDLL ncpa.cpl)
 IF "%1"=="lanset" (C:\Windows\System32\rundll32.exe shell32.dll,Control_RunDLL inetcpl.cpl,,4)
 
-IF "%1"=="whodidit" (echo Awesome Marslo! & echo= & echo Agree please close the window, or press any key, :^). And well done, Marsl! & echo= & pause)
+IF "%1"=="whodidit" (echo Awesome Marslo! & echo= & echo Agree please close the window, or press any key, :^). And well done, Marslo! & echo= & pause)
 
 endlocal
