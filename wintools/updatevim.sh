@@ -5,12 +5,13 @@
 #      Email: marslo.jiao@gmail.com
 #    Created: 2015-09-17 18:20:27
 #    Version: 0.0.3
-# LastChange: 2016-10-19 19:30:25
+# LastChange: 2016-11-17 18:40:29
 #    History:
 #             0.0.1 | Marslo | init
 #             0.0.2 | Marslo | Build vim win64
 #             0.0.3 | Marslo | Add ruby in
 #             0.0.4 | Marslo | Add scp way to upload binary
+#             0.0.5 | Marslo | Update for vim 8.0
 # =============================================================================
 
 sour=$HOME/../../Marslo/Tools/Git/vim/src
@@ -23,7 +24,7 @@ PY_VER=27
 PY3_VER=35
 RB_VER=23
 RB_LONG_VER=2.3.0
-
+VIM_VER=8.0
 
 if [ ! -d "${sour}" ];
 then
@@ -38,47 +39,47 @@ git checkout -- *
 
 
 echo '-----------------------------------'
-git tag --sort=v:refname | grep 'v7.4\.' | tail -30
-latestver=`git tag --sort=v:refname | grep 'v7.4\.' | tail -1 | awk -F'v7.4.' '{print $2}'`
+git tag --sort=v:refname | grep v${VIM_VER}'\.' | tail -30
+latestver=$(echo "$(git tag --sort=v:refname | grep -i v${VIM_VER}\. | tail -1 | awk -F${VIM_VER}. '{print $2}') + 0" | bc)
 
 git status | grep "On branch master"
 if [ 0 -eq $? ]; then
-  origver=${latestver}
+  curver=${latestver}
 else
-  origver=`git status | grep v7 | awk -F'7.4.' '{print $2}'`
+  curver=$(git status | grep v8 | awk -F"${VIM_VER}." '{print $2}')
 fi
 
-if [ 0 -eq ${#origver} ]; then
-  origver=${latestver}
+if [ 0 -eq ${curver} ]; then
+  curver=${latestver}
 fi
-curver=$(( ${origver}+1 ))
+nextver=$(echo "${curver} + 1" | bc)
 
 git checkout master
 git pull
 
 echo '-----------------------------------'
-latestver=`git tag --sort=v:refname | grep 'v7.4\.' | tail -1 | awk -F'v7.4.' '{print $2}'`
+latestver=$(echo "$(git tag --sort=v:refname | grep -i v${VIM_VER}\. | tail -1 | awk -F${VIM_VER}. '{print $2}') + 0" | bc)
 
-if [ ${origver} -eq ${latestver} ]
+if [ ${curver} -eq ${latestver} ]
 then
   echo 'No new update. Exit'
   exit 0
 fi
 
-echo ${origver}
 echo ${curver}
+echo ${nextver}
 echo ${latestver}
 
-for i in `seq -w ${curver} ${latestver}`
+for i in `seq -w ${nextver} ${latestver}`
 do
-  ver=7.4.${i}
+  ver=${VIM_VER}.`printf "%04d" ${i}`
   targ=${dsk}/${ver}
   echo "----------------------------------- ${ver} --------------------------------------"
 
   git checkout tags/v${ver}
 
-  make -j 12 -B -f Make_cyg.mak CROSS_COMPILE=x86_64-w64-mingw32- ARCH=x86-64 PYTHON=$PY_PATH DYNAMIC_PYTHON=yes PYTHON_VER=$PY_VER PYTHON3=$PY3_PATH DYNAMIC_PYTHON3=yes PYTHON3_VER=$PY3_VER RUBY=$RB_PATH DYNAMIC_RUBY=yes RUBY_VER=$RB_VER RUBY_VER_LONG=$RB_LONG_VER FEATURES=huge IME=yes GIME=yes MBYTE=yes CSCOPE=yes USERNAME=Marslo.Jiao USERDOMAIN=China GUI=yes > log_gui_${ver}.log 2>&1
-  make -j 12 -B -f Make_cyg.mak CROSS_COMPILE=x86_64-w64-mingw32- ARCH=x86-64 PYTHON=$PY_PATH DYNAMIC_PYTHON=yes PYTHON_VER=$PY_VER PYTHON3=$PY3_PATH DYNAMIC_PYTHON3=yes PYTHON3_VER=$PY3_VER RUBY=$RB_PATH DYNAMIC_RUBY=yes RUBY_VER=$RB_VER RUBY_VER_LONG=$RB_LONG_VER FEATURES=huge IME=yes GIME=yes MBYTE=yes CSCOPE=yes USERNAME=Marslo.Jiao USERDOMAIN=China GUI=no > log_nogui_${ver}.log 2>&1
+  make -j 3 -B -f Make_cyg.mak CROSS_COMPILE=x86_64-w64-mingw32- ARCH=x86-64 PYTHON=$PY_PATH DYNAMIC_PYTHON=yes PYTHON_VER=$PY_VER PYTHON3=$PY3_PATH DYNAMIC_PYTHON3=yes PYTHON3_VER=$PY3_VER RUBY=$RB_PATH DYNAMIC_RUBY=yes RUBY_VER=$RB_VER RUBY_VER_LONG=$RB_LONG_VER FEATURES=huge IME=yes GIME=yes MBYTE=yes CSCOPE=yes USERNAME=Marslo.Jiao USERDOMAIN=China GUI=yes > log_gui_${ver}.log 2>&1
+  make -j 3 -B -f Make_cyg.mak CROSS_COMPILE=x86_64-w64-mingw32- ARCH=x86-64 PYTHON=$PY_PATH DYNAMIC_PYTHON=yes PYTHON_VER=$PY_VER PYTHON3=$PY3_PATH DYNAMIC_PYTHON3=yes PYTHON3_VER=$PY3_VER RUBY=$RB_PATH DYNAMIC_RUBY=yes RUBY_VER=$RB_VER RUBY_VER_LONG=$RB_LONG_VER FEATURES=huge IME=yes GIME=yes MBYTE=yes CSCOPE=yes USERNAME=Marslo.Jiao USERDOMAIN=China GUI=no > log_nogui_${ver}.log 2>&1
 
   mkdir -p ${targ}
   if [ -f ${sour}/vim.exe ]; then
