@@ -5,13 +5,14 @@
 #      Email: marslo.jiao@gmail.com
 #    Created: 2015-09-17 18:20:27
 #    Version: 0.0.3
-# LastChange: 2016-11-17 18:40:29
+# LastChange: 2017-02-09 17:28:32
 #    History:
 #             0.0.1 | Marslo | init
 #             0.0.2 | Marslo | Build vim win64
-#             0.0.3 | Marslo | Add ruby in
-#             0.0.4 | Marslo | Add scp way to upload binary
+#             0.0.3 | Marslo | Add ruby 2.3.0 in
+#             0.0.4 | Marslo | Add scp way to upload binary to SourceForge
 #             0.0.5 | Marslo | Update for vim 8.0
+#             0.0.6 | Marslo | Update Ruby to 2.3.3
 # =============================================================================
 
 sour=$HOME/../../Marslo/Tools/Git/vim/src
@@ -23,7 +24,7 @@ RB_PATH=/cygdrive/c/Marslo/MyProgramFiles/Ruby23-x64
 PY_VER=27
 PY3_VER=35
 RB_VER=23
-RB_LONG_VER=2.3.0
+RB_LONG_VER=2.3.3
 VIM_VER=8.0
 
 if [ ! -d "${sour}" ];

@@ -26,17 +26,19 @@ IF "%1"=="help" (
   echo    wifi.bat - Control or show information for both WLAN and LAN in Launchy.
   echo=
   echo USAGE:
-  echo    launchy:    wifi ^<tab^> [ on ^| off ^| st ^| show ^| allint ^| enableall ^| phi ^| pub ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
-  echo    cmd:        wifi.bat [ on ^| off ^| st ^| show ^| allint ^| enableall ^| phi ^| pub ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
+  echo    launchy:    wifi ^<tab^> [ on ^| off ^| st ^| show ^| allvis ^| enableall ^| phi ^| pub ^| tpl ^| huawei ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
+  echo    cmd:        wifi.bat [ on ^| off ^| st ^| show ^| allvis ^| enableall ^| phi ^| pub ^| tpl ^| huawei ^| lan on ^| lan off ^| lanwin ^| lanset ^| help ^| usage ^| whodidit ]
   echo=
   echo Description:
   echo    on:         enable wlan [current user need elevated permission]
   echo    off:        disable wlan [current user need elevated permission]
   echo    st:         show wlan and lan status
   echo    show:       show wlan status
-  echo    allint:     show all available wifi
+  echo    allvis:     show all available wifi
   echo    phi:        connect to "WLAN-PHI"
   echo    pub:        connect to "WLAN-PUB"
+  echo    tpl:        connect to "TP-LINK_CDI"
+  echo    huawei:     connect to "HUAWEI_CDI"
   echo    enableall:  Enable WLAN and LAN interface and connect to WLAN-PHI
   echo    lan on:     enable Local Area Connection [current user need elevated permission]
   echo    lan off:    disable Local Area Connection [current user need elevated permission]
@@ -122,12 +124,24 @@ IF "%1"=="showname" (
   pause
 )
 
-IF "%1"=="st" (netsh interface show interface & netsh wlan show interface & net user & pause)
+IF "%1"=="showreport" (
+  net file 1>nul 2>nul && goto :runrepo || powershell -ex unrestricted -Command "Start-Process -Verb RunAs -FilePath '%comspec%' -ArgumentList '/c %~fnx0 %*'"
+  goto :eof
+  :runrepo
+  netsh wlan show WLANreport
+  pause
+)
+
+IF "%1"=="st" (netsh wlan show drivers & netsh interface show interface & netsh wlan show interface & net user & pause)
 IF "%1"=="show" (netsh wlan show profile & netsh wlan show settings & pause)
-IF "%1"=="allint" (netsh wlan show networks & pause)
+IF "%1"=="showall" (netsh wlan show all | more)
+IF "%1"=="allvis" (netsh wlan show networks & pause)
 IF "%1"=="whichwifi" (netsh wlan show interface | findstr Profile | findstr /v mode & pause)
-IF "%1"=="phi" (%wlanconn% "WLAN-PHI" & pause )
-IF "%1"=="pub" (%wlanconn% "WLAN-PUB" & pause)
+IF "%1"=="phi" (netsh wlan show profile & %wlanconn% ssid="WLAN-PHI" name="WLAN-PHI" interface="%wifiname%" & pause )
+IF "%1"=="pub" (netsh wlan show profile & %wlanconn% ssid="WLAN-PUB" name="WLAN-PUB" interface="%wifiname%" & pause)
+IF "%1"=="huawei" (netsh wlan show profile & %wlanconn% "HUAWEI_CDI" & pause)
+IF "%1"=="tpl" (netsh wlan show profile & %wlanconn% "TP-LINK_CDI" & pause)
+IF "%1"=="showpwd" (netsh wlan show profile name="%2" key=clear & pause)
 
 IF "%1"=="lanwin" (C:\Windows\System32\rundll32.exe shell32.dll,Control_RunDLL ncpa.cpl)
 IF "%1"=="lanset" (C:\Windows\System32\rundll32.exe shell32.dll,Control_RunDLL inetcpl.cpl,,4)

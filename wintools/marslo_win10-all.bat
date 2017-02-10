@@ -6,7 +6,7 @@ rem  Add fonts
 rem  XCOPY "c:\Marslo\Tools\Software\System\Font\gisha.ttf" %systemroot%\fonts
 rem  XCOPY "c:\Marslo\Tools\Software\System\Font\Monaco\MONACO.TTF" %systemroot%\fonts
 rem  XCOPY "c:\Marslo\Tools\Software\System\Font\ubuntu-font-family-0.80\*.ttf" %systemroot%\fonts
-rem  XCOPY "C:\Marslo\Tools\Software\System\Font\Monofur\*.ttf" %systemroot%\fonts
+rem  XCOPY "c:\Marslo\Tools\Software\System\Font\Monofur\*.ttf" %systemroot%\fonts
 rem  REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" /v "monofur (TrueType)" /t REG_SZ /d "monof55.ttf" /f
 rem  REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" /v "Gisha (TrueType)" /t REG_SZ /d "gisha.ttf" /f
 rem  REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" /v "Ubuntu Bold (TrueType)" /t REG_SZ /d  "Ubuntu-B.ttf" /f
@@ -73,7 +73,7 @@ REM  Disable OneDrive
 REG ADD "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncNGSC" /t REG_DWORD /d 0x00000001 /f
 
 REM  Hide File Explorer Icons
-rem  Disable Show All Folders
+REM  Disable Show All Folders
 REG Add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v NavPaneShowAllFolders /t REG_DWORD /d 0x00000000 /f
 REM  OneDrive
 REG ADD "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d 0x00000000 /f
@@ -95,8 +95,8 @@ REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent
 rem  Hide Frequent Folders
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowFrequent" /t REG_DWORD /d 0x00000000 /f
 rem  Remove Context Menu
-REG DELETE "-HKEY_CLASSES_ROOT\Folder\shell\pintohome"
-REG DELETE "-HKLM\SOFTWARE\Classes\Folder\shell\pintohome"
+REG DELETE "HKEY_CLASSES_ROOT\Folder\shell\pintohome" /f
+REG DELETE "HKLM\SOFTWARE\Classes\Folder\shell\pintohome" /f
 
 rem  Remove usless folders
 rem  Remove Desktop From This PC
@@ -129,7 +129,7 @@ REG DELETE "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\
 REG DELETE "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" /f
 
 REM Setup IE11
-REG ADD "HKCU\SOFTWARE\Microsoft\Internet Explorer\Main" /v "Default Download Directory" /t REG_SZ /d "C:\Marslo\Tools\Download" /f
+REG ADD "HKCU\SOFTWARE\Microsoft\Internet Explorer\Main" /v "Default Download Directory" /t REG_SZ /d "c:\Marslo\Tools\Download" /f
 REG ADD "HKCU\SOFTWARE\Microsoft\Internet Explorer\International\Scripts\3" /v "IEPropFontName" /d "Candara" /f
 REG ADD "HKCU\SOFTWARE\Microsoft\Internet Explorer\International\Scripts\3" /v "IEFixedFontName" /d "Consolas" /f
 REM REG ADD "HKCU\SOFTWARE\Microsoft\Internet Explorer\Main" /v "Search Page" /t REG_SZ /d "http://www.google.co.uk" /f
@@ -148,21 +148,21 @@ REM Setup Cursor
 REG ADD "HKCU\Control Panel\Cursors" /v  ContactVisualization /t REG_DWORD /d 0x00000001 /f
 REG ADD "HKCU\Control Panel\Cursors" /v  GestureVisualization /t REG_DWORD /d 0x0000001f /f
 REG ADD "HKCU\Control Panel\Cursors" /v  GestureVisualization /t REG_DWORD /d 0x00000001 /f
-REG ADD "HKCU\Control Panel\Cursors" /v  AppStarting /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Working In Background.ani" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  Arrow /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Normal Select.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  Crosshair /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Precision Select.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  Hand /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Link Select.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  Help /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Help Select.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  IBeam /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Text Select.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  No /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Unavailable.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  NWPen /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Handwriting.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  SizeAll /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Move.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  SizeNESW /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Diagonal Resize 2.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  SizeNS /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Vertical Resize.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  SizeNWSE /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Diagonal Resize 1.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  SizeWE /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Horizontal Resize.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  UpArrow /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Alternate Select.cur" /f
-REG ADD "HKCU\Control Panel\Cursors" /v  Wait /t REG_EXPAND_SZ /d "C:\Marslo\Tools\Software\System\black-lounge\Busy.ani" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  AppStarting /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Working In Background.ani" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  Arrow /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Normal Select.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  Crosshair /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Precision Select.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  Hand /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Link Select.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  Help /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Help Select.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  IBeam /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Text Select.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  No /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Unavailable.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  NWPen /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Handwriting.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  SizeAll /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Move.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  SizeNESW /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Diagonal Resize 2.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  SizeNS /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Vertical Resize.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  SizeNWSE /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Diagonal Resize 1.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  SizeWE /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Horizontal Resize.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  UpArrow /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Alternate Select.cur" /f
+REG ADD "HKCU\Control Panel\Cursors" /v  Wait /t REG_EXPAND_SZ /d "c:\Marslo\Tools\Software\System\black-lounge\Busy.ani" /f
 REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers" /v BackgroundHistoryPath0 /t REG_SZ /v "c:\marslo\tools\images\python-list.png" /f
 REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Ribbon" /v MinimizedStateTabletModeOff /t REG_DWORD /v 0x00000001 /f
 
@@ -222,9 +222,9 @@ rem  Disablea Narrator
 REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\Narrator.exe" /v "Debugger" /t REG_SZ /d "1" /f
 
 REM Settings > Personalization > Start > Choose which folders appear on Start
-DEL "C:\ProgramData\Microsoft\Windows\Start Menu Places\05 - Music.lnk"
-DEL "C:\ProgramData\Microsoft\Windows\Start Menu Places\06 - Pictures.lnk"
-DEL "C:\ProgramData\Microsoft\Windows\Start Menu Places\07 - Videos.lnk"
+DEL "c:\ProgramData\Microsoft\Windows\Start Menu Places\05 - Music.lnk"
+DEL "c:\ProgramData\Microsoft\Windows\Start Menu Places\06 - Pictures.lnk"
+DEL "c:\ProgramData\Microsoft\Windows\Start Menu Places\07 - Videos.lnk"
 
 REM Remove in library
 DEL "%APPDATA%\Microsoft\Windows\Libraries\Documents.library-ms"
@@ -233,15 +233,21 @@ DEL "%APPDATA%\Microsoft\Windows\Libraries\Pictures.library-ms"
 DEL "%APPDATA%\Microsoft\Windows\Libraries\Videos.library-ms"
 
 rem  Add ctags58 in PATH for VIM
-rem  setx /M PATH "%PATH%;C:\Marslo\MyProgramFiles\Vim\bundle\MarsloVimOthers\ctags58"
+rem  setx /M PATH "%PATH%;c:\Marslo\MyProgramFiles\Vim\bundle\MarsloVimOthers\ctags58"
 
 rem  Reset and Clear Recent Items
-DEL /F /Q %APPDATA%\Microsoft\Windows\Recent\*
+Del /F /Q %APPDATA%\Microsoft\Windows\Recent\*
+DEL /F /Q "%APPDATA%\Microsoft\Windows\Recent Items\*"
 DEL /F /Q %APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations\*
 DEL /F /Q %APPDATA%\Microsoft\Windows\Recent\CustomDestinations\*
+REG Delete HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RunMRU /VA /F
+REG Delete HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths /VA /F
 XCOPY f01b4d95cf55d32a.automaticDestinations-ms %APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations\*
 
 rem  taskkill /f /im explorer.exe
 rem  start explorer.exe
 
 pause
+
+REM pip install httplib2 urllib3 robotframework selenium robotframework-selenium2library setuptools jenkinsapi pip-review urlopen python-gitlab
+REM pip list --outdated

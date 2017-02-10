@@ -40,5 +40,7 @@ apm install quick-highlight
 apm install tab-switcher
 apm install language-lua
 apm install atom-ctags
+apm install language-groovy
+apm install language-robot-framework
 
 apm list --installed --bare
