@@ -79,11 +79,11 @@ REM  OneDrive
 REG ADD "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d 0x00000000 /f
 REG ADD "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d 0x00000000 /f
 REM  Network
-REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" /t REG_DWROD /d 0x00000001 /f
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" /t REG_DWORD /d 0x00000001 /f
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu" /v "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" /t REG_DWORD /d 0x00000001 /f
 REM  Recycle Bin
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{645FF040-5081-101B-9F08-00AA002F954E}" /t REG_DWORD /d 0x00000001 /f
-REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu" /v "{645FF040-5081-101B-9F08-00AA002F954E}" /t REG_DWROD /d 0x00000001 /f
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\ClassicStartMenu" /v "{645FF040-5081-101B-9F08-00AA002F954E}" /t REG_DWORD /d 0x00000001 /f
 rem  Libraries
 REG ADD "HKCU\Software\Classes\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d 0x00000000 /f
 
@@ -197,11 +197,12 @@ rem  Play animations in Windows
 rem  REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\TaskbarAnimations" /v "DefaultApplied" /t REG_DWORD /d 0x00000001 /f
 
 rem  Setup for CMD fonts & windows, properties
-REG ADD "HKCU\Console" /v FaceName /t REG_SZ /d "Consolas" /f
+REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Console\TrueTypeFont" /v "0000" /t REG_SZ /d "monofur" /f
+REG ADD "HKCU\Console" /v FaceName /t REG_SZ /d "monofur" /f
 REG ADD "HKCU\Console" /v FontFamily /t REG_DWORD /d 0x00000036 /f
-REG ADD "HKCU\Console" /v FontSize /t REG_DWORD /d 0x00180000 /f
+REG ADD "HKCU\Console" /v FontSize /t REG_DWORD /d 0x001a0000 /f
 REG ADD "HKCU\Console" /v FontWeight /t REG_DWORD /d 0x00000190 /f
-REG ADD "HKCU\Console" /v WindowAlpha /t REG_DWORD /d 0x000000ff /f
+REG ADD "HKCU\Console" /v WindowAlpha /t REG_DWORD /d 0x000000eb /f
 REG ADD "HKCU\Console" /v WindowSize /t REG_DWORD /d 0x00240094 /f
 REG ADD "HKCU\Console" /v HistoryBufferSize /t REG_DWORD /d 0x000003e7 /f
 REG ADD "HKCU\Console" /v CtrlKeyShortcutsDisabled /t REG_DWORD /d 0x00000000 /f
@@ -214,9 +215,14 @@ REG ADD "HKCU\Console" /v CursorSize /t REG_DWORD /d 0x00000001 /f
 REG ADD "HKCU\Console" /v InsertMode /t REG_DWORD /d 0x00000001 /f
 REG ADD "HKCU\Console" /v FilterOnPaste /t REG_DWORD /d 0x00000001 /f
 REG ADD "HKCU\Console" /v LineSelection /t REG_DWORD /d 0x00000001 /f
-REG ADD "HKCU\Console" /v WindowAlpha /t REG_DWORD /d 0x000000eb /f
-REG ADD "HKCU\Console\%%SystemRoot%%_System32_cmd.exe" /v "FaceName" /t REG_SZ /d "Consolas" /f
-REG ADD "HKCU\Console\%%SystemRoot%%_SysWOW64_cmd.exe" /v "FaceName" /t REG_SZ /d "Consolas" /f
+REG ADD "HKCU\Console\%%SystemRoot%%_System32_cmd.exe" /v "FaceName" /t REG_SZ /d "monofur" /f
+REG ADD "HKCU\Console\%%SystemRoot%%_SysWOW64_cmd.exe" /v "FaceName" /t REG_SZ /d "monofur" /f
+
+rem  Setup for cmd auto-complete by tab
+REG ADD "HKLM\SOFTWARE\Microsoft\Command Processor" /v "CompletionChar" /t REG_DWORD /d "0x00000009" /f
+REG ADD "HKLM\SOFTWARE\Microsoft\Command Processor" /v "PathCompletionChar" /t REG_DWORD /d "0x00000009" /f
+REG ADD "HKCU\SOFTWARE\Microsoft\Command Processor" /v "CompletionChar" /t REG_DWORD /d "0x00000009" /f
+REG ADD "HKCU\SOFTWARE\Microsoft\Command Processor" /v "PathCompletionChar" /t REG_DWORD /d "0x00000009" /f
 
 rem  Disablea Narrator
 REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\Narrator.exe" /v "Debugger" /t REG_SZ /d "1" /f
@@ -249,5 +255,5 @@ rem  start explorer.exe
 
 pause
 
-REM pip install httplib2 urllib3 robotframework selenium robotframework-selenium2library setuptools jenkinsapi pip-review urlopen python-gitlab
+REM pip install --proxy 165.225.96.34:10015 httplib2 urllib3 robotframework selenium robotframework-selenium2library setuptools jenkinsapi pip-review urlopen python-gitlab requests pandas
 REM pip list --outdated
