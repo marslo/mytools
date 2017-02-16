@@ -40,9 +40,9 @@ doskey jaw=java -cp .;c:\MyProgrames\junit3.8.1\junit.jar junit.awtui.TestRunner
 doskey jsw=java -cp .;c:\MyProgrames\junit3.8.1\junit.jar junit.swingui.TestRunner $1
 doskey mtty="C:\Marslo\MyProgramFiles\cygwin64\bin\mintty.exe" 
 doskey subl="C:\Marslo\MyProgramFiles\Sublime Text 3\sublime_text.exe" $*
-doskey vim="C:\Marslo\MyProgramFiles\Vim\vim74\vim.exe" $1
-doskey gvim="C:\Marslo\MyProgramFiles\Vim\vim74\gvim.exe" $1
+doskey vim="C:\Marslo\MyProgramFiles\Vim\vim80\vim.exe" $1
+doskey gvim="C:\Marslo\MyProgramFiles\Vim\vim80\gvim.exe" $1
 doskey addalias=reg add "HKCU\SOFTWARE\Microsoft\Command Processor" /v AutoRun /t REG_SZ /d "%WINDIR%\alias.cmd"
 doskey runbat="C:\Windows\run.bat"
-doskey scp=C:\Marslo\MyProgramFiles\Git\usr\bin\scp.exe -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i "c:\Marslo\Tools\Software\System\RemoteConnection\AuthorizedKeys\openssh\marslo@philips" $*
-doskey ssh=C:\Marslo\MyProgramFiles\Git\usr\bin\ssh.exe -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i "c:\Marslo\Tools\Software\System\RemoteConnection\AuthorizedKeys\openssh\marslo@philips" $*
+doskey scp=C:\Marslo\MyProgramFiles\Git\usr\bin\scp.exe -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i "C:\Marslo\Tools\Software\System\RemoteConnection\AuthorizedKeys\openssh\marslo@philips" $*
+doskey ssh=C:\Marslo\MyProgramFiles\Git\usr\bin\ssh.exe -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i "C:\Marslo\Tools\Software\System\RemoteConnection\AuthorizedKeys\openssh\marslo@philips" $*

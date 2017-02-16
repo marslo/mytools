@@ -240,6 +240,7 @@ DEL "%APPDATA%\Microsoft\Windows\Libraries\Videos.library-ms"
 
 rem  Add ctags58 in PATH for VIM
 rem  setx /M PATH "%PATH%;c:\Marslo\MyProgramFiles\Vim\bundle\MarsloVimOthers\ctags58"
+setx HOME %USERPROFILE%
 
 rem  Reset and Clear Recent Items
 Del /F /Q %APPDATA%\Microsoft\Windows\Recent\*
@@ -255,5 +256,5 @@ rem  start explorer.exe
 
 pause
 
-REM pip install --proxy 165.225.96.34:10015 httplib2 urllib3 robotframework selenium robotframework-selenium2library setuptools jenkinsapi pip-review urlopen python-gitlab requests pandas
+REM pip install --proxy 165.225.96.34:10015 httplib2 urllib3 robotframework selenium robotframework-selenium2library setuptools jenkinsapi pip-review urlopen python-gitlab requests pandas pep8 flake8 autopep8
 REM pip list --outdated
