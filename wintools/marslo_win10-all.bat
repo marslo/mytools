@@ -68,6 +68,9 @@ REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes" /v "
 REM CLean in win10 Startu Menu
 REM Disable "Show recently opened items in Jump List on Start or the taskbar"
 REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackDocs" /t REG_DWORD /d 0x00000000 /f
+REM Show large taskbar button
+REM 0: Large taskbar button; 1: Small taskbar icon
+REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarSmallIcons" /t REG_DWORD /d 0x00000001 /f
 
 REM  Disable OneDrive
 REG ADD "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncNGSC" /t REG_DWORD /d 0x00000001 /f
