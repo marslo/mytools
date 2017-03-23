@@ -1,0 +1,40 @@
+/* i really want this to be global */
+/* Official Website: https://userstyles.org/styles/138683/marslo-stylish */
+
+/*
+   	kbd, pre, code: HTML tag. E.g.: <kbd></kbd>, <pre></pre>
+   	pre *, code *, div.line-numbers, div.code : HTML TAG with Class. E.g.: <div class="code"></div>; <div class="line-numbers"></div>
+	.line, .line-number, .monospaced: Specified Class Name.
+*/
+
+kbd,
+pre,
+code,
+pre *,
+code *,
+div.line-numbers *,
+div.code *,
+.line,
+.line-number,
+.monospaced,
+.CodeMirror-line {
+    font-family: monofur !important;
+    font-size: 17px !important;
+}
+.console-output {
+    font-family: Consolas !important;
+    font-size: 17px !important;
+}
+
+
+/* class*="fa":       Gitlab
+   class*="octicon":  Atom & Github
+   class*="win-icon": Microsoft
+   class*="icon-dropdown": Sonar
+   class*="navbar-icon":   Sonar
+   class*="icon-home":     Sonar
+   class*="icon-":         Sonar
+*/
+*:not([class*="fa"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]) {
+    font-family: Candara;
+}
