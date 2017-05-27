@@ -28,7 +28,8 @@ REM  reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Console\TrueType
 REM Disable Chrome history
 REG ADD "HKLM\SOFTWARE\Policies\Google\Chrome" /v SavingBrowserHistoryDisabled /t REG_DWORD /d 0x00000001 /reg:64 /f
 REG ADD "HKLM\SOFTWARE\Policies\Google\Chrome" /v SavingBrowserHistoryDisabled /t REG_DWORD /d 0x00000001 /f
-ATTRIB +R "C:\Users\310258281\AppData\Local\Google\Chrome\User Data\Default\History"
+ATTRIB +R "%LOCALAPPDATA%\Local\Google\Chrome\User Data\Default\History"
+ATTRIB +R "%USERPROFILE%\Local Settings\Application Data\Google\Chrome\User Data\Default\History"
 
 REM Black theme
 REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 0x00000000 /f
@@ -196,7 +197,7 @@ REM Underline keyboard shortcuts and access keys
 REG ADD "HKCU\Control Panel\Accessibility\Keyboard Preference" /v "On" /t REG_SZ /d 1 /f
 
 REM Show Hidden files in Explorer
-REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Hidden" /t REG_DWORD /d 1 /f
+REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Hidden" /t REG_DWORD /d 0x00000001 /f
 
 REM Show compressed NTFS files in a different color in Explorer
 REM 0 = Black (same as non-compressed files); 1 = Blue [default]
@@ -206,14 +207,17 @@ REM Expand to current folder in the left panel in Explorer
 REM 0 = Don't expand; 1 = Expand
 REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "NavPaneExpandToCurrentFolder" /t REG_DWORD /d 0x00000001 /f
 
+REM  Taskbar icon combine while taskbar is full
+REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarGlomLevel" /t REG_DWORD /d 0x00000001 /f
+
+REM  Disable the Small Icon
+REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarSmallIcons" /t REG_DWORD /d 0x00000000 /f
+
 REM  Set Visual Effects to best apperance
 REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v "VisualFXSetting" /t REG_DWORD /d 0x00000001 /f
 
 REM  Play animations in Windows
 REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\TaskbarAnimations" /v "DefaultApplied" /t REG_DWORD /d 0x00000001 /f
-
-REM  Taskbar icon combine while taskbar is full
-REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarGlomLevel" /t REG_DWORD /d 0x00000001 /f
 
 REM  Setup for CMD fonts & windows, properties
 REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Console\TrueTypeFont" /v "0000" /t REG_SZ /d "monofur" /f

@@ -102,8 +102,7 @@ do
   fi
 
  if ${UPLOAD_FLAG}; then
-   # scp -i ~/../../Marslo/Tools/Software/System/RemoteConnection/AuthorizedKeys/openssh/Marslo\@philips -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${targ} marslojiao@frs.sourceforge.net:/home/frs/project/marslos-vim-64/
-   scp -i ~/../../Marslo/Tools/Software/System/RemoteConnection/AuthorizedKeys/openssh/Marslo\@philips -o ProxyCommand='corkscrew 42.99.164.34 10015 %h %p' -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${targ} marslojiao@frs.sourceforge.net:/home/frs/project/marslos-vim-64/
+   scp -i ~/../../Marslo/Tools/Software/System/RemoteConnection/AuthorizedKeys/marslo\@devops/marslo\@devops -o ProxyCommand='corkscrew 42.99.164.34 10015 %h %p' -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${targ} marslojiao@frs.sourceforge.net:/home/frs/project/marslos-vim-64/
  fi
 done
 
@@ -111,3 +110,4 @@ popd
 
 # COMMAND: make -j 3 -B -f Make_cyg.mak CROSS_COMPILE=x86_64-w64-mingw32- ARCH=x86-64 PYTHON=/cygdrive/c/Marslo/MyProgramFiles/Python27 DYNAMIC_PYTHON=yes PYTHON_VER=27 PYTHON3=/cygdrive/c/Marslo/MyProgramFiles/Python36 DYNAMIC_PYTHON3=yes PYTHON3_VER=36 RUBY=/cygdrive/c/Marslo/MyProgramFiles/Ruby23-x64 DYNAMIC_RUBY=yes RUBY_VER=23 RUBY_VER_LONG=2.3.0 FEATURES=huge IME=yes GIME=yes MBYTE=yes CSCOPE=yes USERNAME=Marslo.Jiao USERDOMAIN=China GUI=yes
 # COMMAND: make -j 3 -B -f Make_cyg.mak CROSS_COMPILE=x86_64-w64-mingw32- ARCH=x86-64 PYTHON=/cygdrive/c/Marslo/MyProgramFiles/Python27 DYNAMIC_PYTHON=yes PYTHON_VER=27 PYTHON3=/cygdrive/c/Marslo/MyProgramFiles/Python36 DYNAMIC_PYTHON3=yes PYTHON3_VER=36 RUBY=/cygdrive/c/Marslo/MyProgramFiles/Ruby23-x64 DYNAMIC_RUBY=yes RUBY_VER=23 RUBY_VER_LONG=2.3.0 FEATURES=huge IME=yes GIME=yes MBYTE=yes CSCOPE=yes USERNAME=Marslo.Jiao USERDOMAIN=China GUI=no
+# scp -i ~/../../Marslo/Tools/Software/System/RemoteConnection/AuthorizedKeys/openssh/Marslo\@philips -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${targ} marslojiao@frs.sourceforge.net:/home/frs/project/marslos-vim-64/
