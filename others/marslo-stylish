@@ -1,5 +1,4 @@
 /* i really want this to be global */
-/* Official Website: https://userstyles.org/styles/138683/marslo-stylish */
 
 /*
    	kbd, pre, code: HTML tag. E.g.: <kbd></kbd>, <pre></pre>
@@ -16,25 +15,34 @@ div.line-numbers *,
 div.code *,
 .line,
 .line-number,
-.monospaced,
+.editor,														/* Jenkins Console Editor*/
 .CodeMirror-line {
-    font-family: monofur !important;
-    font-size: 17px !important;
-}
-.console-output {
-    font-family: Consolas !important;
+    font-family: "monofur", "Menlo" !important;
     font-size: 17px !important;
 }
 
+textarea,														/* Stylish Editor area*/
+input,
+select,
+.console-output {												/* Jenkins Console Output */
+    font-family: "Consolas", "Menlo" !important;
+    font-size: 17px !important;
+}
 
-/* class*="fa":       Gitlab
-   class*="octicon":  Atom & Github
-   class*="win-icon": Microsoft
-   class*="icon-dropdown": Sonar
-   class*="navbar-icon":   Sonar
-   class*="icon-home":     Sonar
-   class*="icon-":         Sonar
+/* 	"fa":       														Gitlab
+   	"octicon":  														Atom & Github
+   	"win-icon": 														Microsoft
+   	"icon-dropdown", "navbar-icon", "icon-home" and "icon-":         	Sonar
+	"ace_":																Jenkins
+    "ico":           													Sourceforge
+	"pc" and "DPvwYc" and "Da":											Gmail
+	"ms-Icon":															MS OneDrive
+	"sort-caret":														Blackduck Hub
 */
-*:not([class*="fa"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]) {
-    font-family: Candara;
+
+/*
+Mac default fonts: , "LucidaGrande", "Kailasa", "Thonburi", "GeezaPro", "KohinoorBangla-Regular"
+*/
+*:not([class*="fa"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ace_"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]) {
+    font-family: "Gisha", "Candara", ".AppleSystemFallback-Regular";;
 }
