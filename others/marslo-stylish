@@ -1,32 +1,55 @@
 /* i really want this to be global */
 
 /*
+
    	kbd, pre, code: HTML tag. E.g.: <kbd></kbd>, <pre></pre>
    	pre *, code *, div.line-numbers, div.code : HTML TAG with Class. E.g.: <div class="code"></div>; <div class="line-numbers"></div>
 	.line, .line-number, .monospaced: Specified Class Name.
 */
 
+span.vsts-build-log,											/* TFS Log Content */
+div.ace_layer *{												/* Jenkins Pipeline Script Textarea*/
+    font-family: "Ubuntu Mono", "Consolas", "Menlo", "Monaco" !important;
+}
+
+textarea,														/* Stylish Editor area*/
 kbd,
 pre,
 code,
 pre *,
 code *,
-div.line-numbers *,
 div.code *,
-.line,
-.line-number,
+table.code,
+tr.line_holder *,												/* Gitlab Diff content */
+div.ace_content *,												/* http://www.myregexp.com */
+.solarized-dark,
+.EnlighterJS *,													/* http://thisdavej.com */
+.js-file-line *,												/* Github Codeblock */
 .editor,														/* Jenkins Console Editor*/
-.CodeMirror-line {
-    font-family: "monofur", "Menlo" !important;
-    font-size: 17px !important;
+.changeset-message,												/* Jenkins Change list */
+.node-log-frame,												/* Jenkins Stage View */
+#terminal *{													/* shellcheck */
+    font-family: "Ubuntu Mono", "monofur", "Menlo" !important;
+    font-size: 20px !important;
 }
 
-textarea,														/* Stylish Editor area*/
+
 input,
 select,
-.console-output {												/* Jenkins Console Output */
-    font-family: "Consolas", "Menlo" !important;
-    font-size: 17px !important;
+a.jstree-anchor,												/* Artifactory Tree List */
+div.line-numbers *,
+.line-numbers,
+.js-line-number,												/* Github Codeblock */
+.line,
+.line-number,
+.CodeMirror-line,
+pre.console-output, 											/* Jenkins Console Output finished */
+.console-output *, 												/* Jenkins Console Output */
+.blockInner,													/* Json Viewer */
+.jsonpOpener,													/* Json Viewer */
+.timestamp{
+    font-family: "Ubuntu Mono", "Consolas", "Menlo", "Monaco" !important;
+    font-size: 20px !important;
 }
 
 /* 	"fa":       														Gitlab
@@ -38,11 +61,15 @@ select,
 	"pc" and "DPvwYc" and "Da":											Gmail
 	"ms-Icon":															MS OneDrive
 	"sort-caret":														Blackduck Hub
+	"drop", "bowtie-", "view-":											TFS
+	"pl-":																Github
 */
 
 /*
 Mac default fonts: , "LucidaGrande", "Kailasa", "Thonburi", "GeezaPro", "KohinoorBangla-Regular"
 */
-*:not([class*="fa"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ace_"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]) {
-    font-family: "Gisha", "Candara", ".AppleSystemFallback-Regular";;
+*:not(code):not(h1):not(h2):not(pre):not(kbd):not(icon):not(input):not(button):not(i):not([class*="icon"]):not([class*="fa"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ace_"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]):not([class*="drop"]):not([class*="bowtie-"]):not([class*="view-"]):not([class*="pl-"]):not([class*="avatar-"]) {
+    font-family: "Titillium", "Gisha", "Candara", ".AppleSystemFallback-Regular";
+    /* font-size: 16px */
+    font-size: 100%;
 }
