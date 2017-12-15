@@ -58,7 +58,7 @@ brew install bash
 which -a bash
 /usr/local/bin/bash --version
 
-brew install wget tmux corkscrew tig bash-completion ifstat binutils diffutils gawk gnutls gzip file-formula stow telnet iproute2mac
+brew install wget tmux corkscrew tig bash-completion ifstat binutils diffutils gawk gnutls gzip file-formula stow telnet iproute2mac ctags jq colordiff tree vifm p7zip git mas htop
 
 brew install gnu-sed --with-default-names
 brew install gnu-tar --with-default-names
@@ -69,10 +69,12 @@ brew install findutils --with-default-names
 brew install wdiff --with-gettext
 
 brew install vim --override-system-vi
-brew install macvim --override-system-vim --custom-system-icons
 
-brew cask install iterm2-beta
-brew install git
+brew cask install moom dash little-snitch growl-fork iterm2-beta firefox google-chrome  # or $ brew cask install google-chrome-dev
+brew cask install macvim --override-system-vim --custom-system-icons
+
+brew install berkeley-db jack libmad libid3tag ffmpeg         # jackd -d coreaudio
+brew install moc --with-ncurses
 
 echo "if [ -f $(brew --prefix)/etc/bash_completion ]; then" >> ~/.bash_profile
 echo "  . $(brew --prefix)/etc/bash_completion" >> ~/.bash_profile
@@ -100,4 +102,49 @@ sudo scutil --set ComputerName marslo
 networksetup -setv6off Ethernet
 networksetup -setv6off Wi-Fi
 
+pip install rainbow
+pip install colout2
+
 sudo updatedb
+
+
+cat << 'EOF' > ~/Library/LaunchAgents/i.marslo.mocjackd.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Label</key>
+        <string>i.marslo.mocjackd</string>
+        <key>WorkingDirectory</key>
+        <string>/Users/marslo/</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/usr/local/bin/jackd</string>
+            <string>-d</string>
+            <string>coreaudio</string>
+        </array>
+        <key>EnableGlobbing</key>
+        <true/>
+        <key>RunAtLoad</key>
+        <true/>
+        <key>KeepAlive</key>
+        <true/>
+    </dict>
+</plist>
+EOF
+
+launchctl load ~/Library/LaunchAgents/i.marslo.mocjackd.plist
+launchctl load ~/Library/LaunchAgents/i.marslo.mocgrowl.plist
+sudo launchctl unload -w /Library/LaunchDaemons/at.obdev.littlesnitchd.plist
+
+mas login marslo.jiao@gmail.com
+
+mas install 1256503523
+mas install 836500024
+mas install 1233593954
+mas install 467939042
+mas install 497799835
+mas install 736473980
+mas install 520993579
+mas install 944848654
+mas install 419330170

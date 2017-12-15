@@ -1,22 +1,24 @@
 #!/bin/bash -x
 
-CURRENTUSER=marslo
-APPHOME=/home/$CURRENTUSER
-MARSLOHOME=$APPHOME/.marslo
+CURRENTUSER=$(whoami)
+APPHOME=/home/${CURRENTUSER}
+MARSLOHOME=${CURRENTHOME}/.marslo
 
-#TODO
-SYNCSER=<username>@161.91.26.175 #slave
+DEVOPSHOME=/home/devops
+SYNCSER=appadmin@161.91.26.175 #slave
+
+CURRENTHOME=${DEVOPSHOME}
 
 pushd $PWD
 
-cd /home/marslo
+cd ${CURRENTHOME}
 
-usermod -a -G sudo $CURRENTUSER
-usermod -a -G adm $CURRENTUSER
-usermod -a -G root $CURRENTUSER
+usermod -a -G sudo ${CURRENTUSER}
+usermod -a -G adm ${CURRENTUSER}
+usermod -a -G root ${CURRENTUSER}
 
 sed -i '/^appadmin/d' /etc/sudoers
-echo "$CURRENTUSER ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+echo "${CURRENTUSER} ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 cp /etc/ssh/sshd_config{,.org}
 sed -i 's/PrintMotd.*/PrintMotd no/' /etc/ssh/sshd_config
@@ -27,9 +29,9 @@ rsync -avzrlpgoD --delete --exclude=.vim/view --exclude=.vim/vimsrc --exclude=.v
 rsync -avzrlpgoD --delete --exclude=.marslo/Tools $SYNCSER:~/.marslo $APPHOME/
 rsync -avzrlpgoD $SYNCSER:~/.tmux.conf $APPHOME/.tmux.conf
 rsync -avzrlpgoD $SYNCSER:~/.vimrc $APPHOME/.vimrc
-# rsync -avzrlpgoD --exclude=.ssh/known_hosts $CURRENTUSER@161.91.26.175:~/.ssh .
+# rsync -avzrlpgoD --exclude=.ssh/known_hosts appadmin@161.91.26.175:~/.ssh .
 
-cat << 'EOF' > $APPHOME/.inputrc
+cat << 'EOF' > ${CURRENTHOME}/.inputrc
 set convert-meta on
 set completion-ignore-case on
 set show-all-if-ambiguous on
@@ -37,7 +39,7 @@ set show-all-if-unmodified on
 set mark-symlinked-directories on
 set print-completions-horizontally on
 EOF
-chown $CURRENTUSER:$CURRENTUSER $APPHOME/.inputrc
+chown ${CURRENTUSER}:${CURRENTUSER} ${CURRENTHOME}/.inputrc
 
 # rsync -avzrlpgoD $SYNCSER:~/.inputrc $APPHOME/.inputrc
 # mkdir -p $MARSLOHOME/Tools
@@ -45,28 +47,29 @@ chown $CURRENTUSER:$CURRENTUSER $APPHOME/.inputrc
 # git clone https://github.com/Marslo/LinuxStuff.git
 # git clone https://github.com/Marslo/VimConfig.git
 
-# cp $MARSLOHOME/Tools/VimConfig/Configurations/vimrc_terminal $APPHOME/.vimrc
+# cp $MARSLOHOME/Tools/VimConfig/Configurations/vimrc_terminal ${CURRENTHOME}/.vimrc
 # cp $MARSLOHOME/Tools/LinuxStuff/Configs/HOME/.marslo/.marslorc $MARSLOHOME
 # cp $MARSLOHOME/Tools/LinuxStuff/Configs/HOME/.marslo/.bye_marslo $MARSLOHOME
 # cp $MARSLOHOME/Tools/LinuxStuff/Configs/HOME/.marslo/.bello_marslo $MARSLOHOME
-# cp -r $APPHOME/.marslo/Tools/LinuxStuff/Configs/HOME/.marslo/.devops $MARSLOHOME
+# cp -r ${CURRENTHOME}/.marslo/Tools/LinuxStuff/Configs/HOME/.marslo/.devops $MARSLOHOME
 
-cp $APPHOME/.ssh/tools@cdi* /root/.ssh
+cp ${CURRENTHOME}/.ssh/tools@cdi* /root/.ssh
 ln -sf /root/.ssh/tools@cdi /root/.ssh/id_rsa
 
 mkdir -p /root/.vim/cache
-mkdir  $APPHOME/.vim/cache
-touch  $APPHOME/.vim_mru_files
-ln -sf $APPHOME/.vimrc /root/.vimrc
-ln -sf $APPHOME/.inputrc /root/.inputrc
-ln -sf $APPHOME/.tmux.conf /root/.tmux.conf
-ln -sf $APPHOME/.vim/bundle /root/.vim/bundle
-chown -R $CURRENTUSER:$CURRENTUSER $APPHOME/.vim/cache
-chown -R $CURRENTUSER:$CURRENTUSER $APPHOME/.vim_mru_files
+mkdir ${CURRENTHOME}/.vim/cache
+touch ${CURRENTHOME}/.vim_mru_files
+ln -sf ${CURRENTHOME}/.vimrc /root/.vimrc
+ln -sf ${CURRENTHOME}/.inputrc /root/.inputrc
+ln -sf ${CURRENTHOME}/.tmux.conf /root/.tmux.conf
+ln -sf ${CURRENTHOME}/.vim/bundle /root/.vim/bundle
+chown -R ${CURRENTUSER}:${CURRENTUSER} ${CURRENTHOME}/.vim/cache
+chown -R ${CURRENTUSER}:${CURRENTUSER} ${CURRENTHOME}/.vim_mru_files
 
 # Network configuration
 cp /etc/rc.local{,.org}
 sed -i 's/exit.*//' /etc/rc.local
+
 cat << 'EOF' >> /etc/rc.local
 echo "search CODE1.EMI.PHILIPS.COM" >> /etc/resolv.conf
 echo "nameserver 130.147.159.139" >> /etc/resolv.conf
@@ -133,7 +136,7 @@ deb-src http://security.ubuntu.com/ubuntu xenial-security multiverse
 EOF
 
 apt update -y
-apt install -y sysv-rc-conf tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils curl git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute
+apt install -y bash-completion sysv-rc-conf tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils curl git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute
 apt install -y sysstat
 apt install -y libcurl4-gnutls-dev
 apt install -y libcurl4-openssl-dev
@@ -170,6 +173,12 @@ mv /etc/update-motd.d/10-help-text /etc/update-motd.d/org.10-help-text.org
 cp /etc/update-motd.d/00-header /etc/update-motd.d/org.00-header.org
 sed -i 's/printf.*/#&/' /etc/update-motd.d/00-header
 
+# or
+# chmod -x /etc/update-motd.d/91-release-upgrade
+# chmod -x /etc/update-motd.d/90-updates-available
+# chmod -x /etc/update-motd.d/10-help-text
+# chmod -x /etc/update-motd.d/00-header
+
 # Auto Upgrade Disable
 sed -i 's/"1"/"0"/' /etc/apt/apt.conf.d/10periodic
 sed -i 's/"1"/"0"/' /etc/apt/apt.conf.d/20auto-upgrades
@@ -182,8 +191,8 @@ dpkg-reconfigure tzdata
 echo "export http_proxy=http://161.91.27.236:8080" >> /etc/profile
 echo "export https_proxy=http://161.91.27.236:8080" >> /etc/profile
 echo "export no_proxy=localhost,127.0.0.1,*.cdi.philips.com,*.*.cdi.philips.com,161.91.26.*,pww.jira.cdi.philips.com,161.91.26.166,pww.confluence.cdi.philips.com,161.91.26.168,pww.jenkins.cdi.philips.com,161.91.26.174,pww.sonar.cdi.philips.com,161.91.26.173,pww.artifactory.cdi.philips.com,161.91.26.171,pww.slave01.cdi.philips.com,161.91.26.175,pww.gitlab.cdi.philips.com,161.91.26.140" >> /etc/profile
-echo "source $APPHOME/.marslo/.marslorc" >> /etc/bash.bashrc
-echo "export PATH=$APPHOME/.marslo/myprograms/vim80/bin:$PATH" >> /etc/bash.bashrc
+echo "source ${CURRENTHOME}/.marslo/.marslorc" >> /etc/bash.bashrc
+echo "export PATH=${CURRENTHOME}/.marslo/myprograms/vim80/bin:$PATH" >> /etc/bash.bashrc
 
 vim +GetVundle +qa
 vim +BundleInstall +qa
