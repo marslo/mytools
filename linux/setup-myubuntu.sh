@@ -87,20 +87,21 @@ EOF
 
 cp /etc/hosts{,.org}
 cat << 'EOF' >> /etc/hosts
-161.91.26.140 pww.gitlab.cdi.philips.com Gitlab gitlab
-161.91.26.166 pww.jira.cdi.philips.com JIRA jira
-161.91.26.168 pww.confluence.cdi.philips.com Confluence confluence
-161.91.26.171 pww.artifactory.cdi.philips.com Artifactory artifactory
-161.91.26.173 pww.sonar.cdi.philips.com Sonar sonar
-161.91.26.174 pww.jenkins.cdi.philips.com Jenkins jenkins
-161.91.26.175 pww.slave01.cdi.philips.com slave slave
+130.147.219.15 pww.gitlab.cdi.philips.com Gitlab gitlab
+130.147.219.16 pww.jira.cdi.philips.com JIRA jira
+130.147.219.18 pww.confluence.cdi.philips.com Confluence confluence
+130.147.219.19 pww.artifactory.cdi.philips.com Artifactory artifactory
+130.147.219.20 pww.sonar.cdi.philips.com Sonar sonar
+130.147.219.23 pww.jenkins.cdi.philips.com Jenkins jenkins
+130.147.219.24 pww.slave01.cdi.philips.com Slave slave
 EOF
 
 # Package management
 cat << 'EOF' > /etc/apt/apt.conf
-Acquire::http::Proxy "http://161.91.27.236:8080";
-Acquire::https::Proxy "http://161.91.27.236:8080";
-Acquire::ftp::Proxy "http://161.91.27.236:8080";
+Acquire::http::proxy "http://42.99.164.34:10015/";
+Acquire::https::proxy "https://42.99.164.34:10015/";
+Acquire::ftp::proxy "ftp://42.99.164.34:10015/";
+Acquire::socks::proxy "socks://42.99.164.34:10015/";
 EOF
 
 cat << 'EOF' > /etc/apt/apt.conf.d/99ignoresave
@@ -133,6 +134,21 @@ deb http://security.ubuntu.com/ubuntu xenial-security universe
 deb-src http://security.ubuntu.com/ubuntu xenial-security universe
 deb http://security.ubuntu.com/ubuntu xenial-security multiverse
 deb-src http://security.ubuntu.com/ubuntu xenial-security multiverse
+EOF
+
+cat << 'EOF' > /etc/apt/sources.list.d/cwchien-ubuntu-gradle-xenial.list
+deb http://ppa.launchpad.net/cwchien/gradle/ubuntu xenial main
+# deb-src http://ppa.launchpad.net/cwchien/gradle/ubuntu xenial main
+EOF
+
+cat << 'EOF' > /etc/apt/sources.list.d/git-core-ubuntu-ppa-xenial.list
+deb http://ppa.launchpad.net/git-core/ppa/ubuntu xenial main
+# deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu xenial main
+EOF
+
+cat << 'EOF' > /etc/apt/sources.list.d/webupd8team-ubuntu-y-ppa-manager-xenial.list
+deb http://ppa.launchpad.net/webupd8team/y-ppa-manager/ubuntu xenial main
+# deb-src http://ppa.launchpad.net/webupd8team/y-ppa-manager/ubuntu xenial main
 EOF
 
 apt update -y
@@ -188,11 +204,15 @@ run-parts /etc/update-motd.d/
 update-motd
 dpkg-reconfigure tzdata
 
-echo "export http_proxy=http://161.91.27.236:8080" >> /etc/profile
-echo "export https_proxy=http://161.91.27.236:8080" >> /etc/profile
-echo "export no_proxy=localhost,127.0.0.1,*.cdi.philips.com,*.*.cdi.philips.com,161.91.26.*,pww.jira.cdi.philips.com,161.91.26.166,pww.confluence.cdi.philips.com,161.91.26.168,pww.jenkins.cdi.philips.com,161.91.26.174,pww.sonar.cdi.philips.com,161.91.26.173,pww.artifactory.cdi.philips.com,161.91.26.171,pww.slave01.cdi.philips.com,161.91.26.175,pww.gitlab.cdi.philips.com,161.91.26.140" >> /etc/profile
-echo "source ${CURRENTHOME}/.marslo/.marslorc" >> /etc/bash.bashrc
-echo "export PATH=${CURRENTHOME}/.marslo/myprograms/vim80/bin:$PATH" >> /etc/bash.bashrc
+# echo "export http_proxy=http://161.91.27.236:8080" >> /etc/profile
+# echo "export no_proxy=localhost,127.0.0.1,*.cdi.philips.com,*.*.cdi.philips.com,161.91.26.*,pww.jira.cdi.philips.com,161.91.26.166,pww.confluence.cdi.philips.com,161.91.26.168,pww.jenkins.cdi.philips.com,161.91.26.174,pww.sonar.cdi.philips.com,161.91.26.173,pww.artifactory.cdi.philips.com,161.91.26.171,pww.slave01.cdi.philips.com,161.91.26.175,pww.gitlab.cdi.philips.com,161.91.26.140" >> /etc/profile
+echo "export http_proxy=http://42.99.164.34:10015" >> /etc/profile
+echo "export https_proxy=$http_proxy" >> /etc/profile
+echo "export ftp_proxy=$http_proxy" >> /etc/profile
+export no_proxy=localhost,127.0.0.1,pww.*.cdi.philips.com,130.*.*.*,161.*.*.*,pww.artifactory.cdi.philips.com,130.147.219.19,healthyliving.cn-132.lan.philips.com,*.cn-132.lan.philips.com,130.147.183.165,161.85.30.130,pww.sonar.cdi.philips.com,130.147.219.20,pww.gitlab.cdi.philips.com,130.147.219.15,pww.slave01.cdi.philips.com,130.147.219.24,pww.confluence.cdi.philips.com,130.147.219.18,pww.jira.cdi.philips.com,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,bdhub.pic.philips.com,161.85.30.130,tfsemea1.ta.philips.com,130.147.219.23,pww.jenkins.cdi.philips.com,blackduck.philips.com,fortify.philips.com,161.85.30.130
+
+echo "source /home/appadmin/.marslo/.marslorc" >> /etc/bash.bashrc
+echo "export PATH=/home/appadmin/.marslo/myprograms/vim80/bin:$PATH" >> /etc/bash.bashrc
 
 vim +GetVundle +qa
 vim +BundleInstall +qa
