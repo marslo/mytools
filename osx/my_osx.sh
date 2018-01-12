@@ -37,6 +37,12 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores true
 # set safari default font size
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2MinimumFontSize -int 18
 
+# Disable dashboard
+defaults write com.apple.dashboard mcx-disabled -boolean YES && killall Dock
+# Enable dashboard
+# defaults write com.apple.dashboard mcx-disabled -boolean NO && killall Dock
+
+
 for pkg in /Applications/Xcode.app/Contents/Resources/Packages/*.pkg; do
   sudo installer -pkg "$pkg" -target /;
 done
@@ -58,7 +64,7 @@ brew install bash
 which -a bash
 /usr/local/bin/bash --version
 
-brew install wget tmux corkscrew tig bash-completion ifstat binutils diffutils gawk gnutls gzip file-formula stow telnet iproute2mac ctags jq colordiff tree vifm p7zip git mas htop
+brew install wget tmux corkscrew tig bash-completion ifstat binutils diffutils gawk gnutls gzip file-formula stow telnet iproute2mac ctags jq jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas
 
 brew install gnu-sed --with-default-names
 brew install gnu-tar --with-default-names
@@ -67,14 +73,31 @@ brew install grep --with-default-names
 brew install ed --with-default-names
 brew install findutils --with-default-names
 brew install wdiff --with-gettext
+brew install gnu-indent --with-default-names
+# brew install vim --override-system-vi
 
-brew install vim --override-system-vi
+brew cask install dash little-snitch iterm2-beta firefox google-chrome alfred vlc etcher imageoptim omnigraffle licecap xca background-music
+# or $ brew cask install google-chrome-dev growl-fork android-sdk
 
-brew cask install moom dash little-snitch growl-fork iterm2-beta firefox google-chrome  # or $ brew cask install google-chrome-dev
-brew cask install macvim --override-system-vim --custom-system-icons
+brew tap macvim-dev/macvim
+# brew install --HEAD macvim-dev/macvim/macvim
+# OR
+brew install macvim --with-override-system-vim --HEAD
 
-brew install berkeley-db jack libmad libid3tag ffmpeg         # jackd -d coreaudio
+brew install berkeley-db jack libmad libid3tag ffmpeg youtube-dl        # jackd -d coreaudio
 brew install moc --with-ncurses
+
+brew cask outdated
+brew tap buo/cask-upgrade
+brew cu -a -f
+
+# setup mavim in /Applications
+mkdir -p /Applications/gVim.app/Contents
+ln -sf /usr/local/Cellar/macvim/HEAD-a5e0355/gVim.app/Contents/* .
+mv /Applications/gVim.app/Contents/Info.plist{,.lnk}
+mv /Applications/gVim.app/Contents/PkgInfo{,.lnk}
+cp /Applications/gVim.app/Contents/Info.plist{.lnk,}
+cp /Applications/gVim.app/Contents/PkgInfo{.lnk,}
 
 echo "if [ -f $(brew --prefix)/etc/bash_completion ]; then" >> ~/.bash_profile
 echo "  . $(brew --prefix)/etc/bash_completion" >> ~/.bash_profile
@@ -139,12 +162,19 @@ sudo launchctl unload -w /Library/LaunchDaemons/at.obdev.littlesnitchd.plist
 
 mas login marslo.jiao@gmail.com
 
-mas install 1256503523
-mas install 836500024
-mas install 1233593954
-mas install 467939042
-mas install 497799835
-mas install 736473980
-mas install 520993579
-mas install 944848654
-mas install 419330170
+mas install 1256503523    # System Indicators
+mas install 836500024     # WeChat
+mas install 1233593954    # MailMaster
+mas install 467939042     # Growl
+mas install 497799835     # xCode
+mas install 736473980     # Paint
+mas install 520993579     # pwSafe
+mas install 944848654     # NeteaseMusic
+mas install 419330170     # moom
+
+# setup iterm2
+curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
+
+sudo mdutil -i on /
+sudo mdutil -E /
+sudo mdutil -E /Volumes/marslo/
