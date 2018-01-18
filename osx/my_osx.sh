@@ -171,6 +171,7 @@ mas install 736473980     # Paint
 mas install 520993579     # pwSafe
 mas install 944848654     # NeteaseMusic
 mas install 419330170     # moom
+mas install 405843582     # Alfred
 
 # setup iterm2
 curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
