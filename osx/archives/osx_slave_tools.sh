@@ -1,8 +1,16 @@
 #!/bin/bash
+# =============================================================================
+#   FileName: osx_slave_tools.sh
+#     Author: marslo
+#      Email: marslo.jiao@gmail.com
+#    Created: 2017-10-30 16:38:58
+# LastChange: 2018-04-01 12:29:30
+# =============================================================================
 
 MAVENDIR="/opt/maven"
 GRADLEDIR="/opt/gradle"
-ARTIFACTORYURL="http://pww.artifactory.cdi.philips.com/artifactory"
+ARTIFACTORYHOST="www.mycompany.com"
+ARTIFACTORYURL="http://${ARTIFACTORYHOST}/artifactory"
 
 [ ! -d ${MAVENDIR} ] && mkdir -p ${MAVENDIR}
 [ ! -d ${GRADLEDIR} ] && mkdir -p ${GRADLEDIR}
