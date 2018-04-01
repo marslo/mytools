@@ -6,6 +6,8 @@
 #    Created: 2017-10-30 16:38:58
 # LastChange: 2018-02-27 18:07:51
 # =============================================================================
+# USAGE:
+#     please repace the ARTIFACTORYHOST to your own situation
 
 HOSTNAME="iMarslo"
 TIMEZONE="Asia/Chongqing"

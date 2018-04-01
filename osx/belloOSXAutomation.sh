@@ -7,7 +7,7 @@
 #  LastChange: 2018-02-28 16:57:34
 # =============================================================================
 # USAGE:
-#     please repace the SONARUSL and ARTIFACTORYHOST to your own situation
+#     please repace the SONARURL and ARTIFACTORYHOST to your own situation
 
 while getopts "t:" opt; do
   case $opt in
