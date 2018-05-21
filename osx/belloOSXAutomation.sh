@@ -25,6 +25,7 @@ WXPYVER="2.8.12.1"
 WXPYNAME="wxPython2.8-osx-unicode-${WXPYVER}-universal-py2.7"
 WXPKGNAME="wxPython2.8-osx-unicode-universal-py2.7"
 SONARURL="http://my.sonar.com:9000"
+SONARTOEKEN="SONARTOEKEN"
 ARTIFACTORYHOST="my.company.com/artifactory"
 ARTIFACTORYURL="http://${ARTIFACTORYHOST}/artifactory"
 ARTIPIPREPO="${ARTIFACTORYURL}/api/pypi/pypi-dev/simple"
@@ -108,31 +109,10 @@ sudo bash -c 'cat >> /usr/local/bin/addr' << EOF
 #  LastChange: 2018-01-23 20:08:13
 # =============================================================================
 
-INTRANETROUTE="130.147.182.1"
+INTRANETROUTE="4.3.2.1"
 
-sudo route -nv add -host 161.92.35.78     ${INTRANETROUTE}
-sudo route -vn add -host 130.147.236.5    ${INTRANETROUTE}
-sudo route -vn add -host 180.166.223.109  ${INTRANETROUTE}
-sudo route -vn add -host 161.92.35.82     ${INTRANETROUTE}
-sudo route -vn add -host 180.166.223.109  ${INTRANETROUTE}
-sudo route -vn add -host 140.207.91.234   ${INTRANETROUTE}
-sudo route -vn add -host 42.99.164.34     ${INTRANETROUTE}
-sudo route -vn add -host 185.46.212.34    ${INTRANETROUTE}
-sudo route -nv add -net 130.145/16        ${INTRANETROUTE}
-sudo route -nv add -net 130.147/16        ${INTRANETROUTE}
-sudo route -nv add -net 161.85/16         ${INTRANETROUTE}
-sudo route -nv add -net 161.92/16         ${INTRANETROUTE}
-sudo route -nv add -net 130.139/16        ${INTRANETROUTE}
-sudo route -nv add -net 130.140/16        ${INTRANETROUTE}
-sudo route -nv add -net 130.146/16        ${INTRANETROUTE}
-sudo route -nv add -net 130.138/15        ${INTRANETROUTE}
-sudo route -nv add -net 130.140/14        ${INTRANETROUTE}
-sudo route -nv add -net 137.55/16         ${INTRANETROUTE}
-sudo route -nv add -net 161.83/16         ${INTRANETROUTE}
-sudo route -nv add -net 161.84/16         ${INTRANETROUTE}
-sudo route -nv add -net 161.88/16         ${INTRANETROUTE}
-sudo route -nv add -net 161.91/16         ${INTRANETROUTE}
-sudo route -nv add -net 185.166/16        ${INTRANETROUTE}
+sudo route -nv add -host 1.2.3.4     ${INTRANETROUTE}
+sudo route -nv add -net 192.168/16        ${INTRANETROUTE}
 EOF
 
 cat > ~/Library/LaunchAgents/i.marslo.addroute.plist << EOF
@@ -168,11 +148,10 @@ sudo bash -c 'cat >> /etc/hosts ' << EOF
 EOF
 
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClCw0e6vrxNWNQehVIeemZ1UMrhVvV9FxVjUkA7AB2SW0kqtrIGxh8tNoPvL0MUm4ga3wgTbITDrVnXeTzh1LE4Wr7j+MRYLbXm6jDp+O5Ow61sBgZjOlX0/7wuDWwfpOafdscmdYKhdatFg6nTDxjiPP44G08N/UWPWuMHxkQNYWj6bt46N8llLOxLJGyTuMjT7TpL6Ubb9WeVo6PYvi+Gl7spHjSHoJ6ZlrcNKxUb7LGh9k1SfXdLeWB079YFCZMrvuVDBYUwwbq6OzrSZnSABdRtR4ylTaHshdQKRmYn3c1/iRybxAwrU5gNYhmikOmWL2Qt0fkINttRswtxKvr marslo@devops" >> ~/.ssh/authorized_keys
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7zRA6SKPw4uImacEY0ioLD6jgDnzpZFn8CYaTvXoUf+aio6fwnpG5rMdJf+hN6w7MBIk5tsJGZJxQgNPqJ2gHPTaQDhlAi0R/4vbgk+E1OHK1oXX9DI0qX1RzPFC9gmf9G+40becDxJw7Jp59JQRLsSZg+cq6B4vi/7t70dPBa0UP7zo8CiOjznnf75T674O777rzv4xsjXeWgM42rPctAdUf2YdMLUsv1tOfv2qmpGJDsP/lW9OnVVLYoALQBsWSA+vYtnfgj9N6f0plgxuj8cyee8hJrm2BzW4uqKYScw0vXGUKVYs8TkFUS8COZyoR06Uxkc5dThQDxIUw9jDh slave@devops"  >> ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 chmod 644 ~/.ssh/authorized_keys
 
-bash -x ./osx_marslo_default.sh
+bash -x ./belloMarsloDefaults.sh
 # sudo shutdown -r now
 
 }
@@ -329,7 +308,7 @@ org.gradle.daemon=false
 org.gradle.jvmargs=-Xmx2048M
 artifactory_contextUrl=${ARTIFACTORYURL}
 systemProp.sonar.host.url=${SONARURL}
-systemProp.sonar.login=ab170a6d81e17267c94c319ef2ded13a3da7155b
+systemProp.sonar.login=${SONARTOEKEN}
 EOF
 }
 

@@ -530,16 +530,19 @@ EOF
 function appManagement() {
   mas login marslo.jiao@gmail.com
 
-  mas install 1256503523    # System Indicators
   mas install 836500024     # WeChat
-  mas install 1233593954    # MailMaster
   mas install 467939042     # Growl
   mas install 497799835     # xCode
-  mas install 736473980     # Paint
   mas install 520993579     # pwSafe
   mas install 944848654     # NeteaseMusic
   mas install 419330170     # moom
   mas install 405843582     # Alfred
+  mas install 1176895641    # Spark
+  mas install 1037126344    # Apple Configurator 2
+  mas install 523620159     # CleanMyDrive 2
+  # mas install 1256503523    # System Indicators
+  # mas install 736473980     # Paint
+  # mas install 1233593954    # MailMaster
 
   # setup iterm2
   curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
