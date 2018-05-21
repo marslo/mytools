@@ -1,0 +1,26 @@
+#!/bin/bash
+# =============================================================================
+#   FileName: ssstart
+#     Author: marslo.jiao@gmail.com
+#    Created: 2018-05-14 15:39:28
+# LastChange: 2018-05-14 15:47:58
+# =============================================================================
+
+PYTHON2="/usr/bin/python"
+SSLOCAL="/usr/local/bin/sslocal"
+
+SSHOME="$HOME/.marslo/ss"
+SSLOG="${SSHOME}/logs"
+
+SSJSON="${SSHOME}/ssmarslo.json"
+SSPID="${SSHOME}/ssmarslo.pid"
+SSLOGFILE="${SSLOG}/ssmarslo.log"
+
+[ ! -d ${SSHOME} ] && mkdir -p ${SSHOME}
+[ ! -d ${SSLOG} ] && mkdir -p ${SSLOG}
+[ ! -f ${SSHOME}/ssmarslo.pid ] && touch ${SSHOME}/ssmarslo.pid
+
+${PYTHON2} ${SSLOCAL} -c ${SSJSON} \
+                      -d start \
+                      --pid-file=${SSPID} \
+                      --log-file=${SSLOGFILE}
