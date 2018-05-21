@@ -16,10 +16,10 @@ JAVADIR="/opt/java"
 DOCKERDIR="/opt/docker"
 DOCKERCONF="$HOME/.docker/config.json"
 DOCKERDAEMON="$HOME/.docker/daemon.json"
-GITLABHOST="www.my.company"
+GITLABHOST="www.mygitlab.company"
 ARTIFACTORYHOST="www.my.company"
-ARTIFACTORYURL="http://${ARTIFACTORYHOST}/artifactory"
-SONARURL="http://my.sonar.com:9000"
+ARTIFACTORYHOME="http://${ARTIFACTORYHOST}/artifactory"
+SONARHOME="http://my.sonar.com:9000"
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 
 function reportError(){
@@ -30,8 +30,9 @@ function reportError(){
 
 function doMaven() {
   if ! mvn --version > /dev/null 2>&1; then
-    wget ${ARTIFACTORYURL}/devops/common/maven/apache-maven-3.3.9-bin.tar.gz -P ${MAVENDIR}
+    wget ${ARTIFACTORYHOME}/devops/common/maven/apache-maven-3.3.9-bin.tar.gz -P ${MAVENDIR}
     tar xvzf ${MAVENDIR}/apache-maven-3.3.9-bin.tar.gz -C ${MAVENDIR}
+    ln -sf ${MAVENDIR}/apache-maven-3.3.9/bin/mvn /usr/local/bin/mvn
     mavenSetup
     if ! mvn --version; then
       reportError "mvn installed failed"
@@ -43,13 +44,14 @@ function doMaven() {
 
 function mavenSetup() {
   [ -f ~/.m2/settings.xml ] && mv ~/.m2/settings.xml{,.org.${TIMESTAMPE}} || mkdir -p ~/.m2
-  curl ${ARTIFACTORYURL}/devops/common/settings.xml --create-dirs -o ~/.m2/settings.xml
+  curl ${ARTIFACTORYHOME}/devops/common/settings.xml --create-dirs -o ~/.m2/settings.xml
 }
 
 function doGradle() {
   if ! gradle --version > /dev/null 2>&1; then
-    curl ${ARTIFACTORYURL}/devops/common/gradle/gradle-3.5-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.5-all.zip
+    curl ${ARTIFACTORYHOME}/devops/common/gradle/gradle-3.5-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.5-all.zip
     unzip ${GRADLEDIR}/gradle-3.5-all.zip -d ${GRADLEDIR}
+    ln -sf ${GRADLEDIR}/gradle-3.5/bin/gradle /usr/local/bin/gradle
     gradleSetup
     if ! gradle --version; then
       reportError "gradle 3.5 installed failed"
@@ -57,8 +59,9 @@ function doGradle() {
   fi
 
   if ! gradle3.3 --version > /dev/null 2>&1; then
-    curl ${ARTIFACTORYURL}/devops/common/gradle/gradle-3.3-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.3-all.zip
+    curl ${ARTIFACTORYHOME}/devops/common/gradle/gradle-3.3-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.3-all.zip
     unzip ${GRADLEDIR}/gradle-3.3-all.zip -d ${GRADLEDIR}
+    ln -sf ${GRADLEDIR}/gradle-3.3/bin/gradle /usr/local/bin/gradle3.3
     if ! gradle3.3 --version; then
       reportError "gradle 3.3 installed failed"
     fi
@@ -73,8 +76,8 @@ function gradleSetup() {
   cat > ~/.gradle/gradle.properties << EOF
 org.gradle.daemon=false
 org.gradle.jvmargs=-Xmx2048M
-artifactory_contextUrl=${ARTIFACTORYURL}
-systemProp.sonar.host.url=${SONARURL}
+artifactory_contextUrl=${ARTIFACTORYHOME}
+systemProp.sonar.host.url=${SONARHOME}
 systemProp.sonar.login=ab170a6d81e17267c94c319ef2ded13a3da7155b
 EOF
 }
@@ -95,7 +98,7 @@ function doNpm() {
 function npmSetup() {
   if ! npm --version > /dev/null 2>&1; then
     [ -f ~/.npmrc ] && mv ~/.npmrc{,.org}
-    echo "registry=${ARTIFACTORYURL}/api/npm/npm-snapshot/" > ~/.npmrc
+    echo "registry=${ARTIFACTORYHOME}/api/npm/npm-snapshot/" > ~/.npmrc
     echo "progress=false" >> ~/.npmrc
     sudo chown -R "$(whoami)":admin /usr/local
 
@@ -107,14 +110,14 @@ function npmSetup() {
     npm i -g npm@latest
     # npm i -g ionic increase-memory-limit cordova json-server
     # or
-    # npm i -g ionic@3.15.2 increase-memory-limit@1.0.5 cordova@7.1.0 json-server
+    npm i -g ionic@3.15.2 increase-memory-limit@1.0.5 cordova@7.1.0 json-server
   fi
 }
 
 
 function doJava() {
   if ! java -version; then
-    curl ${ARTIFACTORYURL}/devops/iOS/java/jdk-8u161-macosx-x64.dmg --create-dirs -o ${JAVADIR}/jdk-8u161-macosx-x64.dmg
+    curl ${ARTIFACTORYHOME}/devops/iOS/java/jdk-8u161-macosx-x64.dmg --create-dirs -o ${JAVADIR}/jdk-8u161-macosx-x64.dmg
     diskutil list
     hdiutil attach ${JAVADIR}/jdk-8u161-macosx-x64.dmg
     sudo installer -verbose -pkg "/Volumes/JDK 8 Update 161/JDK 8 Update 161.pkg" -target /
@@ -135,7 +138,7 @@ function doJava() {
 
 function doDocker() {
   if ! docker --version > /dev/null 2>&1; then
-    curl ${ARTIFACTORYURL}/devops/docker/Docker-stable-17.12.0-ce-mac49.dmg --create-dirs -o ${DOCKERDIR}/Docker-stable-17.12.0-ce-mac49.dmg
+    curl ${ARTIFACTORYHOME}/devops/docker/Docker-stable-17.12.0-ce-mac49.dmg --create-dirs -o ${DOCKERDIR}/Docker-stable-17.12.0-ce-mac49.dmg
     diskutil list
     hdiutil attach ${DOCKERDIR}/Docker-stable-17.12.0-ce-mac49.dmg
     cp -r /Volumes/Docker/Docker.app /Applications/
@@ -163,13 +166,13 @@ function dockerSetup() {
   cat >> ${DOCKERDAEMON} << EOF
   "allow-nondistributable-artifacts" : ['
     "${ARTIFACTORYHOST}",'
-    "${ARTIFACTORYHOST}:443"'
+    "${ARTIFACTORYHOME}:443"'
    ]'
   }'
 EOF
 
   # setup the cdi Artifactory ssl credential
-  curl ${ARTIFACTORYURL}/devops/docker/${ARTIFACTORYHOST}-ca.crt --create-dirs -o ${DOCKERDIR}/${ARTIFACTORYHOST}-ca.crt
+  curl ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYHOST}-ca.crt --create-dirs -o ${DOCKERDIR}/${ARTIFACTORYHOST}-ca.crt
   sudo security add-trusted-cert -d -r trustRoot -k "/Library/Keychains/System.keychain" "${DOCKERDIR}/${ARTIFACTORYHOST}-ca.crt"
   security find-certificate -a -Z -c artifactory | grep SHA-1
   sudo killall Docker && sleep 5 && open --hide --background -a Docker
@@ -182,9 +185,10 @@ EOF
 
 function doSonar() {
   if ! sonar-scanner --version > /dev/null 2>&1; then
-    curl ${ARTIFACTORYURL}/devops/sca/sonar-scanner-cli-3.0.3.778-macosx.zip --create-dirs -o ${SONARDIR}/sonar-scanner-3.0.3.zip
+    curl ${ARTIFACTORYHOME}/devops/sca/sonar-scanner-cli-3.0.3.778-macosx.zip --create-dirs -o ${SONARDIR}/sonar-scanner-3.0.3.zip
     unzip ${SONARDIR}/sonar-scanner-3.0.3.zip -d ${SONARDIR}
     mv ${SONARDIR}/sonar-scanner-3.0.3.778-macosx ${SONARDIR}/sonar-scanner-3.0.3
+    ln -sf ${SONARDIR}/sonar-scanner-3.0.3/bin/sonar-scanner /usr/local/bin/sonar-scanner
     sonarSetup
 
     if ! sonar-scanner --version; then
@@ -198,7 +202,7 @@ function sonarSetup() {
   [ -f ${SONARDIR}/sonar-scanner-3.0.3/conf/sonar-scanner.properties ] && mv ${SONARDIR}/sonar-scanner-3.0.3/conf/sonar-scanner.properties{,.bak}
   cat > ${SONARDIR}/sonar-scanner-3.0.3/conf/sonar-scanner.properties << EOF
 #----- Default SonarQube server
-sonar.host.url=http://${SONARURL}
+sonar.host.url=${SONARHOME}
 
 #----- Default source code encoding
 sonar.sourceEncoding=UTF-8
@@ -231,6 +235,7 @@ function doOSXTools() {
   jenkinsBasicEnv
 }
 
+[ ! -d /opt ] && sudo mkdir -p /opt
 sudo chown -R "$(whoami)":"$(whoami)" /opt
 doOSXTools
 # reSetupTools

@@ -289,15 +289,15 @@ function npmSetup() {
   [ -f "$HOME/.npmrc" ] && mv $HOME/.npmrc{,.bak.${TIMESTAMP}}
 
   cat > $HOME/.npmrc << EOF
-registry=${ARTIFACTORYURL}/api/npm/npm-snapshot/g
-@appium=${ARTIFACTORYURL}/api/npm/npm-snapshotg
-@appium-chromedriver=${ARTIFACTORYURL}/api/npm/npm-snapshotg
-chromedriver_cdnurl=${ARTIFACTORYURL}/mirror-chromedriverg
-sass_binary_site=${ARTIFACTORYURL}/mirror-node-sassg
-phantomjs_cdnurl=${ARTIFACTORYURL}/mirror-phantomjsg
-nvm_nodejs_org_mirror=${ARTIFACTORYURL}/mirror-nodejsg
-nvm_iojs_org_mirror=${ARTIFACTORYURL}/mirror-iojs  g
-nvm_npm_mirror=${ARTIFACTORYURL}/mirror-npm        g
+registry=${ARTIFACTORYURL}/api/npm/npm-snapshot/
+@appium=${ARTIFACTORYURL}/api/npm/npm-snapshot
+@appium-chromedriver=${ARTIFACTORYURL}/api/npm/npm-snapshot
+chromedriver_cdnurl=${ARTIFACTORYURL}/mirror-chromedriver
+sass_binary_site=${ARTIFACTORYURL}/mirror-node-sass
+phantomjs_cdnurl=${ARTIFACTORYURL}/mirror-phantomjs
+nvm_nodejs_org_mirror=${ARTIFACTORYURL}/mirror-nodejs
+nvm_iojs_org_mirror=${ARTIFACTORYURL}/mirror-iojs
+nvm_npm_mirror=${ARTIFACTORYURL}/mirror-npm
 # echo "progress=falseg
 EOF
 

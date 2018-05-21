@@ -186,11 +186,38 @@ cat > ~/Library/LaunchAgents/i.marslo.addroute.plist << EOF
     </dict>
 </plist>
 EOF
-  plutil i.add.route.plist
-  sudo chown -R root:wheel ~/Library/LaunchAgents/i.add.route.plist
-  sudo launchctl load ~/Library/LaunchAgents/i.add.route.plist
+  plutil i.marslo.addroute.plist
+  sudo chown -R root:wheel ~/Library/LaunchAgents/i.marslo.addroute.plist
+  sudo launchctl load ~/Library/LaunchAgents/i.marslo.addroute.plist
   launchctl list | grep route
 
+cat > ~/Library/LaunchAgents/i.marslo.updatedb.plist << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>i.marslo.updatedb</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>sudo</string>
+		<string>updatedb</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/marslo/.marslo/log/i.marslo.updatedb.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/marslo/.marslo/log/i.marslo.updatedb.error.log</string>
+	<key>StartInterval</key>
+	<integer>300</integer>
+</dict>
+</plist>
+EOF
+  plutil i.marslo.updatedb.plist
+  sudo chown -R root:wheel ~/Library/LaunchAgents/i.marslo.updatedb.plist
+  sudo launchctl load ~/Library/LaunchAgents/i.marslo.updatedb.plist
+  launchctl list | grep route
 sudo bash -c 'cat >> /etc/hosts ' << EOF
 1.2.3.4   domainname
 EOF

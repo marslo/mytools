@@ -4,7 +4,7 @@
 #   FileName: belloMyOSX.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2017-10-30 16:38:58
-# LastChange: 2018-02-27 18:07:51
+# LastChange: 2018-04-02 13:40:40
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -55,7 +55,7 @@ function basicEnvSetup(){
   # disable ipv6
   networksetup -setv6off Ethernet
   networksetup -setv6off Wi-Fi
-
+  echo 'limit maxfiles 10000 unlimited' | sudo tee -a /etc/launchd.conf
 
   sysctl user.cs_path
   sudo sysctl -w user.cs_path=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -93,71 +93,99 @@ cat << 'EOF' > ~/Library/LaunchAgents/i.marslo.mocjackd.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-    <dict>
-        <key>Label</key>
-        <string>i.marslo.mocjackd</string>
-        <key>WorkingDirectory</key>
-        <string>/Users/marslo/</string>
-        <key>ProgramArguments</key>
-        <array>
-            <string>/usr/local/bin/jackd</string>
-            <string>-d</string>
-            <string>coreaudio</string>
-        </array>
-        <key>EnableGlobbing</key>
-        <true/>
-        <key>RunAtLoad</key>
-        <true/>
-        <key>KeepAlive</key>
-        <true/>
-    </dict>
+  <dict>
+    <key>Label</key>
+    <string>i.marslo.mocjackd</string>
+    <key>WorkingDirectory</key>
+    <string>/Users/marslo/</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/usr/local/bin/jackd</string>
+      <string>-d</string>
+      <string>coreaudio</string>
+    </array>
+    <key>EnableGlobbing</key>
+    <true/>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+  </dict>
 </plist>
 EOF
-
-launchctl load ~/Library/LaunchAgents/i.marslo.mocjackd.plist
-launchctl load ~/Library/LaunchAgents/i.marslo.mocgrowl.plist
-sudo launchctl unload -w /Library/LaunchDaemons/at.obdev.littlesnitchd.plist
 
 [ ! -d /usr/local/bin/ ] && mkdir -p /usr/local/bin/
 [ ! -d $HOME/.marslo/bin ] && mkdir -p $HOME/.marslo/bin
 
-ln -sf $PWD/addRoute.osx.sh $HOME/.marslo/bin/addd
+ln -sf $PWD/addRoute.sh $HOME/.marslo/bin/addd
 ln -sf $PWD/removeRoute.sh $HOME/.marslo/bin/remr
-
 ln -sf $HOME/.marslo/bin/addr /usr/local/bin/addr
 ln -sf $HOME/.marslo/bin/remr /usr/local/bin/remr
 
-# sudo cp ./addRoute.osx.sh /usr/local/bin/addr
+# sudo cp ./addRoute.sh /usr/local/bin/addr
 # sudo cp ./removeRoute.sh /usr/local/bin/remr
 
 cat > ~/Library/LaunchAgents/i.marslo.addroute.plist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-    <dict>
-        <key>Label</key>
-        <string>i.marslo.addroute</string>
-        <key>WorkingDirectory</key>
-        <string>/Users/marslo</string>
-        <key>ProgramArguments</key>
-        <array>
-            <string>/Users/marslo/mywork/job/code/marslo/backups/1.marslo_env/belloMarslo/addRoute.sh</string>
-            <!-- <string>/Users/marslo/.marslo/bin/addroute.fake.sh</string> -->
-        </array>
-        <key>EnableGlobbing</key>
-        <true/>
-        <key>RunAtLoad</key>
-        <true/>
-        <key>KeepAlive</key>
-        <true/>
-    </dict>
+  <dict>
+    <key>Label</key>
+    <string>i.marslo.addroute</string>
+    <key>WorkingDirectory</key>
+    <string>/Users/marslo</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Users/marslo/mywork/job/code/marslo/backups/1.marslo_env/belloMarslo/addRoute.sh</string>
+      <!-- <string>/Users/marslo/.marslo/bin/addroute.fake.sh</string> -->
+    </array>
+    <key>EnableGlobbing</key>
+    <true/>
+    <key>RunAtLoad</key>
+    <true/>
+  </dict>
 </plist>
 EOF
 
-plutil ~/Library/LaunchAgents/i.marslo.addroute.plist
-sudo chown -R root:wheel ~/Library/LaunchAgents/i.marslo.addroute.plist
-sudo launchctl load ~/Library/LaunchAgents/i.marslo.addroute.plist
-sudo launchctl list | grep route
+cat > ~/Library/LaunchAgents/i.marslo.updatedb.plist << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>i.marslo.updatedb</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>sudo</string>
+		<string>updatedb</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/marslo/.marslo/log/i.marslo.updatedb.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/marslo/.marslo/log/i.marslo.updatedb.error.log</string>
+	<key>StartInterval</key>
+	<integer>300</integer>
+  <key>KeepAlive</key>
+  <true/>
+</dict>
+</plist>
+EOF
+
+  launchctl load ~/Library/LaunchAgents/i.marslo.mocjackd.plist
+  launchctl load ~/Library/LaunchAgents/i.marslo.mocgrowl.plist
+  sudo launchctl unload -w /Library/LaunchDaemons/at.obdev.littlesnitchd.plist
+
+  plutil ~/Library/LaunchAgents/i.marslo.addroute.plist
+  sudo chown -R root:wheel ~/Library/LaunchAgents/i.marslo.addroute.plist
+  sudo launchctl load ~/Library/LaunchAgents/i.marslo.addroute.plist
+  sudo launchctl list | grep route
+
+  plutil ~/Library/LaunchAgents/i.marslo.updatedb.plist
+  sudo chown -R root:wheel ~/Library/LaunchAgents/i.marslo.updatedb.plist
+  sudo launchctl load ~/Library/LaunchAgents/i.marslo.updatedb.plist
+  sudo launchctl list | grep updatedb
 }
 
 ############
@@ -405,7 +433,7 @@ function setupBrewApps(){
   which -a bash
   /usr/local/bin/bash --version
 
-  brew install wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2
+  brew install wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap
   brew install shellcheck --HEAD
   brew install bats --HEAD
   brew install jq --devel --HEAD
@@ -421,7 +449,7 @@ function setupBrewApps(){
   brew install gnu-indent --with-default-names
   # brew install vim --override-system-vi
 
-  brew cask install dash little-snitch iterm2-beta firefox google-chrome alfred vlc etcher imageoptim omnigraffle licecap xca manico snip jietu tickeys macdown
+  brew cask install dash little-snitch iterm2-beta firefox google-chrome alfred vlc etcher imageoptim omnigraffle licecap xca manico snip jietu tickeys macdown xscreensaver
   # or $ brew cask install google-chrome-dev growl-fork android-sdk background-music
 
   brew tap macvim-dev/macvim
@@ -476,16 +504,16 @@ function npmSetup() {
   [ -f ~/.npmrc ] && mv ~/.npmrc{,.bak.${TIMESTAMP}}
 
   cat > $HOME/.npmrc << EOF
-  registry=${ARTIFACTORYURL}/api/npm/npm-snapshot/g
-  @appium=${ARTIFACTORYURL}/api/npm/npm-snapshotg
-  @appium-chromedriver=${ARTIFACTORYURL}/api/npm/npm-snapshotg
-  chromedriver_cdnurl=${ARTIFACTORYURL}/mirror-chromedriverg
-  sass_binary_site=${ARTIFACTORYURL}/mirror-node-sassg
-  phantomjs_cdnurl=${ARTIFACTORYURL}/mirror-phantomjsg
-  nvm_nodejs_org_mirror=${ARTIFACTORYURL}/mirror-nodejsg
-  nvm_iojs_org_mirror=${ARTIFACTORYURL}/mirror-iojs  g
-  nvm_npm_mirror=${ARTIFACTORYURL}/mirror-npm        g
-  # echo "progress=falseg
+  registry=${ARTIFACTORYURL}/api/npm/npm-snapshot/
+  @appium=${ARTIFACTORYURL}/api/npm/npm-snapshot
+  @appium-chromedriver=${ARTIFACTORYURL}/api/npm/npm-snapshot
+  chromedriver_cdnurl=${ARTIFACTORYURL}/mirror-chromedriver
+  sass_binary_site=${ARTIFACTORYURL}/mirror-node-sass
+  phantomjs_cdnurl=${ARTIFACTORYURL}/mirror-phantomjs
+  nvm_nodejs_org_mirror=${ARTIFACTORYURL}/mirror-nodejs
+  nvm_iojs_org_mirror=${ARTIFACTORYURL}/mirror-iojs
+  nvm_npm_mirror=${ARTIFACTORYURL}/mirror-npm
+  # echo "progress=false
 EOF
 
   sudo chown -R "$(whoami)":admin /usr/local
@@ -523,6 +551,11 @@ function appManagement() {
 
   pip install rainbow
   pip install colout2
+  pip install pylint
+
+  sudo -H pip install rainbow
+  sudo -H pip install colout2
+  sudo -H pip install pylint
 
   sudo updatedb
 }
