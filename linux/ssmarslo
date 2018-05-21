@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo /usr/local/bin/sslocal -c /home/devops/.marslo/ss/ssmarslo.json \
+                       -d start \
+                       --pid-file=/home/devops/.marslo/ss/ssmarslo.pid \
+                       --log-file=/home/devops/.marslo/ss/logs/ssmarslo.log
