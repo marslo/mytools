@@ -20,7 +20,7 @@ SSLOGFILE="${SSLOG}/ssmarslo.log"
 [ ! -d ${SSLOG} ] && mkdir -p ${SSLOG}
 [ ! -f ${SSHOME}/ssmarslo.pid ] && touch ${SSHOME}/ssmarslo.pid
 
-${PYTHON2} ${SSLOCAL} -c ${SSJSON} \
-                      -d start \
-                      --pid-file=${SSPID} \
-                      --log-file=${SSLOGFILE}
+sudo ${PYTHON2} ${SSLOCAL} -c ${SSJSON} \
+                           -d start \
+                           --pid-file=${SSPID} \
+                           --log-file=${SSLOGFILE}

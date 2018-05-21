@@ -8,8 +8,17 @@
 
 PYTHON2="/usr/bin/python"
 SSLOCAL="/usr/local/bin/sslocal"
-SSHOME="$HOME/.marslo/ss"
-SSPID="${SSHOME}/ssmarslo.pid"
 
-${PYTHON2} ${SSLOCAL} -d stop \
-                      --pid-file=${SSPID}
+SSHOME="$HOME/.marslo/ss"
+SSLOG="${SSHOME}/logs"
+
+SSJSON="${SSHOME}/ssmarslo.json"
+SSPID="${SSHOME}/ssmarslo.pid"
+SSLOGFILE="${SSLOG}/ssmarslo.log"
+LOGTIME=$(date +"%Y-%m-%d %H:%M:%S")
+
+sudo ${PYTHON2} ${SSLOCAL} -d stop \
+                           --pid-file=${SSPID} \
+                           --log-file=${SSLOGFILE}
+
+echo -e "${LOGTIME} INFO     Stop local" >> ${SSLOGFILE}

@@ -1,0 +1,9 @@
+[Unit]
+Description=Start shadowsocks proxy locally
+
+[Service]
+ExecStart=/usr/local/bin/ssmarslo
+
+[Install]
+WantedBy=multi-user.target
+Alias=marsloProxy.service
