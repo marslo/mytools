@@ -4,7 +4,7 @@
 #    FileName: belloUbuntuBasic.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-02-06 14:16:22
-#  LastChange: 2018-04-19 19:29:59
+#  LastChange: 2018-05-23 11:04:48
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -13,7 +13,7 @@ SSHDFILE="/etc/ssh/sshd_config"
 SLAVENAME="SlaveX"
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 
-ARTIFACTORYNAME="pww.artifactory.cdi.philips.com"
+ARTIFACTORYNAME="my.artifactory.com"
 ARTIFACTORYHOME="http://${ARTIFACTORYNAME}/artifactory"
 
 SOCKSPORT=1880
@@ -112,7 +112,7 @@ HTTPS_PROXY=\$myproxy
 FTP_PROXY=\$myproxy
 SOCKS_PROXY=\$myproxy
 
-no_proxy=localhost,127.0.0.1,130.147.0.0/16,130.145.0.0/16,pww.*.cdi.philips.com,130.*.*.*,161.*.*.*,pww.artifactory.cdi.philips.com,130.147.219.19,healthyliving.cn-132.lan.philips.com,*.cn-132.lan.philips.com,130.147.183.165,161.85.30.130,pww.sonar.cdi.philips.com,130.147.219.20,pww.gitlab.cdi.philips.com,130.147.219.15,pww.slave01.cdi.philips.com,130.147.219.24,pww.confluence.cdi.philips.com,130.147.219.18,pww.jira.cdi.philips.com,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,bdhub.pic.philips.com,161.85.30.130,tfsemea1.ta.philips.com,130.147.219.23,pww.jenkins.cdi.philips.com,blackduck.philips.com,fortify.philips.com,161.85.30.130
+no_proxy=localhost,127.0.0.1,130.147.0.0/16,130.145.0.0/16,www.*.mysite.mycompany.com,130.*.*.*,161.*.*.*,www.artifactory.mysite.mycompany.com,130.147.219.19,healthyliving.cn-132.lan.mycompany.com,*.cn-132.lan.mycompany.com,130.147.183.165,161.85.30.130,www.sonar.mysite.mycompany.com,130.147.219.20,www.gitlab.mysite.mycompany.com,130.147.219.15,www.slave01.mysite.mycompany.com,130.147.219.24,www.confluence.mysite.mycompany.com,130.147.219.18,www.jira.mysite.mycompany.com,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,bdhub.pic.mycompany.com,161.85.30.130,tfsemea1.ta.mycompany.com,130.147.219.23,www.jenkins.mysite.mycompany.com,blackduck.mycompany.com,fortify.mycompany.com,161.85.30.130
 NO_PROXY=\$no_proxy
 
 export all_proxy ALL_PROXY http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
@@ -335,7 +335,7 @@ EOF
 
 sudo bash -c "cat > /etc/systemd/system/docker.service.d/socks5-proxy.conf" << EOF
 [Service]
-Environment="ALL_PROXY=${SOCKSPROXY}" "NO_PROXY=localhost,127.0.0.1,pww.artifactory.cdi.philips.com,130.147.0.0/16,130.145.0.0/16"
+Environment="ALL_PROXY=${SOCKSPROXY}" "NO_PROXY=localhost,127.0.0.1,www.artifactory.mysite.mycompany.com,130.147.0.0/16,130.145.0.0/16"
 EOF
 
     sudo systemctl daemon-reload

@@ -2,7 +2,7 @@
 
 CURRENTUSER=$(whoami)
 APPHOME=/home/${CURRENTUSER}
-MARSLOHOME=${CURRENTHOME}/.marslo
+# MARSLOHOME=${CURRENTHOME}/.marslo
 
 DEVOPSHOME=/home/devops
 SYNCSER=appadmin@161.91.26.175 #slave
@@ -57,8 +57,8 @@ chown ${CURRENTUSER}:${CURRENTUSER} ${CURRENTHOME}/.inputrc
 # cp $MARSLOHOME/Tools/LinuxStuff/Configs/HOME/.marslo/.bello_marslo $MARSLOHOME
 # cp -r ${CURRENTHOME}/.marslo/Tools/LinuxStuff/Configs/HOME/.marslo/.devops $MARSLOHOME
 
-cp ${CURRENTHOME}/.ssh/tools@cdi* /root/.ssh
-sudo ln -sf /root/.ssh/tools@cdi /root/.ssh/id_rsa
+cp ${CURRENTHOME}/.ssh/tools@site* /root/.ssh
+sudo ln -sf /root/.ssh/tools@site /root/.ssh/id_rsa
 
 sudo mkdir -p /root/.vim/cache
 mkdir ${CURRENTHOME}/.vim/cache
@@ -75,7 +75,7 @@ sudo cp /etc/rc.local{,.org}
 sudo bash -c "sed -i 's/exit.*//' /etc/rc.local"
 
 sudo bash -c 'cat >> /etc/rc.local' << 'EOF'
-search CODE1.EMI.PHILIPS.COM
+search CODE1.EMI.COMPANY.COM
 nameserver 130.147.159.139
 nameserver 161.92.35.78
 
@@ -84,20 +84,20 @@ EOF
 
 sudo cp /etc/resolv.conf{,.org}
 sudo bash -c 'cat >> /etc/resolv.conf' << 'EOF'
-search CODE1.EMI.PHILIPS.COM
+search CODE1.EMI.COMPANY.COM
 nameserver 130.147.159.139
 nameserver 161.92.35.78
 EOF
 
 cp /etc/hosts{,.org}
 sudo bash -c 'cat >> /etc/hosts' << 'EOF'
-130.147.219.15 pww.gitlab.cdi.philips.com Gitlab gitlab
-130.147.219.16 pww.jira.cdi.philips.com JIRA jira
-130.147.219.18 pww.confluence.cdi.philips.com Confluence confluence
-130.147.219.19 pww.artifactory.cdi.philips.com Artifactory artifactory
-130.147.219.20 pww.sonar.cdi.philips.com Sonar sonar
-130.147.219.23 pww.jenkins.cdi.philips.com Jenkins jenkins
-130.147.219.24 pww.slave01.cdi.philips.com Slave slave
+130.147.219.15 www.gitlab.site.mycompany.com Gitlab gitlab
+130.147.219.16 www.jira.site.mycompany.com JIRA jira
+130.147.219.18 www.confluence.site.mycompany.com Confluence confluence
+130.147.219.19 www.artifactory.site.mycompany.com Artifactory artifactory
+130.147.219.20 www.sonar.site.mycompany.com Sonar sonar
+130.147.219.23 www.jenkins.site.mycompany.com Jenkins jenkins
+130.147.219.24 www.slave01.site.mycompany.com Slave slave
 EOF
 
 # Package management
@@ -214,7 +214,7 @@ sudo bash -c 'cat >> /etc/profile' << EOF
 echo export http_proxy=http://42.99.164.34:10015
 echo export https_proxy=\$http_proxy
 echo export ftp_proxy=\$http_proxy
-export no_proxy=localhost,127.0.0.1,pww.*.cdi.philips.com,130.*.*.*,161.*.*.*,pww.artifactory.cdi.philips.com,130.147.219.19,healthyliving.cn-132.lan.philips.com,*.cn-132.lan.philips.com,130.147.183.165,161.85.30.130,pww.sonar.cdi.philips.com,130.147.219.20,pww.gitlab.cdi.philips.com,130.147.219.15,pww.slave01.cdi.philips.com,130.147.219.24,pww.confluence.cdi.philips.com,130.147.219.18,pww.jira.cdi.philips.com,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,bdhub.pic.philips.com,161.85.30.130,tfsemea1.ta.philips.com,130.147.219.23,pww.jenkins.cdi.philips.com,blackduck.philips.com,fortify.philips.com,161.85.30.130
+export no_proxy=localhost,127.0.0.1,www.*.site.mycompany.com,130.*.*.*,161.*.*.*,www.artifactory.site.mycompany.com,130.147.219.19,healthyliving.cn-132.lan.mycompany.com,*.cn-132.lan.mycompany.com,130.147.183.165,161.85.30.130,www.sonar.site.mycompany.com,130.147.219.20,www.gitlab.site.mycompany.com,130.147.219.15,www.slave01.site.mycompany.com,130.147.219.24,www.confluence.site.mycompany.com,130.147.219.18,www.jira.site.mycompany.com,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,bdhub.pic.mycompany.com,161.85.30.130,tfsemea1.ta.mycompany.com,130.147.219.23,www.jenkins.site.mycompany.com,blackduck.mycompany.com,fortify.mycompany.com,161.85.30.130
 EOF
 
 sudo bash -c 'cat >> /etc/bash.bashrc' << EOF
