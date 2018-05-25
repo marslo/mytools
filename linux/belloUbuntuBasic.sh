@@ -288,16 +288,16 @@ EOF
 function setupProxy() {
   [ ! -d /etc/systemd/system/docker.service.d ] && sudo mkdir -p /etc/systemd/system/docker.service.d
 
-if [ ! -f ~/.marslo/ssmarslo.json ]; then
-cat > ~/.marslo/ssmarslo.json << EOF
+if [ ! -f ~/.marslo/ss/ssmarslo.json ]; then
+cat > ~/.marslo/ss/ssmarslo.json << EOF
 {
-    "server":"45.35.43.44",
+    "server":"45.35.34.44",
     "server_port":8838,
     "local_address": "0.0.0.0",
     "local_port":${SOCKSPORT},
-    "password":"hImarsl0!",
-    "timeout":300,
-    "method":"aes-256-cfb",
+    "password":"himarslo",
+    "timeout":600,
+    "method":"aes-128-cfb",
     "obfs":"http_simple",
     "fast_open": false
 }

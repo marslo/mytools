@@ -118,11 +118,11 @@ EOF
 if [ ! -f $HOME/.marslo/ss/ssmarslo.json ]; then
 cat > $HOME/.marslo/ss/ssmarslo.json << EOF
 {
-    "server":"45.35.43.44",
+    "server":"45.35.34.44",
     "server_port":8838,
     "local_address": "0.0.0.0",
     "local_port":${SOCKSPORT},
-    "password":"himarsl0!",
+    "password":"himarslo",
     "timeout":600,
     "method":"aes-128-cfb",
     "obfs":"http_simple",
