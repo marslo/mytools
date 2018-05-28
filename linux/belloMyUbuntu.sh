@@ -10,13 +10,13 @@
 #     please repace the ARTIFACTORYHOST to your own situation
 
 SSHDFILE="/etc/ssh/sshd_config"
-MYHOSTNAME="iMarsloU"
+MYHOSTNAME="iMarslo18"
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 
 ARTIFACTORYNAME="my.artifactory.com"
 ARTIFACTORYHOME="http://${ARTIFACTORYNAME}/artifactory"
 
-SOCKSPORT=1080
+SOCKSPORT=1880
 SOCKSPROXY="socks5://127.0.0.1:${SOCKSPORT}"
 
 function reportError(){
@@ -29,8 +29,8 @@ function setupEnv() {
   sudo sed -i -e "s:^\($(whoami).*$\):# \1:" /etc/sudoers
   sudo bash -c "echo \"$(whoami)   ALL=(ALL:ALL) NOPASSWD:ALL\" >> /etc/sudoers"
 
-  sudo cp /etc/bash.bashrc{,.org}
-  sudo cp ${SSHDFILE}{,.org}
+  sudo cp /etc/bash.bashrc{,.org.${TIMESTAMPE}}
+  sudo cp ${SSHDFILE}{,.org.${TIMESTAMPE}}
   sudo chown -R "$(whoami)":admin /usr/local
 
   sudo chown -R "$(whoami)":"$(whoami)" /opt
@@ -189,12 +189,11 @@ function installAptApps() {
   sudo apt install -y apt-transport-https ca-certificates software-properties-common
   sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap
   sudo apt install -y sysstat
-  sudo apt-get install gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
+  sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
 
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  /usr/bin/curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   sudo apt-key fingerprint 0EBFCD88
   sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) edge"
-  sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu artful stable"
   sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu zesty stable"
   sudo apt update -y
 
