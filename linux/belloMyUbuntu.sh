@@ -209,9 +209,11 @@ EOF
   cp ${GITHOME}/mylinux/Configs/HOME/.marslo/.bello_ubuntu $HOME/.marslo/.bello_ubuntu
 
   git clone git@github.com:paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet
+  pushd .
   cd $HOME/.local/share/gnome-shell/extensions
   ln -sf "${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
   $HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com --enable-extension=system-monitor@paradoxxx.zero.gmail.com
+  popd
 
   vim +GetVundle +qa!
   vim +BundleInstall +qa!
