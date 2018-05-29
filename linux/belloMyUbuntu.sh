@@ -203,6 +203,12 @@ EOF
   git clone git@github.com:Marslo/myvim.git ${GITHOME}/marslo/myvim
   git clone git@github.com:Marslo/mylinux.git ${GITHOME}/marslo/mylinux
   git clone git@github.com:paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet
+
+  pushd .
+  ln -sf "${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
+  gnome-shell-extension-tool --enable-extension=system-monitor@paradoxxx.zero.gmail.com
+  popd
+
 }
 
 function devEnv(){
@@ -211,12 +217,6 @@ function devEnv(){
   cp ${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.marslorc $HOME/.marslo/.marslorc
   cp ${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.bello_ubuntu $HOME/.marslo/.bello_ubuntu
   echo "source /home/marslo/.marslo/.marslorc" >> ~/.bashrc
-
-  pushd .
-  cd $HOME/.local/share/gnome-shell/extensions
-  ln -sf "${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
-  $HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com --enable-extension=system-monitor@paradoxxx.zero.gmail.com
-  popd
 
   [ -f $HOME/.ssh/config ] && mv $HOME/.ssh/config.org.${TIMESTAMPE}
 cat >> /etc/bash.bashrc << EOF
