@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-05-29 15:33:35
+#  LastChange: 2018-05-29 15:39:44
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -167,7 +167,7 @@ function installAptApps() {
   sudo add-apt-repository -y ppa:webupd8team/y-ppa-manager
   sudo apt update -y
 
-  sudo apt install -y curl openssl-server net-tools
+  sudo apt install -y curl openssh-server net-tools
   sudo apt install -y apt-transport-https ca-certificates software-properties-common
   sudo ubuntu-drivers autoinstall
 sudo apt install menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc:i386 locales:i386 glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 nvidia-vdpau-driver nvidia-legacy-340xx-vdpau-drivera -y
