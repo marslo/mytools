@@ -1,10 +1,10 @@
 #!/bin/bash
-# shellcheck disable=SC2046,SC1117,SC2009,SC2224
+# shellcheck disable=SC2046,SC1117,SC2009,SC2224,SC1078,SC1079
 # =============================================================================
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-05-29 11:45:33
+#  LastChange: 2018-05-29 15:33:35
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -250,27 +250,26 @@ EOF
   sudo update-alternatives --auto mvn
 
   # ${CURL} https://services.gradle.org/distributions/gradle-4.7-all.zip --create-dirs -o ${GRADLEDIR}/gradle-4.7-all.zip
-  wget https://services.gradle.org/distributions/gradle-4.7-all.zip -P ${GRADLEDIR}
+  ${WGET} https://services.gradle.org/distributions/gradle-4.7-all.zip -P ${GRADLEDIR}
   unzip ${GRADLEDIR}/gradle-4.7-all.zip -d ${GRADLEDIR}
   sudo update-alternatives --install /usr/local/bin/gradle gradle ${GRADLEDIR}/gradle-4.7/bin/gradle 99
   sudo update-alternatives --auto gradle
 
   # ${CURL} https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip --create-dirs -o ${GROOVYDIR}/apache-groovy-binary-3.0.0-alpha-2.zip
-  wget --no-check-certificate -c https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip -P ${GROOVYDIR}
+  ${WGET} --no-check-certificate -c https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip -P ${GROOVYDIR}
   unzip ${GROOVYDIR}/apache-groovy-binary-3.0.0-alpha-2.zip -d ${GROOVYDIR}
   sudo update-alternatives --install /usr/local/bin/groovy groovy ${GROOVYDIR}/groovy-3.0.0-alpha-2/bin/groovy 99
   sudo update-alternatives --auto groovy
 
-  echo -e """\\033[33mUPDATE ENVIRONMENT\\033[0m"
-  JAVA_HOME="${JAVAHOME}"
-  M2_HOME="${MAVENDIR}/apache-maven-3.5.3"
-  M2="\$M2_HOME/bin"
-  GRADLE_HOME="${GRADLEDIR}/gradle-4.7"
-  GROOVY_HOME="${GROOVYDIR}/groovy-3.0.0-alpha-2"
+  echo -e """\\033[33mUPDATE ENVIRONMENT\\033[0m
+  JAVA_HOME=\"${JAVAHOME}\"
+  M2_HOME=\"${MAVENDIR}/apache-maven-3.5.3\"
+  M2=\"\$M2_HOME/bin\"
+  GRADLE_HOME=\"${GRADLEDIR}/gradle-4.7\"
+  GROOVY_HOME=\"${GROOVYDIR}/groovy-3.0.0-alpha-2\"
 
   PATH=\$JAVA_HOME/bin:\$M2:\$GRADLE_HOME/bin:\$GROOVY_HOME/bin:\$PATH
-  export JAVA_HOME M2_HOME M2 GRADLE_HOME GROOVY_HOME PATH
-  """
+  export JAVA_HOME M2_HOME M2 GRADLE_HOME GROOVY_HOME PATH """
 
   vim +GetVundle +qa!
   vim +BundleInstall +qa!
@@ -337,7 +336,7 @@ sudo bash -c 'cat >> /etc/hosts ' << EOF
 1.2.3.4 domainname
 EOF
 
-  wget -L ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYNAME}-ca.crt
+  ${WGET} -L ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYNAME}-ca.crt
   sudo cp ${ARTIFACTORYNAME}-ca.crt /usr/local/share/ca-certificates/
   ls -Altrh !$
   sudo update-ca-certificates
