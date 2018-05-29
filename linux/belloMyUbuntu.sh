@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-05-26 01:32:51
+#  LastChange: 2018-05-29 11:45:33
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -14,10 +14,12 @@ MYHOSTNAME="iMarslo18"
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 
 ARTIFACTORYNAME="my.artifactory.com"
-ARTIFACTORYHOME="http://${ARTIFACTORYNAME}/artifactory"
-
+ARTIFACTORYHOME="http://${ARTIFACTORYNAME}/artifactory" 
 SOCKSPORT=1880
 SOCKSPROXY="socks5://127.0.0.1:${SOCKSPORT}"
+
+MYHOME="/home/marslo/myubuntu"
+GITHOME="${MYHOME}/tools/git"
 
 function reportError(){
   set +H
@@ -55,22 +57,11 @@ function setupEnv() {
     sudo sed -i  -r -e "s:^(127.0.0.1.*$):\1 $(hostname):" /etc/hosts
   fi
 
+  sudo ufw disable
+  sudo swapoff -a
+  sudo bash -c "sed -i -e 's:^\\(.*swap.*\\)$:# \\1:' /etc/fstab"
+
 sudo bash -c 'cat >> /etc/bash.bashrc' << EOF
-
-# Setup by script
-[ -f /usr/bin/screenfetch ] && /usr/bin/screenfetch
-
-# GRADLE_HOME="/opt/gradle/gradle-3.5"
-# M2_HOME="/opt/maven/apache-maven-3.3.9"
-# M2=\$M2_HOME/bin
-# MAVEN_OPTS="-Xms512m -Xmx1G"
-JAVA_HOME="/opt/java/jdk1.8.0_162"
-CLASSPATH=".:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar"
-
-PATH=\$JAVA_HOME/bin:\$M2:\$GRADLE_HOME/bin:\$PATH
-export JAVA_HOME CLASSPATH PATH
-# GRADLE_HOME M2_HOME M2 MAVEN_OPTS 
-
 export LANG=en_US.UTF-8
 export LANGUAGE=\$LANG
 export LC_COLLATE=\$LANG
@@ -80,22 +71,6 @@ export LC_MONETARY=\$LANG
 export LC_NUMERIC=\$LANG
 export LC_TIME=\$LANG
 export LC_ALL=\$LANG
-
-alias open="nautilus"
-
-myproxy=""
-all_proxy=\$myproxy
-http_proxy=\$myproxy
-https_proxy=\$myproxy
-ftp_proxy=\$myproxy
-
-ALL_PROXY=\$myproxy
-HTTP_PROXY=\$myproxy
-HTTPS_PROXY=\$myproxy
-FTP_PROXY=\$myproxy
-
-# socks_proxy=\$myproxy
-# SOCKS_PROXY=\$myproxy
 
 no_proxy=localhost,127.0.0.1,130.147.0.0/16,130.145.0.0/16,pww.*.cdi.philips.com,130.*.*.*,161.*.*.*,pww.artifactory.cdi.philips.com,130.147.219.19,healthyliving.cn-132.lan.philips.com,*.cn-132.lan.philips.com,130.147.183.165,161.85.30.130,pww.sonar.cdi.philips.com,130.147.219.20,pww.gitlab.cdi.philips.com,130.147.219.15,pww.slave01.cdi.philips.com,130.147.219.24,pww.confluence.cdi.philips.com,130.147.219.18,pww.jira.cdi.philips.com,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,bdhub.pic.philips.com,161.85.30.130,tfsemea1.ta.philips.com,130.147.219.23,pww.jenkins.cdi.philips.com,blackduck.philips.com,fortify.philips.com,161.85.30.130
 NO_PROXY=\$no_proxy
@@ -141,7 +116,6 @@ function setupRemoteDesktop() {
   sudo update-alternatives --auto vino-server
 }
 
-
 function setupSSH() {
   mkdir -p ~/.ssh
   echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClCw0e6vrxNWNQehVIeemZ1UMrhVvV9FxVjUkA7AB2SW0kqtrIGxh8tNoPvL0MUm4ga3wgTbITDrVnXeTzh1LE4Wr7j+MRYLbXm6jDp+O5Ow61sBgZjOlX0/7wuDWwfpOafdscmdYKhdatFg6nTDxjiPP44G08N/UWPWuMHxkQNYWj6bt46N8llLOxLJGyTuMjT7TpL6Ubb9WeVo6PYvi+Gl7spHjSHoJ6ZlrcNKxUb7LGh9k1SfXdLeWB079YFCZMrvuVDBYUwwbq6OzrSZnSABdRtR4ylTaHshdQKRmYn3c1/iRybxAwrU5gNYhmikOmWL2Qt0fkINttRswtxKvr marslo@devops" >> ~/.ssh/authorized_keys
@@ -181,7 +155,7 @@ function installAptApps() {
   [ -f ${APTSOURCEPATH}/kubernetes.list ] && sudo mv ${APTSOURCEPATH}/kubernetes.list{,bak.${TIMESTAMPE}}
 
   # sudo add-apt-repository -y ppa:hzwhuang/ss-qt5
-  # sudo add-apt-repository -y "deb http://ppa.launchpad.net/hzwhuang/ss-qt5/ubuntu artful main"
+  sudo add-apt-repository -y "deb http://ppa.launchpad.net/hzwhuang/ss-qt5/ubuntu artful main"
   sudo add-apt-repository -y ppa:webupd8team/y-ppa-manager
   sudo apt update -y
 
@@ -189,7 +163,7 @@ function installAptApps() {
   sudo apt install -y apt-transport-https ca-certificates software-properties-common
   sudo ubuntu-drivers autoinstall
   sudo apt install ubuntu-restricted-extras -y
-  sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap
+  sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5
   sudo apt install -y sysstat
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
 
@@ -219,6 +193,11 @@ EOF
   sudo run-parts /etc/update-motd.d/
   sudo /usr/lib/update-notifier/update-motd-updates-available --force
   sudo update-motd
+
+  [ ! -d "${GITHOME}/marslo" ] && mkdir -p ${GITHOME}/marslo
+  git clone git@github.com:Marslo/mytools.git ${GITHOME}/marslo/mytools
+  git clone git@github.com:Marslo/myvim.git ${GITHOME}/marslo/myvim
+  git clone git@github.com:Marslo/mylinux.git ${GITHOME}/marslo/mylinux
 }
 
 function setupProxy() {
@@ -233,7 +212,6 @@ function setupProxy() {
     [ ! -d ~/.marslo/logs ] && mkdir -p ~/.marslo/logs
     [ ! -f ~/.marslo/logs/ssmarslo.log ] && touch ~/.marslo/logs/ssmarslo.log
   fi
-
 }
 
 function advacnedSetup() {
