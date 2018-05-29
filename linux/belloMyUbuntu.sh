@@ -35,6 +35,112 @@ function reportError(){
   set -H
 }
 
+function additionalSetup(){
+sudo cp ./addRoute.ubuntu.sh /usr/local/bin/add_route
+sudo bash -c 'cat > /lib/systemd/system/marsloRoute.service' << EOF
+[Unit]
+Description=Add static route for two interface
+
+[Service]
+ExecStart=/usr/local/bin/add_route
+
+[Install]
+WantedBy=multi-user.target
+Alias=marsloRoute.service
+EOF
+
+sudo systemctl enable /lib/systemd/system/marsloRoute.service
+route -n
+sudo systemctl start marsloRoute.service
+route -n
+sudo systemctl -l | grep -i marsloroute
+
+sudo bash -c 'cat >> /etc/hosts ' << EOF
+1.2.3.4 domainname
+EOF
+
+  ${WGET} -L ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYNAME}-ca.crt
+  sudo cp ${ARTIFACTORYNAME}-ca.crt /usr/local/share/ca-certificates/
+  ls -Altrh !$
+  sudo update-ca-certificates
+  sudo systemctl restart docker.service
+
+sudo bash -c "cat > /etc/apt/sources.list" << EOF
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs) main restricted
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs)-updates main restricted
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs) universe
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs)-updates universe
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs) multiverse
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs)-updates multiverse
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs)-backports main restricted universe multiverse
+deb ${ARTIFACTORYHOME}/debian-remote-canonical $(lsb_release -cs) partner
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu-security $(lsb_release -cs)-security main restricted
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu-security $(lsb_release -cs)-security universe
+deb ${ARTIFACTORYHOME}/debian-remote-ubuntu-security $(lsb_release -cs)-security multiverse
+EOF
+
+sudo bash -c "cat > ${APTSOURCEPATH}/docker.list" << EOF
+deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker $(lsb_release -cs) edge
+deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker $(lsb_release -cs) stable
+deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker xenial edge
+deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker xenial stable
+
+# deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge
+EOF
+
+sudo bash -c "cat > ${APTSOURCEPATH}/kubernetes.list" << EOF
+deb ${ARTIFACTORYHOME}/debian-remote-google kubernetes-xenial main
+
+# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes kubernetes-xenial main
+# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes kubernetes-xenial-unstable main
+# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes kubernetes-yakkety main
+# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes kubernetes-yakkety-unstable main
+# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes cloud-sdk-yakkety-unstable main
+# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes cloud-sdk-yakkety main
+EOF
+
+  # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add -
+  sudo apt-key fingerprint 0EBFCD88
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add -
+  # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3746C208A7317B0F
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
+
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add -
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add -
+
+sudo bash -c "cat > /lib/systemd/system/marsloProxy.service" << EOF
+[Unit]
+Description=Start shadowsocks proxy locally
+
+[Service]
+ExecStart=/usr/local/bin/ssmarslo
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  sudo systemctl daemon-reload
+  sudo systemctl enable marsloProxy.service
+  sudo systemctl start marsloProxy.service
+  sudo systemctl -l | grep marsloProxy
+  ps auxf | grep sslocal
+
+sudo bash -c "cat > /etc/systemd/system/docker.service.d/socks5-proxy.conf" << EOF
+[Service]
+Environment="ALL_PROXY=${SOCKSPROXY}" "NO_PROXY=localhost,127.0.0.1,pww.artifactory.cdi.philips.com,130.147.0.0/16,130.145.0.0/16"
+EOF
+
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker.service
+
+  curl -x ${SOCKSPROXY} -l https://k8s.gcr.io/v1/_ping
+  curl -x ${SOCKSPORT} -fsSL https://dl.k8s.io/release/stable-1.10.txt
+  # docker pull k8s.gcr.io/kube-apiserver-amd64:v1.10.1
+}
+
 function setupEnv() {
   sudo sed -i -e "s:^\($(whoami).*$\):# \1:" /etc/sudoers
   sudo bash -c "echo \"$(whoami)   ALL=(ALL:ALL) NOPASSWD:ALL\" >> /etc/sudoers"
@@ -315,110 +421,28 @@ function screenSharing() {
   # sudo service lightdm restart
 }
 
-function additionalSetup(){
-sudo cp ./addRoute.ubuntu.sh /usr/local/bin/add_route
-sudo bash -c 'cat > /lib/systemd/system/marsloRoute.service' << EOF
-[Unit]
-Description=Add static route for two interface
+function madCatzMouse() {
+  DEVNAME=$(xinput | grep 'Mad Catz' | awk -F'id=' '{print $1}' | sed -re "s:.*(Mad Catz.*$):\1:" | sed 's/[[:blank:]]*$//')
+  [ -f "/usr/share/X11/xorg.conf" ] && sudo mv "/usr/share/X11/xorg.conf{,.bak.${TIMESTAMPE}}"
+  [ ! -d "/usr/share/X11/xorg.conf.d" ] && sudo mkdir -p /usr/share/X11/xorg.conf.d
 
-[Service]
-ExecStart=/usr/local/bin/add_route
-
-[Install]
-WantedBy=multi-user.target
-Alias=marsloRoute.service
+sudo bash -c "cat > /usr/share/X11/xorg.conf" << EOF
+Section "InputClass"
+  Identifier "Mouse Remap"
+  MatchProduct "${DEVNAME}"
+  MatchIsPointer "true"
+  MatchDevicePath "/dev/input/event*"
+  Option "Buttons" "24"
+  Option "ButtonMapping" "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24"
+  Option "AutoReleaseButtons" "13 14 15"
+  Option "ZAxisMapping" "4 5 6 7"
+EndSection
 EOF
+  sudo cp /usr/share/X11/xorg.conf /usr/share/X11/xorg.conf.d/910-rat.conf
+}
 
-sudo systemctl enable /lib/systemd/system/marsloRoute.service
-route -n
-sudo systemctl start marsloRoute.service
-route -n
-sudo systemctl -l | grep -i marsloroute
-
-sudo bash -c 'cat >> /etc/hosts ' << EOF
-1.2.3.4 domainname
-EOF
-
-  ${WGET} -L ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYNAME}-ca.crt
-  sudo cp ${ARTIFACTORYNAME}-ca.crt /usr/local/share/ca-certificates/
-  ls -Altrh !$
-  sudo update-ca-certificates
-  sudo systemctl restart docker.service
-
-sudo bash -c "cat > /etc/apt/sources.list" << EOF
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs) main restricted
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs)-updates main restricted
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs) universe
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs)-updates universe
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs) multiverse
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs)-updates multiverse
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs)-backports main restricted universe multiverse
-deb ${ARTIFACTORYHOME}/debian-remote-canonical $(lsb_release -cs) partner
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu-security $(lsb_release -cs)-security main restricted
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu-security $(lsb_release -cs)-security universe
-deb ${ARTIFACTORYHOME}/debian-remote-ubuntu-security $(lsb_release -cs)-security multiverse
-EOF
-
-sudo bash -c "cat > ${APTSOURCEPATH}/docker.list" << EOF
-deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker $(lsb_release -cs) edge
-deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker $(lsb_release -cs) stable
-deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker xenial edge
-deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker xenial stable
-
-# deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge
-EOF
-
-sudo bash -c "cat > ${APTSOURCEPATH}/kubernetes.list" << EOF
-deb ${ARTIFACTORYHOME}/debian-remote-google kubernetes-xenial main
-
-# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes kubernetes-xenial main
-# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes kubernetes-xenial-unstable main
-# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes kubernetes-yakkety main
-# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes kubernetes-yakkety-unstable main
-# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes cloud-sdk-yakkety-unstable main
-# deb ${ARTIFACTORYHOME}/debian-remote-kubernetes cloud-sdk-yakkety main
-EOF
-
-  # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add -
-  sudo apt-key fingerprint 0EBFCD88
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add -
-  # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3746C208A7317B0F
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
-
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add -
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add -
-
-sudo bash -c "cat > /lib/systemd/system/marsloProxy.service" << EOF
-[Unit]
-Description=Start shadowsocks proxy locally
-
-[Service]
-ExecStart=/usr/local/bin/ssmarslo
-Restart=always
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-  sudo systemctl daemon-reload
-  sudo systemctl enable marsloProxy.service
-  sudo systemctl start marsloProxy.service
-  sudo systemctl -l | grep marsloProxy
-  ps auxf | grep sslocal
-
-sudo bash -c "cat > /etc/systemd/system/docker.service.d/socks5-proxy.conf" << EOF
-[Service]
-Environment="ALL_PROXY=${SOCKSPROXY}" "NO_PROXY=localhost,127.0.0.1,pww.artifactory.cdi.philips.com,130.147.0.0/16,130.145.0.0/16"
-EOF
-
-    sudo systemctl daemon-reload
-    sudo systemctl restart docker.service
-
-  curl -x ${SOCKSPROXY} -l https://k8s.gcr.io/v1/_ping
-  curl -x ${SOCKSPORT} -fsSL https://dl.k8s.io/release/stable-1.10.txt
-  # docker pull k8s.gcr.io/kube-apiserver-amd64:v1.10.1
+function dconfSetup() {
+  echo 'abc'
 }
 
 function setupMyEnv() {
