@@ -9,7 +9,15 @@
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
 
+MYHOME="/home/marslo/myubuntu"
+GITHOME="${MYHOME}/tools/git"
 SSHDFILE="/etc/ssh/sshd_config"
+JAVADIR="/opt/java"
+JAVAHOME="${JAVADIR}/jdk1.8.0_171"
+MAVENDIR="/opt/maven"
+GRADLEDIR="/opt/gradle"
+GROOVYDIR="/opt/groovy"
+
 MYHOSTNAME="iMarslo18"
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 
@@ -18,8 +26,8 @@ ARTIFACTORYHOME="http://${ARTIFACTORYNAME}/artifactory"
 SOCKSPORT=1880
 SOCKSPROXY="socks5://127.0.0.1:${SOCKSPORT}"
 
-MYHOME="/home/marslo/myubuntu"
-GITHOME="${MYHOME}/tools/git"
+CURL=/usr/bin/curl
+WGET=/usr/bin/wget
 
 function reportError(){
   set +H
@@ -164,11 +172,11 @@ function installAptApps() {
   sudo ubuntu-drivers autoinstall
 sudo apt install menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc:i386 locales:i386 glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 nvidia-vdpau-driver nvidia-legacy-340xx-vdpau-drivera -y
   sudo apt install ubuntu-restricted-extras -y
-  sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5 vim-gtk3
+  sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5 vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver*
   sudo apt install -y sysstat
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
 
-  /usr/bin/curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  ${CURL} -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   sudo apt-key fingerprint 0EBFCD88
   sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) edge"
   sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu zesty stable"
@@ -205,11 +213,8 @@ EOF
   git clone git@github.com:Marslo/mylinux.git ${GITHOME}/marslo/mylinux
   git clone git@github.com:paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet
 
-  pushd .
   ln -sf "${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
   gnome-shell-extension-tool --enable-extension=system-monitor@paradoxxx.zero.gmail.com
-  popd
-
 }
 
 function devEnv(){
@@ -226,11 +231,51 @@ HOST  *
       StrictHostKeyChecking no
 EOF
 
-  /usr/bin/curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz --create-dirs -o /opt/java/jdk-8u171-linux-x64.tar.gz
-  tar xvzf /opt/java/jdk-8u171-linux-x64.tar.gz -C /opt/java
+  ${CURL} -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz --create-dirs -o ${JAVADIR}/jdk-8u171-linux-x64.tar.gz
+  tar xvzf ${JAVADIR}/jdk-8u171-linux-x64.tar.gz -C ${JAVADIR}
+  sudo update-alternatives --install /usr/local/bin/java    java    ${JAVAHOME}/bin/java    99
+  sudo update-alternatives --install /usr/local/bin/javac   javac   ${JAVAHOME}/bin/javac   99
+  sudo update-alternatives --install /usr/local/bin/javah   javah   ${JAVAHOME}/bin/javah   99
+  sudo update-alternatives --install /usr/local/bin/javap   javap   ${JAVAHOME}/bin/javap   99
+  sudo update-alternatives --install /usr/local/bin/javadoc javadoc ${JAVAHOME}/bin/javadoc 99
+  sudo update-alternatives --auto java
+  sudo update-alternatives --auto javac
+  sudo update-alternatives --auto javah
+  sudo update-alternatives --auto javap
+  sudo update-alternatives --auto javadoc
+
+  ${CURL} http://apache.mirrors.pair.com/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz
+  tar xvzf ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz -C ${MAVENDIR}
+  sudo update-alternatives --install /usr/local/bin/mvn mvn ${MAVENDIR}/apache-maven-3.5.3/bin/mvn 99
+  sudo update-alternatives --auto mvn
+
+  # ${CURL} https://services.gradle.org/distributions/gradle-4.7-all.zip --create-dirs -o ${GRADLEDIR}/gradle-4.7-all.zip
+  wget https://services.gradle.org/distributions/gradle-4.7-all.zip -P ${GRADLEDIR}
+  unzip ${GRADLEDIR}/gradle-4.7-all.zip -d ${GRADLEDIR}
+  sudo update-alternatives --install /usr/local/bin/gradle gradle ${GRADLEDIR}/gradle-4.7/bin/gradle 99
+  sudo update-alternatives --auto gradle
+
+  # ${CURL} https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip --create-dirs -o ${GROOVYDIR}/apache-groovy-binary-3.0.0-alpha-2.zip
+  wget --no-check-certificate -c https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip -P ${GROOVYDIR}
+  unzip ${GROOVYDIR}/apache-groovy-binary-3.0.0-alpha-2.zip -d ${GROOVYDIR}
+  sudo update-alternatives --install /usr/local/bin/groovy groovy ${GROOVYDIR}/groovy-3.0.0-alpha-2/bin/groovy 99
+  sudo update-alternatives --auto groovy
+
+  echo -e """\\033[33mUPDATE ENVIRONMENT\\033[0m"
+  JAVA_HOME="${JAVAHOME}"
+  M2_HOME="${MAVENDIR}/apache-maven-3.5.3"
+  M2="\$M2_HOME/bin"
+  GRADLE_HOME="${GRADLEDIR}/gradle-4.7"
+  GROOVY_HOME="${GROOVYDIR}/groovy-3.0.0-alpha-2"
+
+  PATH=\$JAVA_HOME/bin:\$M2:\$GRADLE_HOME/bin:\$GROOVY_HOME/bin:\$PATH
+  export JAVA_HOME M2_HOME M2 GRADLE_HOME GROOVY_HOME PATH
+  """
 
   vim +GetVundle +qa!
   vim +BundleInstall +qa!
+
+  git clone git@github.com:vim/vim.git ${GITHOME}/tools/vim
 
   sudo updatedb
 }
