@@ -1,5 +1,5 @@
 #!/bin/bash
-# shellcheck disable=SC2046,SC1117,SC2009
+# shellcheck disable=SC2046,SC1117,SC2009,SC2224
 # =============================================================================
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
@@ -163,7 +163,7 @@ function installAptApps() {
   sudo apt install -y apt-transport-https ca-certificates software-properties-common
   sudo ubuntu-drivers autoinstall
   sudo apt install ubuntu-restricted-extras -y
-  sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5
+  sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5 vim-gtk3
   sudo apt install -y sysstat
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
 
@@ -202,18 +202,31 @@ EOF
   git clone git@github.com:Marslo/mytools.git ${GITHOME}/marslo/mytools
   git clone git@github.com:Marslo/myvim.git ${GITHOME}/marslo/myvim
   git clone git@github.com:Marslo/mylinux.git ${GITHOME}/marslo/mylinux
-
-  cp ${GITHOME}/myvim/Configurations/vimrc_mac $HOME/.vimrc
-  cp ${GITHOME}/mylinux/Configs/HOME/Git/.gitconfig $HOME/.gitconfig
-  cp ${GITHOME}/mylinux/Configs/HOME/.marslo/.marslorc $HOME/.marslo/.marslorc
-  cp ${GITHOME}/mylinux/Configs/HOME/.marslo/.bello_ubuntu $HOME/.marslo/.bello_ubuntu
-
   git clone git@github.com:paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet
+}
+
+function devEnv(){
+  cp ${GITHOME}/marslo/myvim/Configurations/vimrc_mac $HOME/.vimrc
+  cp ${GITHOME}/marslo/mylinux/Configs/HOME/Git/.gitconfig $HOME/.gitconfig
+  cp ${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.marslorc $HOME/.marslo/.marslorc
+  cp ${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.bello_ubuntu $HOME/.marslo/.bello_ubuntu
+  echo "source /home/marslo/.marslo/.marslorc" >> ~/.bashrc
+
   pushd .
   cd $HOME/.local/share/gnome-shell/extensions
   ln -sf "${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
   $HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com --enable-extension=system-monitor@paradoxxx.zero.gmail.com
   popd
+
+  [ -f $HOME/.ssh/config ] && mv $HOME/.ssh/config.org.${TIMESTAMPE}
+cat >> /etc/bash.bashrc << EOF
+HOST  *
+      GSSAPIAuthentication no
+      StrictHostKeyChecking no
+EOF
+
+  /usr/bin/curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz --create-dirs -o /opt/java/jdk-8u171-linux-x64.tar.gz
+  tar xvzf /opt/java/jdk-8u171-linux-x64.tar.gz -C /opt/java
 
   vim +GetVundle +qa!
   vim +BundleInstall +qa!
@@ -360,7 +373,7 @@ EOF
   # docker pull k8s.gcr.io/kube-apiserver-amd64:v1.10.1
 }
 
-function setupSlaveEnv() {
+function setupMyEnv() {
   setupEnv
   installAptApps
   setupRemoteDesktop
@@ -372,4 +385,5 @@ function setupSlaveEnv() {
   setupApps
 }
 
-setupSlaveEnv
+# setupMyEnv
+devEnv
