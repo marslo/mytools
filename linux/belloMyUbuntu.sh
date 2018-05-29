@@ -195,9 +195,28 @@ EOF
   sudo update-motd
 
   [ ! -d "${GITHOME}/marslo" ] && mkdir -p ${GITHOME}/marslo
+  [ ! -d "${GITHOME}/tools" ] && mkdir -p ${GITHOME}/tools
+  [ ! -d "$HOME/.local/share/gnome-shell/extensions" ] && mkdir -p "$HOME/.local/share/gnome-shell/extensions"
+  [ ! -d $HOME/.marslo ] && mkdir -p $HOME/.marslo
+
   git clone git@github.com:Marslo/mytools.git ${GITHOME}/marslo/mytools
   git clone git@github.com:Marslo/myvim.git ${GITHOME}/marslo/myvim
   git clone git@github.com:Marslo/mylinux.git ${GITHOME}/marslo/mylinux
+
+  cp ${GITHOME}/myvim/Configurations/vimrc_mac $HOME/.vimrc
+  cp ${GITHOME}/mylinux/Configs/HOME/Git/.gitconfig $HOME/.gitconfig
+  cp ${GITHOME}/mylinux/Configs/HOME/.marslo/.marslorc $HOME/.marslo/.marslorc
+  cp ${GITHOME}/mylinux/Configs/HOME/.marslo/.bello_ubuntu $HOME/.marslo/.bello_ubuntu
+
+  git clone git@github.com:paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet
+  cd $HOME/.local/share/gnome-shell/extensions
+  ln -sf "${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
+  $HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com --enable-extension=system-monitor@paradoxxx.zero.gmail.com
+
+  vim +GetVundle +qa!
+  vim +BundleInstall +qa!
+
+  sudo updatedb
 }
 
 function setupProxy() {
@@ -343,12 +362,12 @@ function setupSlaveEnv() {
   setupEnv
   installAptApps
   setupRemoteDesktop
-  setupApps
   setupSSH
   # setupSSHD
   setupProxy
   advacnedSetup
   screenSharing
+  setupApps
 }
 
 setupSlaveEnv
