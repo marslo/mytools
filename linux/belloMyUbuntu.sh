@@ -22,7 +22,7 @@ MYHOSTNAME="iMarslo18"
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 
 ARTIFACTORYNAME="my.artifactory.com"
-ARTIFACTORYHOME="http://${ARTIFACTORYNAME}/artifactory" 
+ARTIFACTORYHOME="http://${ARTIFACTORYNAME}/artifactory"
 SOCKSPORT=1880
 SOCKSPROXY="socks5://127.0.0.1:${SOCKSPORT}"
 
@@ -36,34 +36,9 @@ function reportError(){
 }
 
 function additionalSetup(){
-sudo cp ./addRoute.ubuntu.sh /usr/local/bin/addr
-sudo bash -c 'cat > /lib/systemd/system/marsloRoute.service' << EOF
-[Unit]
-Description=Add static route for two interface
-
-[Service]
-ExecStart=/usr/local/bin/addr
-
-[Install]
-WantedBy=multi-user.target
-Alias=marsloRoute.service
-EOF
-
-sudo systemctl enable /lib/systemd/system/marsloRoute.service
-route -n
-sudo systemctl start marsloRoute.service
-route -n
-sudo systemctl -l | grep -i marsloroute
-
 sudo bash -c 'cat >> /etc/hosts ' << EOF
 1.2.3.4 domainname
 EOF
-
-  ${WGET} -L ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYNAME}-ca.crt
-  sudo cp ${ARTIFACTORYNAME}-ca.crt /usr/local/share/ca-certificates/
-  ls -Altrh !$
-  sudo update-ca-certificates
-  sudo systemctl restart docker.service
 
 sudo bash -c "cat > /etc/apt/sources.list" << EOF
 deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs) main restricted
@@ -141,6 +116,33 @@ EOF
   # docker pull k8s.gcr.io/kube-apiserver-amd64:v1.10.1
 }
 
+function setupNetwork() {
+# sudo cp ./addRoute.ubuntu.sh /usr/local/bin/addr
+sudo bash -c 'cat > /lib/systemd/system/marsloRoute.service' << EOF
+[Unit]
+Description=Add static route for two interface
+
+[Service]
+ExecStart=/usr/local/bin/addr
+
+[Install]
+WantedBy=multi-user.target
+Alias=marsloRoute.service
+EOF
+
+sudo systemctl enable /lib/systemd/system/marsloRoute.service
+route -n
+sudo systemctl start marsloRoute.service
+route -n
+sudo systemctl -l | grep -i marsloroute
+
+  ${WGET} -L ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYNAME}-ca.crt
+  sudo cp ${ARTIFACTORYNAME}-ca.crt /usr/local/share/ca-certificates/
+  ls -Altrh !$
+  sudo update-ca-certificates
+  sudo systemctl restart docker.service
+}
+
 function setupEnv() {
   sudo sed -i -e "s:^\($(whoami).*$\):# \1:" /etc/sudoers
   sudo bash -c "echo \"$(whoami)   ALL=(ALL:ALL) NOPASSWD:ALL\" >> /etc/sudoers"
@@ -191,7 +193,7 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias -- +="pushd ."
 alias -- -="popd"
-alias ws="cd ~/workspace"
+alias ws="cd ~/dev-slave/workspace"
 alias la="ls -Al"
 alias wa="which -a"
 alias kc='kubectl --namespace=kube-system'
@@ -221,7 +223,6 @@ SOCKS_PROXY=\$myproxy
 
 no_proxy=localhost,127.0.0.1,130.147.0.0/16,130.145.0.0/16,pww.*.cdi.philips.com,130.*.*.*,161.*.*.*,pww.artifactory.cdi.philips.com,130.147.219.19,healthyliving.cn-132.lan.philips.com,*.cn-132.lan.philips.com,130.147.183.165,161.85.30.130,pww.sonar.cdi.philips.com,130.147.219.20,pww.gitlab.cdi.philips.com,130.147.219.15,pww.slave01.cdi.philips.com,130.147.219.24,pww.confluence.cdi.philips.com,130.147.219.18,pww.jira.cdi.philips.com,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,bdhub.pic.philips.com,161.85.30.130,tfsemea1.ta.philips.com,130.147.219.23,pww.jenkins.cdi.philips.com,blackduck.philips.com,fortify.philips.com,161.85.30.130
 NO_PROXY=\$no_proxy
-
 
 export all_proxy ALL_PROXY http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
 # socks_proxy SOCKS_PROXY
@@ -298,9 +299,19 @@ EOF
 
 function installAptApps() {
   APTSOURCEPATH="/etc/apt/sources.list.d"
-  # [ -f /etc/apt/sources.list ] && sudo cp /etc/apt/sources.list{,.org.${TIMESTAMPE}}
+  [ -f /etc/apt/sources.list ] && sudo cp /etc/apt/sources.list{,.org.${TIMESTAMPE}}
   [ -f ${APTSOURCEPATH}/docker.list ] && sudo mv "${APTSOURCEPATH}/docker.list{,bak.${TIMESTAMPE}}"
   [ -f ${APTSOURCEPATH}/kubernetes.list ] && sudo mv "${APTSOURCEPATH}/kubernetes.list{,bak.${TIMESTAMPE}}"
+
+  # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add
+  sudo apt-key fingerprint 0EBFCD88
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add
+  # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3746C208A7317B0F
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
+
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add
 
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6DA746A05F00FA99
   ${CURL} -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
@@ -318,15 +329,19 @@ function installAptApps() {
   # for mac mini wifi adapter
   sudo apt install -y bcmwl-kernel-source broadcom-sta-common broadcom-sta-source b43-fwcutter firmware-b43-installer firmware-b43-installer
 
-  sudo apt install menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc:i386 locales:i386 glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 nvidia-vdpau-driver nvidia-legacy-340xx-vdpau-drivera -y
+  sudo apt install menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 nvidia-vdpau-driver nvidia-legacy-340xx-vdpau-drivera -y
   sudo apt install ubuntu-restricted-extras -y
   sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5 vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi
   sudo apt install -y sysstat
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
+  sudo apt install -y glibc-doc:i386 locales:i386
+
+  # install chinese
+  sudo apt install -y fonts-arphic-uming language-pack-gnome-zh-hans-base language-pack-zh-hans-base language-pack-zh-hans language-pack-gnome-zh-hans firefox-locale-zh-hans fonts-arphic-ukai fonts-noto-cjk-extra gnome-user-docs-zh-hans hunspell-en-au hunspell-en-ca hunspell-en-gb hunspell-en-za hyphen-en-ca hyhpen-en-gb libpinyin-data libpinyin13 ibus-libpinyin ibus-table-wubi libreoffice-l10n-en-gb libreoffice-help-en-gb libreoffice-l10n-zh-cn libreoffice-help-zh-cn libreoffice-l10n-en-za mythes-en-au thunderbird-locale-en-gb
 
   sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) edge"
   sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu zesty stable"
-  sudo apt update -y
+  sudo apt update -y --fix-missing
 
   sudo apt install y-ppa-manager -y
   sudo apt upgrade -y
@@ -372,7 +387,7 @@ function devEnv(){
   echo "source /home/marslo/.marslo/.marslorc" >> ~/.bashrc
 
   [ -f "$HOME/.ssh/config" ] && mv "$HOME/.ssh/config.org.${TIMESTAMPE}"
-cat >> /etc/bash.bashrc << EOF
+cat >> $HOME/.ssh/config << EOF
 HOST  *
       GSSAPIAuthentication no
       StrictHostKeyChecking no
@@ -391,15 +406,19 @@ EOF
   sudo update-alternatives --auto javap
   sudo update-alternatives --auto javadoc
 
-  ${CURL} http://apache.mirrors.pair.com/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz
-  tar xvzf ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz -C ${MAVENDIR}
-  sudo update-alternatives --install /usr/local/bin/mvn mvn ${MAVENDIR}/apache-maven-3.5.3/bin/mvn 99
+  # ${CURL} http://apache.mirrors.pair.com/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz
+  # tar xvzf ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz -C ${MAVENDIR}
+  ${CURL} http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/maven/apache-maven-3.5.0-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.0-bin.tar.gz
+  tar xvzf ${MAVENDIR}/apache-maven-3.5.0-bin.tar.gz -C ${MAVENDIR}
+  sudo update-alternatives --install /usr/local/bin/mvn mvn ${MAVENDIR}/apache-maven-3.5.0/bin/mvn 99
   sudo update-alternatives --auto mvn
 
   # ${CURL} https://services.gradle.org/distributions/gradle-4.7-all.zip --create-dirs -o ${GRADLEDIR}/gradle-4.7-all.zip
-  ${WGET} https://services.gradle.org/distributions/gradle-4.7-all.zip -P ${GRADLEDIR}
-  unzip ${GRADLEDIR}/gradle-4.7-all.zip -d ${GRADLEDIR}
-  sudo update-alternatives --install /usr/local/bin/gradle gradle ${GRADLEDIR}/gradle-4.7/bin/gradle 99
+  ${CURL} http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/gradle/gradle-3.5-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.5-all.zip
+  unzip ${GRADLEDIR}/gradle-3.5-all.zip -d ${GRADLEDIR}
+  ${WGET} https://services.gradle.org/distributions/gradle-4.8-all.zip -P ${GRADLEDIR}
+  unzip ${GRADLEDIR}/gradle-4.8-all.zip -d ${GRADLEDIR}
+  sudo update-alternatives --install /usr/local/bin/gradle gradle ${GRADLEDIR}/gradle-4.8/bin/gradle 99
   sudo update-alternatives --auto gradle
 
   # ${CURL} https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip --create-dirs -o ${GROOVYDIR}/apache-groovy-binary-3.0.0-alpha-2.zip
@@ -422,7 +441,6 @@ EOF
   vim +BundleInstall +qa!
 
   git clone git@github.com:vim/vim.git ${GITHOME}/tools/vim
-
   sudo updatedb
 }
 
@@ -476,11 +494,19 @@ Section "InputClass"
   Option "ZAxisMapping" "4 5 6 7"
 EndSection
 EOF
-  sudo cp /usr/share/X11/xorg.conf /usr/share/X11/xorg.conf.d/910-rat.conf
+  sudo cp /usr/share/X11/xorg.conf /usr/share/X11/xorg.conf.d/90-rat.conf
 }
 
 function dconfSetup() {
-  echo 'abc'
+  # increase font size
+  dconf write /org/gnome/desktop/interface/text-scaling-factor 1.25
+  dconf write /org/gnome/desktop/a11y/always-show-universal-access-status true
+
+  # gnome-terminal
+  dconf write /org/gnome/terminal/legacy/keybindings/prev-tab '<Primary><Shift>l'
+  dconf write /org/gnome/terminal/legacy/keybindings/next-tab '<Primary><Shift>h'
+  dconf write /org/gnome/terminal/legacy/keybindings/find-previous '<Primary><Shift>F3'
+  dconf write /org/gnome/terminal/legacy/keybindings/find-clear 'disabled'
 }
 
 function setupMyEnv() {
@@ -488,12 +514,13 @@ function setupMyEnv() {
   installAptApps
   setupRemoteDesktop
   setupSSH
-  # setupSSHD
+  setupSSHD
   setupProxy
   advacnedSetup
   screenSharing
   setupApps
+  dconfSetup
+  devEnv
 }
 
-# setupMyEnv
-devEnv
+setupMyEnv
