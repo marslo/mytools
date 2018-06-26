@@ -1,0 +1,5 @@
+[/]
+require-encryption=false
+vnc-password='bWFyc2xv'
+authentication-methods=['vnc']
+prompt-enabled=false

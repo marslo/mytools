@@ -186,8 +186,42 @@ export LC_NUMERIC=\$LANG
 export LC_TIME=\$LANG
 export LC_ALL=\$LANG
 
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias -- +="pushd ."
+alias -- -="popd"
+alias ws="cd ~/workspace"
+alias la="ls -Al"
+alias wa="which -a"
+alias kc='kubectl --namespace=kube-system'
+alias ka='kubeadm --namespace=kube-system'
+alias kl='kubelet --namespace=kube-system'
+
+alias sstart="sudo systemctl start"
+alias sstop="sudo systemctl stop"
+alias sstatus="sudo systemctl status"
+alias srestart="sudo systemctl restart"
+
+alias open="nautilus"
+alias systemctl="sudo systemctl"
+
+myproxy=""
+all_proxy=\$myproxy
+http_proxy=\$myproxy
+https_proxy=\$myproxy
+ftp_proxy=\$myproxy
+socks_proxy=\$myproxy
+
+myproxy=\$myproxy
+HTTP_PROXY=\$myproxy
+HTTPS_PROXY=\$myproxy
+FTP_PROXY=\$myproxy
+SOCKS_PROXY=\$myproxy
+
 no_proxy=localhost,127.0.0.1,130.147.0.0/16,130.145.0.0/16,pww.*.cdi.philips.com,130.*.*.*,161.*.*.*,pww.artifactory.cdi.philips.com,130.147.219.19,healthyliving.cn-132.lan.philips.com,*.cn-132.lan.philips.com,130.147.183.165,161.85.30.130,pww.sonar.cdi.philips.com,130.147.219.20,pww.gitlab.cdi.philips.com,130.147.219.15,pww.slave01.cdi.philips.com,130.147.219.24,pww.confluence.cdi.philips.com,130.147.219.18,pww.jira.cdi.philips.com,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,bdhub.pic.philips.com,161.85.30.130,tfsemea1.ta.philips.com,130.147.219.23,pww.jenkins.cdi.philips.com,blackduck.philips.com,fortify.philips.com,161.85.30.130
 NO_PROXY=\$no_proxy
+
 
 export all_proxy ALL_PROXY http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
 # socks_proxy SOCKS_PROXY
@@ -269,7 +303,7 @@ function installAptApps() {
   [ -f ${APTSOURCEPATH}/kubernetes.list ] && sudo mv "${APTSOURCEPATH}/kubernetes.list{,bak.${TIMESTAMPE}}"
 
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6DA746A05F00FA99
-  ${CURL} -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  ${CURL} -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
   sudo apt-key fingerprint 0EBFCD88
 
   # sudo add-apt-repository -y ppa:hzwhuang/ss-qt5
@@ -286,7 +320,7 @@ function installAptApps() {
 
   sudo apt install menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc:i386 locales:i386 glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 nvidia-vdpau-driver nvidia-legacy-340xx-vdpau-drivera -y
   sudo apt install ubuntu-restricted-extras -y
-  sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5 vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor
+  sudo apt install -y net-tools bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5 vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi
   sudo apt install -y sysstat
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
 
@@ -446,6 +480,7 @@ EOF
 }
 
 function dconfSetup() {
+
   echo 'abc'
 }
 
