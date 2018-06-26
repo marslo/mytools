@@ -36,13 +36,13 @@ function reportError(){
 }
 
 function additionalSetup(){
-sudo cp ./addRoute.ubuntu.sh /usr/local/bin/add_route
+sudo cp ./addRoute.ubuntu.sh /usr/local/bin/addr
 sudo bash -c 'cat > /lib/systemd/system/marsloRoute.service' << EOF
 [Unit]
 Description=Add static route for two interface
 
 [Service]
-ExecStart=/usr/local/bin/add_route
+ExecStart=/usr/local/bin/addr
 
 [Install]
 WantedBy=multi-user.target
@@ -480,7 +480,6 @@ EOF
 }
 
 function dconfSetup() {
-
   echo 'abc'
 }
 
