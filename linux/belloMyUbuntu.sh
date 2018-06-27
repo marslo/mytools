@@ -503,10 +503,10 @@ function dconfSetup() {
   dconf write /org/gnome/desktop/a11y/always-show-universal-access-status true
 
   # gnome-terminal
-  dconf write /org/gnome/terminal/legacy/keybindings/prev-tab '<Primary><Shift>l'
-  dconf write /org/gnome/terminal/legacy/keybindings/next-tab '<Primary><Shift>h'
-  dconf write /org/gnome/terminal/legacy/keybindings/find-previous '<Primary><Shift>F3'
-  dconf write /org/gnome/terminal/legacy/keybindings/find-clear 'disabled'
+  dconf write /org/gnome/terminal/legacy/keybindings/prev-tab "'<Primary><Shift>l'"
+  dconf write /org/gnome/terminal/legacy/keybindings/next-tab "'<Primary><Shift>h'"
+  dconf write /org/gnome/terminal/legacy/keybindings/find-previous "'<Primary><Shift>F3'"
+  dconf write /org/gnome/terminal/legacy/keybindings/find-clear "'disabled'"
 
   # monitor
   dconf write /org/gnome/shell/extensions/system-monitor/compact-display true
@@ -519,15 +519,15 @@ function dconfSetup() {
   dconf write /org/gnome/shell/extensions/system-monitor/memory-show-text false
   dconf write /org/gnome/shell/extensions/system-monitor/net-graph-width 66
   dconf write /org/gnome/shell/extensions/system-monitor/net-show-text false
-  dconf write /org/gnome/shell/extensions/system-monitor/net-up-color '#cc0000ff'
-  dconf write /org/gnome/shell/extensions/system-monitor/net-down-color '#73d216ff'
-  dconf write /org/gnome/shell/extensions/system-monitor/net-uperrors-color '#e0006eff'
+  dconf write /org/gnome/shell/extensions/system-monitor/net-up-color "'#cc0000ff'"
+  dconf write /org/gnome/shell/extensions/system-monitor/net-down-color "'#73d216ff'"
+  dconf write /org/gnome/shell/extensions/system-monitor/net-uperrors-color "'#e0006eff'"
 
   # Theme
-  dconf write /org/gnome/desktop/interface/gtk-theme 'Adwaita-dark'
-  dconf write /org/gnome/desktop/interface/cursor-theme 'handhelds'
-  dconf write /org/gnome/shell/enabled-extensions ['system-monitor@paradoxxx.zero.gmail.com', 'ubuntu-appindicators@ubuntu.com']
-  dconf write /org/gnome/shell/enabled-extensions ['system-monitor@paradoxxx.zero.gmail.com', 'ubuntu-appindicators@ubuntu.com', 'ubuntu-dock@ubuntu.com']
+  dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
+  dconf write /org/gnome/desktop/interface/cursor-theme "'handhelds'"
+  dconf write /org/gnome/shell/enabled-extensions "['system-monitor@paradoxxx.zero.gmail.com', 'ubuntu-appindicators@ubuntu.com']"
+  dconf write /org/gnome/shell/enabled-extensions "['system-monitor@paradoxxx.zero.gmail.com', 'ubuntu-appindicators@ubuntu.com', 'ubuntu-dock@ubuntu.com']"
   dconf write /org/gnome/desktop/interface/show-battery-percentage true
   dconf write /org/gnome/shell/enable-hot-corners true
   dconf write /org/gnome/desktop/interface/clock-show-date true
@@ -541,21 +541,21 @@ function dconfSetup() {
 
   # guake
   dconf write /apps/guake/style/background/transparency 88
-  dconf write /apps/guake/keybindings/global/show-hide '<Shift>space'
+  dconf write /apps/guake/keybindings/global/show-hide "'<Shift>space'"
   dconf write /apps/guake/general/use-trayicon false
   dconf write /apps/guake/general/window-losefocus true
   dconf write /apps/guake/general/window-refocus true
   dconf write /apps/guake/general/use-scrollbar true
   dconf write /apps/guake/general/infinite-history true
-  dconf write /apps/guake/keybindings/local/previous-tab '<Primary><Shift>h'
-  dconf write /apps/guake/keybindings/local/next-tab '<Primary><Shift>l'
-  dconf write /apps/guake/keybindings/local/move-tab-left '<Primary><Shift>Left'
-  dconf write /apps/guake/keybindings/local/move-tab-right '<Primary><Shift>Right'
-  dconf write /apps/guake/style/font/palette-name 'Solarized Dark'
+  dconf write /apps/guake/keybindings/local/previous-tab "'<Primary><Shift>h'"
+  dconf write /apps/guake/keybindings/local/next-tab "'<Primary><Shift>l'"
+  dconf write /apps/guake/keybindings/local/move-tab-left "'<Primary><Shift>Left'"
+  dconf write /apps/guake/keybindings/local/move-tab-right "'<Primary><Shift>Right'"
+  dconf write /apps/guake/style/font/palette-name "'Solarized Dark'"
   dconf write /apps/guake/general/use-default-font false
-  dconf write /apps/guake/style/font/style 'Monospace 16'
+  dconf write /apps/guake/style/font/style "'Monospace 16'"
   dconf write /apps/guake/style/cursor-shape 2
-  dconf write /apps/guake/keybindings/local/new-tab '<Super>t'
+  dconf write /apps/guake/keybindings/local/new-tab "'<Super>t'"
 }
 
 function setupMyEnv() {
