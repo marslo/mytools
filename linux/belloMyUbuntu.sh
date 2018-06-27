@@ -533,7 +533,10 @@ function dconfSetup() {
 
   # system
   dconf write /org/gnome/settings-daemon/peripherals/touchscreen/orientation-lock true
-  gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'
+  # gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'
+  dconf write /org/gnome/shell/extensions/dash-to-dock/click-action "'minimize'"
+  dconf write /org/gnome/desktop/peripherals/touchpad/two-finger-scrolling-enabled true
+  dconf write /org/gnome/desktop/peripherals/touchpad/speed 0.66
 
   # guake
   dconf write /apps/guake/style/background/transparency 88
