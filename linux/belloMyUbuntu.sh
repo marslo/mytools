@@ -320,7 +320,7 @@ function installAptApps() {
   # sudo add-apt-repository -y ppa:hzwhuang/ss-qt5
   sudo add-apt-repository -y "deb http://ppa.launchpad.net/hzwhuang/ss-qt5/ubuntu artful main"
   sudo add-apt-repository -y ppa:webupd8team/y-ppa-manager
-  sudo apt update -y
+  sudo apt update
 
   sudo apt install -y curl openssh-server net-tools
   sudo apt install -y apt-transport-https ca-certificates software-properties-common
@@ -329,9 +329,9 @@ function installAptApps() {
   # for mac mini wifi adapter
   sudo apt install -y bcmwl-kernel-source broadcom-sta-common broadcom-sta-source b43-fwcutter firmware-b43-installer firmware-b43-installer
 
-  sudo apt install menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 nvidia-vdpau-driver nvidia-legacy-340xx-vdpau-drivera -y
-  sudo apt install ubuntu-restricted-extras -y
-  sudo apt install -y bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5 vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi
+  sudo apt install -y menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 nvidia-vdpau-driver nvidia-legacy-340xx-vdpau-drivera
+  sudo apt install -y ubuntu-restricted-extras
+  sudo apt install -y bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5 vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi plymouth-x11
   sudo apt install -y sysstat
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
   sudo apt install -y glibc-doc:i386 locales:i386
@@ -376,6 +376,8 @@ EOF
 
   ln -sf "${GITHOME}/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
   gnome-shell-extension-tool --enable-extension=system-monitor@paradoxxx.zero.gmail.com
+  sudo chown -R "$(whoami)" /sbin/plymouthd
+  sudo dpkg-reconfigure Plymouth
 }
 
 function devEnv(){
@@ -502,12 +504,6 @@ function dconfSetup() {
   dconf write /org/gnome/desktop/interface/text-scaling-factor 1.25
   dconf write /org/gnome/desktop/a11y/always-show-universal-access-status true
 
-  # gnome-terminal
-  dconf write /org/gnome/terminal/legacy/keybindings/prev-tab "'<Primary><Shift>l'"
-  dconf write /org/gnome/terminal/legacy/keybindings/next-tab "'<Primary><Shift>h'"
-  dconf write /org/gnome/terminal/legacy/keybindings/find-previous "'<Primary><Shift>F3'"
-  dconf write /org/gnome/terminal/legacy/keybindings/find-clear "'disabled'"
-
   # monitor
   dconf write /org/gnome/shell/extensions/system-monitor/compact-display true
   dconf write /org/gnome/shell/extensions/system-monitor/move-clock true
@@ -556,6 +552,34 @@ function dconfSetup() {
   dconf write /apps/guake/style/font/style "'Monospace 16'"
   dconf write /apps/guake/style/cursor-shape 2
   dconf write /apps/guake/keybindings/local/new-tab "'<Super>t'"
+
+  # gnome-terminal
+  dconf write /org/gnome/terminal/legacy/keybindings/prev-tab "'<Primary><Shift>l'"
+  dconf write /org/gnome/terminal/legacy/keybindings/next-tab "'<Primary><Shift>h'"
+  dconf write /org/gnome/terminal/legacy/keybindings/find-previous "'<Primary><Shift>F3'"
+  dconf write /org/gnome/terminal/legacy/keybindings/find-clear "'disabled'"
+  dconf write o/org/gnome/terminal/legacy/theme-variant "'dark'"
+
+  # imarslo theme
+  # dconf read /org/gnome/terminal/legacy/profiles:/list
+  GNOMETERMPRO="9af0c771-9c5b-4001-bba5-7fe26d54d2e7"
+  dconf write /org/gnome/terminal/legacy/profiles:/list "['23c2d5ac-3c62-4506-a998-ac22f430dcdf', '${GNOMETERMPRO}']"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/visible-name "'imarslo'"
+  dconf write /org/gnome/terminal/legacy/profiles:/default "'${GNOMETERMPRO}'"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/default-size-columns 96
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/default-size-rows 28
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/use-system-font false
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/font "'Monospace 16'"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/cursor-shape "'underline'"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/use-theme-colors false
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/foreground-color "'rgb(131,148,150)'"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/background-color "'rgb(0,43,54)'"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/use-theme-transparency false
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/use-transparent-background true
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/background-transparency-percent 7
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/palette "['rgb(7,54,66)', 'rgb(220,50,47)', 'rgb(133,153,0)', 'rgb(181,137,0)', 'rgb(38,139,210)', 'rgb(211,54,130)', 'rgb(42,161,152)', 'rgb(238,232,213)', 'rgb(0,43,54)', 'rgb(203,75,22)', 'rgb(88,110,117)', 'rgb(101,123,131)', 'rgb(131,148,150)', 'rgb(108,113,196)', 'rgb(147,161,161)', 'rgb(253,246,227)']"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/scrollback-unlimited true
+  dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/scroll-on-output true
 }
 
 function setupMyEnv() {
