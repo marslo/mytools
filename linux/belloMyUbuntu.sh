@@ -9,7 +9,7 @@
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
 
-MYHOME="/home/marslo/myubuntu"
+MYHOME="/home/$(whoami)/myubuntu"
 GITHOME="${MYHOME}/tools/git"
 SSHDFILE="/etc/ssh/sshd_config"
 JAVADIR="/opt/java"
@@ -93,6 +93,15 @@ EOF
 
   curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add
   curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add
+
+bash -c "cat > /usr/local/bin/ssmarslo" << EOF
+#!/bin/bash
+
+/usr/local/bin/sslocal -c /home/$(whoami)/.marslo/ss/ssmarslo.json \
+                       -d start \
+                       --pid-file=/home/$(whoami)/.marslo/ss/ssmarslo.pid \
+                       --log-file=/home/$(whoami)/.marslo/ss/logs/ssmarslo.log
+EOF
 
 sudo bash -c "cat > /lib/systemd/system/marsloProxy.service" << EOF
 [Unit]
@@ -325,6 +334,7 @@ function installAptApps() {
   sudo apt remove libreoffice-common unity-webapps-common thunderbird totem rhythmbox empathy brasero simple-scan onboard deja-dup
   # sudo add-apt-repository -y ppa:hzwhuang/ss-qt5
   sudo add-apt-repository -y "deb http://ppa.launchpad.net/hzwhuang/ss-qt5/ubuntu artful main"
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 0x6DA746A05F00FA99
   # sudo add-apt-repository -y ppa:webupd8team/y-ppa-manager
   sudo apt update
 
@@ -337,10 +347,11 @@ function installAptApps() {
 
   sudo apt install -y menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 nvidia-vdpau-driver nvidia-legacy-340xx-vdpau-drivera
   sudo apt install -y ubuntu-restricted-extras
-  sudo apt install -y bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git shadowsocks-qt5 vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi plymouth-x11
+  sudo apt install -y bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi plymouth-x11
   sudo apt install -y sysstat
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
   sudo apt install -y glibc-doc:i386 locales:i386
+  sudo apt install -y shadowsocks-qt5 
 
   # install chinese
   sudo apt install -y fonts-arphic-uming language-pack-gnome-zh-hans-base language-pack-zh-hans-base language-pack-zh-hans language-pack-gnome-zh-hans firefox-locale-zh-hans fonts-arphic-ukai fonts-noto-cjk-extra gnome-user-docs-zh-hans hunspell-en-au hunspell-en-ca hunspell-en-gb hunspell-en-za hyphen-en-ca hyhpen-en-gb libpinyin-data libpinyin13 ibus-libpinyin ibus-table-wubi libreoffice-l10n-en-gb libreoffice-help-en-gb libreoffice-l10n-zh-cn libreoffice-help-zh-cn libreoffice-l10n-en-za mythes-en-au thunderbird-locale-en-gb
@@ -375,13 +386,15 @@ EOF
   [ ! -d "$HOME/.local/share/gnome-shell/extensions" ] && mkdir -p "$HOME/.local/share/gnome-shell/extensions"
   [ ! -d "$HOME/.marslo" ] && mkdir -p "$HOME/.marslo"
 
-  git clone git@github.com:Marslo/mytools.git ${GITHOME}/marslo/mytools
-  git clone git@github.com:Marslo/myvim.git ${GITHOME}/marslo/myvim
-  git clone git@github.com:Marslo/mylinux.git ${GITHOME}/marslo/mylinux
-  git clone git@github.com:paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/marslo/tools/gnome-shell-system-monitor-applet
-
-  ln -sf "${GITHOME}/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
-  gnome-shell-extension-tool --enable-extension=system-monitor@paradoxxx.zero.gmail.com
+  git clone https://github.com/Marslo/mytools.git ${GITHOME}/marslo/mytools
+  git clone https://github.com/Marslo/myvim.git ${GITHOME}/marslo/myvim
+  git clone https://github.com/Marslo/mylinux.git ${GITHOME}/marslo/mylinux
+  git clone https://github.com/Marslo/myblog.git ${GITHOME}/marslo/myblog
+  # git clone git@github.com:paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/tools/gnome-shell-system-monitor-applet
+  if git clone https://github.com/paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/tools/gnome-shell-system-monitor-applet; then
+    ln -sf "${GITHOME}/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
+    gnome-shell-extension-tool --enable-extension=system-monitor@paradoxxx.zero.gmail.com
+  fi
   sudo chown -R "$(whoami)" /sbin/plymouthd
   sudo dpkg-reconfigure Plymouth
 }
@@ -457,15 +470,17 @@ EOF
 function setupProxy() {
   [ ! -d /etc/systemd/system/docker.service.d ] && sudo mkdir -p /etc/systemd/system/docker.service.d
 
+  sudo apt install -y python python-pip m2crypto
   if ! sudo systemctl -l | ${GREP} marsloProxy; then
-    sudo apt install -y python python-pip m2crypto
     if ! sudo -H pip list --format=columns | ${GREP} shadowsocks 2> /dev/null; then
       sudo -H pip install git+https://github.com/shadowsocks/shadowsocks.git@master
     fi
 
-    [ ! -d ~/.marslo/logs ] && mkdir -p ~/.marslo/logs
-    [ ! -f ~/.marslo/logs/ssmarslo.log ] && touch ~/.marslo/logs/ssmarslo.log
+    [ ! -d ~/.marslo/ss/logs ] && mkdir -p ~/.marslo/ss/logs
+    [ ! -f ~/.marslo/ss/logs/ssmarslo.log ] && touch ~/.marslo/ss/logs/ssmarslo.log
+    [ ! -f ~/.marslo/ss/ssmarslo.pid ] && touch ~/.marslo/ss/ssmarslo.pid
   fi
+  sudo chown -R $(whoami):$(whoami) ~/.marslo
 }
 
 function advacnedSetup() {
@@ -548,6 +563,7 @@ function dconfSetup() {
   dconf write /org/gnome/desktop/peripherals/mouse/speed 0.66
   dconf write /org/gnome/desktop/session/idle-delay "uint32 0"
   dconf write /org/gnome/settings-daemon/plugins/power/power-button-action "'interactive'"
+  dconf write /org/gnome/shell/favorite-apps "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop']"
 
   # guake
   dconf write /apps/guake/style/background/transparency 88

@@ -21,6 +21,8 @@ SSHOME="$HOME/.marslo/ss"
 SSLOGHOME="${SSHOME}/logs"
 SSLOGFILE="${SSLOGHOME}/ssmarslo.log"
 
+GREP="/bin/grep"
+
 function reportError(){
   set +H
   echo -e "\\033[31mERROR: $1 !!\\033[0m"
@@ -50,12 +52,12 @@ net.bridge.bridge-nf-call-ip6tables=1
 EOF
 
   sudo sysctl net.bridge.bridge-nf-call-iptables=1
-  if ! grep 1 /proc/sys/net/bridge/bridge-nf-call-iptables; then
+  if ! ${GREP} 1 /proc/sys/net/bridge/bridge-nf-call-iptables; then
     reportError "sysctl net.bridge.bridge-nf-call-iptables=1 set failed!"
   fi
   sudo sysctl -p
 
-  if grep -E "^127\.0\.0\.1.*devops-kubernetes-master.*$" /etc/hosts; then
+  if ${GREP} -E "^127\.0\.0\.1.*devops-kubernetes-master.*$" /etc/hosts; then
     sudo sed -i  -r -e "s:^(127.0.0.1.*$):\1 $(hostname):" /etc/hosts
   fi
 }
@@ -105,7 +107,7 @@ EOF
 
 function appsInstall() {
   suod apt update
-  sudo apt install -y docker-ce="$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}')"
+  sudo apt install -y docker-ce="$(apt-cache madison docker-ce | ${GREP} 17.03 | head -1 | awk '{print $3}')"
   # sudo apt install kubeadm=1.10.0-00 kubelet=1.10.0-00 kubectl=1.10.0-00
   sudo apt install -y kubelet kubeadm kubectl
   echo "docker-ce hold" | sudo dpkg --set-selections
@@ -135,7 +137,7 @@ EOF
 }
 
 function kubeletConfig() {
-  if docker info  | grep -i cgroup | grep cgroupfs > /dev/null; then
+  if docker info  | ${GREP} -i cgroup | ${GREP} cgroupfs > /dev/null; then
     [ -f /etc/systemd/system/kubelet.service.d/10-kubeadm.conf ] && sudo cp /etc/systemd/system/kubelet.service.d/10-kubeadm.conf{,.bak.${TIMESTAMPE}}
     sudo bash -c "sed -i 's/cgroup-driver=systemd/cgroup-driver=cgroupfs/g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf"
     sudo systemctl daemon-reload
@@ -163,9 +165,9 @@ cat > ~/.marslo/ssmarslo.json << EOF
 EOF
 fi
 
-  if ! sudo systemctl -l | grep marsloproxy; then
+  if ! sudo systemctl -l | ${GREP} marsloproxy; then
     sudo apt install python-pip m2crypto
-    if ! sudo -H pip list --format=columns | grep shadowsocks 2> /dev/null; then
+    if ! sudo -H pip list --format=columns | ${GREP} shadowsocks 2> /dev/null; then
       sudo -H pip install git+https://github.com/shadowsocks/shadowsocks.git@master
     fi
 
@@ -186,8 +188,8 @@ EOF
     sudo systemctl daemon-reload
     sudo systemctl enable marsloProxy.service
     sudo systemctl start marsloProxy.service
-    sudo systemctl -l | grep marsloProxy
-    ps auxfww | grep sslocal
+    sudo systemctl -l | ${GREP} marsloProxy
+    ps auxfww | ${GREP} sslocal
   fi
 }
 
@@ -217,7 +219,7 @@ function kubeinit() {
 function envTest() {
   curl -x ${SOCKSPROXY} -v -l https://k8s.gcr.io/v1/_ping
   docker pull k8s.gcr.io/kube-apiserver-amd64:v1.10.5
-  env | grep proxy
+  env | ${GREP} proxy
 }
 
 setupRepo
