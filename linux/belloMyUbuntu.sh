@@ -17,6 +17,7 @@ JAVAHOME="${JAVADIR}/jdk1.8.0_171"
 MAVENDIR="/opt/maven"
 GRADLEDIR="/opt/gradle"
 GROOVYDIR="/opt/groovy"
+APTSOURCEPATH="/etc/apt/sources.list.d"
 
 MYHOSTNAME="iMarslo18"
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
@@ -26,8 +27,9 @@ ARTIFACTORYHOME="http://${ARTIFACTORYNAME}/artifactory"
 SOCKSPORT=1880
 SOCKSPROXY="socks5://127.0.0.1:${SOCKSPORT}"
 
-CURL=/usr/bin/curl
-WGET=/usr/bin/wget
+CURL="/usr/bin/curl"
+WGET="/usr/bin/wget"
+GREP="/bin/grep"
 
 function reportError(){
   set +H
@@ -36,9 +38,9 @@ function reportError(){
 }
 
 function additionalSetup(){
-sudo bash -c 'cat >> /etc/hosts ' << EOF
-1.2.3.4 domainname
-EOF
+  [ -f /etc/apt/sources.list ] && sudo cp /etc/apt/sources.list{,.org.${TIMESTAMPE}}
+  [ -f ${APTSOURCEPATH}/docker.list ] && sudo mv "${APTSOURCEPATH}/docker.list{,bak.${TIMESTAMPE}}"
+  [ -f ${APTSOURCEPATH}/kubernetes.list ] && sudo mv "${APTSOURCEPATH}/kubernetes.list{,bak.${TIMESTAMPE}}"
 
 sudo bash -c "cat > /etc/apt/sources.list" << EOF
 deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs) main restricted
@@ -74,15 +76,23 @@ deb ${ARTIFACTORYHOME}/debian-remote-google kubernetes-xenial main
 # deb ${ARTIFACTORYHOME}/debian-remote-kubernetes cloud-sdk-yakkety main
 EOF
 
+sudo bash -c "cat > ${APTSOURCEPATH}/webupd8team-ubuntu-y-ppa-manager-bionic.list " << EOF
+deb http://pww.artifactory.cdi.philips.com/artifactory/debian-remote-launchpad bionic main
+# deb http://ppa.launchpad.net/webupd8team/y-ppa-manager/ubuntu bionic main
+# deb-src http://ppa.launchpad.net/webupd8team/y-ppa-manager/ubuntu bionic main
+EOF
+
+  sudo apt update
+
   # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add -
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add
   sudo apt-key fingerprint 0EBFCD88
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add -
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add
   # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3746C208A7317B0F
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
 
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add -
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add -
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add
 
 sudo bash -c "cat > /lib/systemd/system/marsloProxy.service" << EOF
 [Unit]
@@ -100,8 +110,8 @@ EOF
   sudo systemctl daemon-reload
   sudo systemctl enable marsloProxy.service
   sudo systemctl start marsloProxy.service
-  sudo systemctl -l | grep marsloProxy
-  ps auxf | grep sslocal
+  sudo systemctl -l | ${GREP} marsloProxy
+  ps auxf | ${GREP} sslocal
 
 sudo bash -c "cat > /etc/systemd/system/docker.service.d/socks5-proxy.conf" << EOF
 [Service]
@@ -134,7 +144,7 @@ sudo systemctl enable /lib/systemd/system/marsloRoute.service
 route -n
 sudo systemctl start marsloRoute.service
 route -n
-sudo systemctl -l | grep -i marsloroute
+sudo systemctl -l | ${GREP} -i marsloroute
 
   ${WGET} -L ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYNAME}-ca.crt
   sudo cp ${ARTIFACTORYNAME}-ca.crt /usr/local/share/ca-certificates/
@@ -158,7 +168,7 @@ function setupEnv() {
   sudo hostname "${MYHOSTNAME}"
   sudo bash -c "echo \"${MYHOSTNAME}\" > /etc/hostname"
   sudo sed -i -e "s:^\\(127\\.0\\.1\\.1\\).*$:\\1\\t${MYHOSTNAME}:" /etc/hosts
-  if grep -E "^127\.0\.0\.1.*${MYHOSTNAME}.*$" /etc/hosts; then
+  if ${GREP} -E "^127\.0\.0\.1.*${MYHOSTNAME}.*$" /etc/hosts; then
     sudo sed -i  -r -e "s:^(127.0.0.1.*$):\1 $(hostname):" /etc/hosts
   fi
   sudo hostnamectl set-hostname "${MYHOSTNAME}"
@@ -169,7 +179,7 @@ function setupEnv() {
   sysctl kernel.hostname
   hostnamectl status
 
-  if grep -E "^127\.0\.0\.1.*${MYHOSTNAME}*$" /etc/hosts; then
+  if ${GREP} -E "^127\.0\.0\.1.*${MYHOSTNAME}*$" /etc/hosts; then
     sudo sed -i  -r -e "s:^(127.0.0.1.*$):\1 $(hostname):" /etc/hosts
   fi
 
@@ -215,7 +225,7 @@ https_proxy=\$myproxy
 ftp_proxy=\$myproxy
 socks_proxy=\$myproxy
 
-myproxy=\$myproxy
+ALL_PROXY=\$myproxy
 HTTP_PROXY=\$myproxy
 HTTPS_PROXY=\$myproxy
 FTP_PROXY=\$myproxy
@@ -224,8 +234,8 @@ SOCKS_PROXY=\$myproxy
 no_proxy=localhost,127.0.0.1,130.147.0.0/16,130.145.0.0/16,pww.*.cdi.philips.com,130.*.*.*,161.*.*.*,pww.artifactory.cdi.philips.com,130.147.219.19,healthyliving.cn-132.lan.philips.com,*.cn-132.lan.philips.com,130.147.183.165,161.85.30.130,pww.sonar.cdi.philips.com,130.147.219.20,pww.gitlab.cdi.philips.com,130.147.219.15,pww.slave01.cdi.philips.com,130.147.219.24,pww.confluence.cdi.philips.com,130.147.219.18,pww.jira.cdi.philips.com,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,bdhub.pic.philips.com,161.85.30.130,tfsemea1.ta.philips.com,130.147.219.23,pww.jenkins.cdi.philips.com,blackduck.philips.com,fortify.philips.com,161.85.30.130
 NO_PROXY=\$no_proxy
 
-export all_proxy ALL_PROXY http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
-# socks_proxy SOCKS_PROXY
+# export all_proxy ALL_PROXY http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
+export socks_proxy SOCKS_PROXY all_proxy ALL_PROXY no_proxy NO_PROXY
 export SYSTEMD_LESS=FRXMK
 EOF
 
@@ -298,10 +308,6 @@ EOF
 }
 
 function installAptApps() {
-  APTSOURCEPATH="/etc/apt/sources.list.d"
-  [ -f /etc/apt/sources.list ] && sudo cp /etc/apt/sources.list{,.org.${TIMESTAMPE}}
-  [ -f ${APTSOURCEPATH}/docker.list ] && sudo mv "${APTSOURCEPATH}/docker.list{,bak.${TIMESTAMPE}}"
-  [ -f ${APTSOURCEPATH}/kubernetes.list ] && sudo mv "${APTSOURCEPATH}/kubernetes.list{,bak.${TIMESTAMPE}}"
 
   # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add
@@ -319,7 +325,7 @@ function installAptApps() {
   sudo apt remove libreoffice-common unity-webapps-common thunderbird totem rhythmbox empathy brasero simple-scan onboard deja-dup
   # sudo add-apt-repository -y ppa:hzwhuang/ss-qt5
   sudo add-apt-repository -y "deb http://ppa.launchpad.net/hzwhuang/ss-qt5/ubuntu artful main"
-  sudo add-apt-repository -y ppa:webupd8team/y-ppa-manager
+  # sudo add-apt-repository -y ppa:webupd8team/y-ppa-manager
   sudo apt update
 
   sudo apt install -y curl openssh-server net-tools
@@ -381,7 +387,7 @@ EOF
 }
 
 function devEnv(){
-  cp "${GITHOME}/marslo/myvim/Configurations/vimrc_mac" "$HOME/.vimrc"
+  cp "${GITHOME}/marslo/myvim/Configurations/vimrc_ubuntu" "$HOME/.vimrc"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/Git/.gitconfig" "$HOME/.gitconfig"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.marslorc" "$HOME/.marslo/.marslorc"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.bello_ubuntu" "$HOME/.marslo/.bello_ubuntu"
@@ -418,7 +424,8 @@ EOF
   # ${CURL} https://services.gradle.org/distributions/gradle-4.7-all.zip --create-dirs -o ${GRADLEDIR}/gradle-4.7-all.zip
   ${CURL} http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/gradle/gradle-3.5-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.5-all.zip
   unzip ${GRADLEDIR}/gradle-3.5-all.zip -d ${GRADLEDIR}
-  ${WGET} https://services.gradle.org/distributions/gradle-4.8-all.zip -P ${GRADLEDIR}
+  # ${WGET} https://services.gradle.org/distributions/gradle-4.8-all.zip -P ${GRADLEDIR}
+  ${CURL} http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/gradle/gradle-4.8-all.zip --create-dirs -o ${GRADLEDIR}/gradle-4.8-all.zip
   unzip ${GRADLEDIR}/gradle-4.8-all.zip -d ${GRADLEDIR}
   sudo update-alternatives --install /usr/local/bin/gradle gradle ${GRADLEDIR}/gradle-4.8/bin/gradle 99
   sudo update-alternatives --auto gradle
@@ -437,7 +444,8 @@ EOF
   GROOVY_HOME=\"${GROOVYDIR}/groovy-3.0.0-alpha-2\"
 
   PATH=\$JAVA_HOME/bin:\$M2:\$GRADLE_HOME/bin:\$GROOVY_HOME/bin:\$PATH
-  export JAVA_HOME M2_HOME M2 GRADLE_HOME GROOVY_HOME PATH """
+  export JAVA_HOME M2_HOME M2 GRADLE_HOME GROOVY_HOME PATH
+  """
 
   vim +GetVundle +qa!
   vim +BundleInstall +qa!
@@ -449,9 +457,9 @@ EOF
 function setupProxy() {
   [ ! -d /etc/systemd/system/docker.service.d ] && sudo mkdir -p /etc/systemd/system/docker.service.d
 
-  if ! sudo systemctl -l | grep marsloproxy; then
+  if ! sudo systemctl -l | ${GREP} marsloProxy; then
     sudo apt install -y python python-pip m2crypto
-    if ! sudo -H pip list --format=columns | grep shadowsocks 2> /dev/null; then
+    if ! sudo -H pip list --format=columns | ${GREP} shadowsocks 2> /dev/null; then
       sudo -H pip install git+https://github.com/shadowsocks/shadowsocks.git@master
     fi
 
@@ -480,7 +488,7 @@ function screenSharing() {
 }
 
 function madCatzMouse() {
-  DEVNAME=$(xinput | grep 'Mad Catz' | awk -F'id=' '{print $1}' | sed -re "s:.*(Mad Catz.*$):\1:" | sed 's/[[:blank:]]*$//')
+  DEVNAME=$(xinput | ${GREP} 'Mad Catz' | awk -F'id=' '{print $1}' | sed -re "s:.*(Mad Catz.*$):\1:" | sed 's/[[:blank:]]*$//')
   [ -f "/usr/share/X11/xorg.conf" ] && sudo mv "/usr/share/X11/xorg.conf{,.bak.${TIMESTAMPE}}"
   [ ! -d "/usr/share/X11/xorg.conf.d" ] && sudo mkdir -p /usr/share/X11/xorg.conf.d
 
@@ -534,6 +542,8 @@ function dconfSetup() {
   # system
   dconf write /org/gnome/settings-daemon/peripherals/touchscreen/orientation-lock true
   gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'
+  dconf write /org/gnome/desktop/session/idle-delay "uint32 0"
+  dconf write /org/gnome/settings-daemon/plugins/power/power-button-action "'interactive'"
 
   # guake
   dconf write /apps/guake/style/background/transparency 88
@@ -583,7 +593,8 @@ function dconfSetup() {
 }
 
 function setupMyEnv() {
-  setupEnv
+  # setupEnv
+  additionalSetup
   installAptApps
   setupRemoteDesktop
   setupSSH

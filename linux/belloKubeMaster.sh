@@ -214,4 +214,10 @@ function kubeinit() {
   kubectl get all --namespace=kube-system
 }
 
+function envTest() {
+  curl -x ${SOCKSPROXY} -v -l https://k8s.gcr.io/v1/_ping
+  docker pull k8s.gcr.io/kube-apiserver-amd64:v1.10.5
+  env | grep proxy
+}
+
 setupRepo
