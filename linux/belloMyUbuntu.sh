@@ -77,7 +77,7 @@ deb ${ARTIFACTORYHOME}/debian-remote-google kubernetes-xenial main
 EOF
 
 sudo bash -c "cat > ${APTSOURCEPATH}/webupd8team-ubuntu-y-ppa-manager-bionic.list " << EOF
-deb http://pww.artifactory.cdi.philips.com/artifactory/debian-remote-launchpad bionic main
+deb ${ARTIFACTORYHOME}/debian-remote-launchpad bionic main
 # deb http://ppa.launchpad.net/webupd8team/y-ppa-manager/ubuntu bionic main
 # deb-src http://ppa.launchpad.net/webupd8team/y-ppa-manager/ubuntu bionic main
 EOF

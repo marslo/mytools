@@ -51,6 +51,12 @@ net.bridge.bridge-nf-call-iptables=1
 net.bridge.bridge-nf-call-ip6tables=1
 EOF
 
+sudo bash -c "cat >> /etc/ufw/sysctl.conf" << EOF
+net/bridge/bridge-nf-call-ip6tables = 1
+net/bridge/bridge-nf-call-iptables = 1
+net/bridge/bridge-nf-call-arptables = 1
+EOF
+
   sudo sysctl net.bridge.bridge-nf-call-iptables=1
   if ! ${GREP} 1 /proc/sys/net/bridge/bridge-nf-call-iptables; then
     reportError "sysctl net.bridge.bridge-nf-call-iptables=1 set failed!"
