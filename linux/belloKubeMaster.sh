@@ -44,6 +44,8 @@ function preSetup() {
   sudo usermod -a -G docker "$(whoami)"
 
   [ -f /etc/sysctl.conf ] && sudo cp /etc/sysctl.conf{,.bak.${TIMESTAMPE}}
+  sudo sysctl net.bridge.bridge-nf-call-iptables=1
+  sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
 
 sudo bash -c "cat >> /etc/sysctl.conf" << EOF
 net.ipv4.ip_forward=1
@@ -60,11 +62,7 @@ sudo bash -c "cat >> /etc/default/grub" << EOF
 GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1"
 GRUB_CMDLINE_LINUX="ipv6.disable=1"
 EOF
-
   sudo update-grub
-
-  sudo sysctl net.bridge.bridge-nf-call-iptables=1
-  sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
 
   if ! ${GREP} 1 /proc/sys/net/bridge/bridge-nf-call-iptables; then
     reportError "sysctl net.bridge.bridge-nf-call-iptables=1 set failed!"
