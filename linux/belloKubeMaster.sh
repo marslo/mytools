@@ -62,6 +62,7 @@ GRUB_CMDLINE_LINUX="ipv6.disable=1"
 EOF
 
   sudo update-grub
+
   sudo sysctl net.bridge.bridge-nf-call-iptables=1
   sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
 
