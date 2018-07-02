@@ -43,15 +43,28 @@ function preSetup() {
   sudo usermod -a -G sudo "$(whoami)"
   sudo usermod -a -G docker "$(whoami)"
 
-  [ -f /etc/sysctl.conf ] && mv /etc/sysctl.conf{,.bak.${TIMESTAMPE}}
+  [ -f /etc/sysctl.conf ] && sudo cp /etc/sysctl.conf{,.bak.${TIMESTAMPE}}
 
 sudo bash -c "cat >> /etc/sysctl.conf" << EOF
 net.ipv4.ip_forward=1
 net.bridge.bridge-nf-call-iptables=1
 net.bridge.bridge-nf-call-ip6tables=1
+net.ipv6.conf.all.forwarding=0
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.lo.disable_ipv6=1
 EOF
 
+sudo bash -c "cat >> /etc/default/grub" << EOF
+# disable ipv6
+GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1"
+GRUB_CMDLINE_LINUX="ipv6.disable=1"
+EOF
+
+  sudo update-grub
   sudo sysctl net.bridge.bridge-nf-call-iptables=1
+  sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
+
   if ! ${GREP} 1 /proc/sys/net/bridge/bridge-nf-call-iptables; then
     reportError "sysctl net.bridge.bridge-nf-call-iptables=1 set failed!"
   fi
@@ -68,8 +81,8 @@ function setupAptRepo() {
   [ -f "${sourcePath}/kubernetes.list" ] && mv "${sourcePath}/kubernetes.list{,.bak.${TIMESTAMPE}}"
   mkdir -p "${sourcePath}/backups" && mv "${sourcePath}*.list.bak.*" "${sourcePath}/backups/"
 
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add –
-  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add -
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add
+  curl -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add
 
   sudo bash -c "cat > ${sourceMain}" << EOF
   deb ${ARTIFACTORYHOME}/debian-remote-ubuntu $(lsb_release -cs) main restricted
@@ -86,6 +99,8 @@ function setupAptRepo() {
 EOF
 
   sudo bash -c "cat > ${sourcePath}/docker.list" << EOF
+  deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker $(lsb_release) edge
+  deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker $(lsb_release) stable
   deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker artful edge
   deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker artful stable
   deb [arch=amd64] ${ARTIFACTORYHOME}/debian-remote-docker xenial edge
@@ -106,7 +121,7 @@ EOF
 }
 
 function appsInstall() {
-  suod apt update
+  sudo apt update
   sudo apt install -y docker-ce="$(apt-cache madison docker-ce | ${GREP} 17.03 | head -1 | awk '{print $3}')"
   # sudo apt install kubeadm=1.10.0-00 kubelet=1.10.0-00 kubectl=1.10.0-00
   sudo apt install -y kubelet kubeadm kubectl
@@ -124,8 +139,8 @@ function dockerEnvSetup() {
 [ ! -d /etc/systemd/system/docker.service.d ] && sudo mkdir -p /etc/systemd/system/docker.service.d
 sudo bash -c "cat > /etc/systemd/system/docker.service.d/socks5-proxy.conf" << EOF
 [Service]
-Environment="ALL_PROXY=${SOCKSPROXY}" "NO_PROXY=localhost,127.0.0.1,${ARTIFACTORYNAME},130.147.0.0/16,130.145.0.0/16"
-
+Environment="ALL_PROXY=${SOCKSPROXY}"
+Environment="NO_PROXY=localhost,127.0.0.1,pww.artifactory.cdi.philips.com,130.147.0.0/16,130.145.0.0/16"
 EOF
 
   wget -L ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYNAME}-ca.crt
@@ -133,6 +148,7 @@ EOF
   ls -Altrh !$
   sudo update-ca-certificates
   sudo systemctl daemon-reload
+  sudo systemctl enable docker.service
   sudo systemctl restart docker.service
 }
 
@@ -141,6 +157,7 @@ function kubeletConfig() {
     [ -f /etc/systemd/system/kubelet.service.d/10-kubeadm.conf ] && sudo cp /etc/systemd/system/kubelet.service.d/10-kubeadm.conf{,.bak.${TIMESTAMPE}}
     sudo bash -c "sed -i 's/cgroup-driver=systemd/cgroup-driver=cgroupfs/g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf"
     sudo systemctl daemon-reload
+    sudo systemctl enable kubelet
     sudo systemctl restart kubelet
   fi
 }
