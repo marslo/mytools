@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-07-04 14:59:46
+#  LastChange: 2018-07-04 19:32:19
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -298,11 +298,12 @@ function systemProxyService(){
 bash -c "cat > /usr/local/bin/ssmarslo" << EOF
 #!/bin/bash
 
-/usr/local/bin/sslocal -c /home/$(whoami)/.marslo/ss/ssmarslo.json \
-                       -d start \
-                       --pid-file=/home/$(whoami)/.marslo/ss/ssmarslo.pid \
+/usr/local/bin/sslocal -c /home/$(whoami)/.marslo/ss/ssmarslo.json \\
+                       -d start \\
+                       --pid-file=/home/$(whoami)/.marslo/ss/ssmarslo.pid \\
                        --log-file=/home/$(whoami)/.marslo/ss/logs/ssmarslo.log
 EOF
+sudo chmod +x /usr/local/bin/ssmarslo
 
 sudo bash -c "cat > /lib/systemd/system/marsloProxy.service" << EOF
 [Unit]
@@ -425,7 +426,7 @@ function aptInstall() {
     sudo apt install -y bcmwl-kernel-source broadcom-sta-common broadcom-sta-source b43-fwcutter firmware-b43-installer firmware-b43-installer
   fi
 
-  sudo apt install -y menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1
+  sudo apt install -y menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 libappindicator1 libindicator7
   sudo apt install -y libnvidia-cfg1-390 libnvidia-common-390 libnvidia-compute-390 libnvidia-decode-390 libnvidia-encode-390 libnvidia-fbc1-390 libnvidia-gl-390 libnvidia-ifr1-390 nvidia-compute-utils-390 nvidia-dkms-390 nvidia-driver-390 nvidia-kernel-common-390 nvidia-kernel-source-390 nvidia-prime nvidia-settings nvidia-utils-390 xserver-xorg-video-nvidia-390
 
   sudo apt install -y ubuntu-restricted-extras
@@ -434,6 +435,7 @@ function aptInstall() {
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
   sudo apt install -y glibc-doc:i386 locales:i386
   sudo apt install -y shadowsocks-qt5
+  sudo apt install -y docker-ce="$(apt-cache madison docker-ce | /bin/grep 17.03 | head -1 | awk '{print $3}')"
 
   # install chinese
   sudo apt install -y fonts-arphic-uming language-pack-gnome-zh-hans-base language-pack-zh-hans-base language-pack-zh-hans language-pack-gnome-zh-hans firefox-locale-zh-hans fonts-arphic-ukai fonts-noto-cjk-extra gnome-user-docs-zh-hans hunspell-en-au hunspell-en-ca hunspell-en-gb hunspell-en-za hyphen-en-ca hyhpen-en-gb libpinyin-data libpinyin13 ibus-libpinyin ibus-table-wubi libreoffice-l10n-en-gb libreoffice-help-en-gb libreoffice-l10n-zh-cn libreoffice-help-zh-cn libreoffice-l10n-en-za mythes-en-au thunderbird-locale-en-gb
@@ -453,6 +455,8 @@ function aptInstall() {
 
   sudo chown -R "$(whoami)" /sbin/plymouthd
   sudo dpkg-reconfigure Plymouth
+  sudo usermod -a -G docker "$(whoami)"
+  sudo apt-mark hold docker-ce
 }
 
 function devEnvGetPackage(){
@@ -652,6 +656,34 @@ function systemDconf() {
 }
 
 function marslorized() {
+  # auto startup for gnome-session-properity
+  [ ! -d $HOME/.config/autostart ] && mkdir -p $HOME/.config/autostart
+cat > $HOME/.config/autostart/guake.desktop << EOF
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/guake
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=Guake
+Name=Guake
+Comment[en_US]=Guake Terminal
+Comment=Guake Terminal
+EOF
+
+cat > $HOME/.config/autostart/gnome-terminal.desktop << EOF
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/gnome-terminal
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=gnome-terminal
+Name=gnome-terminal
+Comment[en_US]=Gnome Terminal
+Comment=Gnome Terminal
+EOF
+
   # Git Repos
   [ ! -d "$HOME/.marslo" ] && mkdir -p "$HOME/.marslo"
   [ ! -d "${GITHOME}/marslo" ] && mkdir -p ${GITHOME}/marslo
