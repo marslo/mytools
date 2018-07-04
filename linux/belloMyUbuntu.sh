@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-06-28 22:11:23
+#  LastChange: 2018-07-04 14:59:46
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -23,7 +23,7 @@ MYHOSTNAME="iMarslo18"
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 
 ARTIFACTORYNAME="my.artifactory.com"
-ARTIFACTORYHOME="http://${ARTIFACTORYNAME}/artifactory"
+ARTIFACTORYHOME="http://${ARTIFACTORYNAME}:8081/artifactory"
 SOCKSPORT=1880
 SOCKSPROXY="socks5://127.0.0.1:${SOCKSPORT}"
 
@@ -416,7 +416,7 @@ function aptInstall() {
   sudo apt update
   sudo apt update -y --fix-missing
 
-  sudo apt install -y curl openssh-server net-tools
+  sudo apt install -y curl openssh-server net-tools wireless-tools
   sudo apt install -y apt-transport-https ca-certificates software-properties-common
   sudo ubuntu-drivers autoinstall
 
@@ -426,7 +426,8 @@ function aptInstall() {
   fi
 
   sudo apt install -y menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1
-  # sudo apt instlal -y nvidia-vdpau-driver nvidia-legacy-340xx-vdpau-drivera
+  sudo apt install -y libnvidia-cfg1-390 libnvidia-common-390 libnvidia-compute-390 libnvidia-decode-390 libnvidia-encode-390 libnvidia-fbc1-390 libnvidia-gl-390 libnvidia-ifr1-390 nvidia-compute-utils-390 nvidia-dkms-390 nvidia-driver-390 nvidia-kernel-common-390 nvidia-kernel-source-390 nvidia-prime nvidia-settings nvidia-utils-390 xserver-xorg-video-nvidia-390
+
   sudo apt install -y ubuntu-restricted-extras
   sudo apt install -y bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi plymouth-x11
   sudo apt install -y sysstat
@@ -440,7 +441,7 @@ function aptInstall() {
   # for launchy
   # sudo apt install -y launchy launchy-plugins launchy-skins libmng2 libqt4-dbus libqt4-declarative libqt4-network libqt4-script libqt4-sql libqt4-sql-mysql libqt4-xmlpatterns libqtgui4 qt-at-spi
 
-  sudo apt remove ttf-mscorefonts-installer
+  sudo apt remove -y ttf-mscorefonts-installer
   wget http://ftp.de.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.6_all.deb
   sudo dpkg -i ttf-mscorefonts-installer_3.6_all.deb
   sudo apt --fix-broken install
@@ -466,15 +467,18 @@ function devEnvGetPackage(){
 
   # ${CURL} http://apache.mirrors.pair.com/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz
   # tar xvzf ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz -C ${MAVENDIR}
-  ${CURL} http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/maven/apache-maven-3.5.0-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.0-bin.tar.gz
+  ${CURL} ${ARTIFACTORYHOME}/devops/common/maven/apache-maven-3.5.0-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.0-bin.tar.gz
 
   # ${CURL} https://services.gradle.org/distributions/gradle-4.7-all.zip --create-dirs -o ${GRADLEDIR}/gradle-4.7-all.zip
-  ${CURL} http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/gradle/gradle-3.5-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.5-all.zip
+  ${CURL} ${ARTIFACTORYHOME}/devops/common/gradle/gradle-3.5-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.5-all.zip
   # ${WGET} https://services.gradle.org/distributions/gradle-4.8-all.zip -P ${GRADLEDIR}
   ${CURL} http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/gradle/gradle-4.8-all.zip --create-dirs -o ${GRADLEDIR}/gradle-4.8-all.zip
 
   # ${CURL} https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip --create-dirs -o ${GROOVYDIR}/apache-groovy-binary-3.0.0-alpha-2.zip
   ${WGET} --no-check-certificate -c https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip -P ${GROOVYDIR}
+
+  wget ${ARTIFACTORYHOME}/devops/ubuntu/tools/chrome/google-chrome-unstable_current_amd64.deb
+  sudo dpkg -i google-chrome-unstable_current_amd64.deb
 }
 
 function devEnvInstall() {
