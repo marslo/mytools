@@ -25,6 +25,7 @@ TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 ARTIFACTORYNAME="my.artifactory.com"
 ARTIFACTORYHOME="http://${ARTIFACTORYNAME}:8081/artifactory"
 SOCKSPORT=1880
+SOCKSSERVER="45.35.34.44"
 SOCKSPROXY="socks5://127.0.0.1:${SOCKSPORT}"
 
 CURL="/usr/bin/curl"
@@ -79,18 +80,9 @@ sudo bash -c "cat >> /etc/sysctl.conf" << EOF
 net.ipv4.ip_forward=1
 net.bridge.bridge-nf-call-iptables=1
 net.bridge.bridge-nf-call-ip6tables=1
-net.ipv6.conf.all.forwarding=0
-net.ipv6.conf.all.disable_ipv6=1
-net.ipv6.conf.default.disable_ipv6=1
-net.ipv6.conf.lo.disable_ipv6=1
 EOF
 
-sudo bash -c "cat >> /etc/default/grub" << EOF
-# disable ipv6
-GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1"
-GRUB_CMDLINE_LINUX="ipv6.disable=1"
-EOF
-
+sudo sed -r 's:(^GRUB_TIMEOUT=).*$:\12:' -i /etc/default/grub
 sudo update-grub
 
 sudo bash -c 'cat >> /etc/bash.bashrc' << EOF
@@ -158,7 +150,7 @@ EOF
 if [ ! -f "$HOME/.marslo/ss/ssmarslo.json" ]; then
 cat > "$HOME/.marslo/ss/ssmarslo.json" << EOF
 {
-    "server":"45.35.34.44",
+    "server":"${SOCKSSERVER}",
     "server_port":8838,
     "local_address": "0.0.0.0",
     "local_port":${SOCKSPORT},
@@ -251,6 +243,24 @@ function systemX11() {
 
   sudo update-alternatives --install /usr/local/bin/vino-server vino-server /usr/lib/vino/vino-server 99
   sudo update-alternatives --auto vino-server
+}
+
+function systemNetwork() {
+sudo bash -c "cat >> /etc/default/grub" << EOF
+# disable ipv6
+GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1"
+GRUB_CMDLINE_LINUX="ipv6.disable=1"
+EOF
+
+  [ -f /etc/sysctl.conf ] && sudo cp /etc/sysctl.conf{,.bak.${TIMESTAMPE}}
+sudo bash -c "cat >> /etc/sysctl.conf" << EOF
+net.ipv6.conf.all.forwarding=0
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.lo.disable_ipv6=1
+EOF
+
+sudo update-grub
 }
 
 function systemDualNetwork() {
@@ -735,5 +745,11 @@ if [ "my.artifactory.com" == "${ARTIFACTORYNAME}" ]; then
   reportError "Artifactory Name haven't been setup!"
   exit 1
 fi
+
+if [ "45.35.34.44" == "${SOCKSSERVER}" ]; then
+  reportError "ssmarslo.json haven't been setup!"
+  exit 1
+fi
+
 rockInRoll
 sudo /usr/share/update-notifier/notify-reboot-required
