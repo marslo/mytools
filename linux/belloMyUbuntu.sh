@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-07-04 19:32:19
+#  LastChange: 2018-07-06 11:09:15
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -232,10 +232,10 @@ EOF
 }
 
 function systemX11() {
-  [ -f /etc/gdm3/custom.conf ] && sudo cp "/etc/gdm3/custom.conf{,.bak.${TIMESTAMPE}}"
-  /bin/sed -r -e 's:^#(WaylandEnable.*false.*$):\1:' -i /etc/gdm3/custom.conf
-  /bin/sed -r -e 's:^#.*(AutomaticLoginEnable.*$):\1:' -i /etc/gdm3/custom.conf
-  /bin/sed -r -e "s:^#.*(AutomaticLogin[^Enable]*=).*$:\1 $(whoami):" -i /etc/gdm3/custom.conf
+  [ -f /etc/gdm3/custom.conf ] && sudo cp /etc/gdm3/custom.conf{,.bak.${TIMESTAMPE}}
+  sudo /bin/sed -r -e 's:^#(WaylandEnable.*false.*$):\1:' -i /etc/gdm3/custom.conf
+  sudo /bin/sed -r -e 's:^#.*(AutomaticLoginEnable.*$):\1:' -i /etc/gdm3/custom.conf
+  sudo /bin/sed -r -e "s:^#.*(AutomaticLogin[^Enable]*=).*$:\1 $(whoami):" -i /etc/gdm3/custom.conf
 
   gsettings set org.gnome.Vino enabled true
   gsettings set org.gnome.Vino prompt-enabled false
@@ -400,7 +400,7 @@ EOF
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6DA746A05F00FA99
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6A030B21BA07F4FB
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 0x6DA746A05F00FA99
+  # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 0x6DA746A05F00FA99
 
   sudo add-apt-repository -y "deb http://ppa.launchpad.net/hzwhuang/ss-qt5/ubuntu artful main"
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 0x6DA746A05F00FA99
