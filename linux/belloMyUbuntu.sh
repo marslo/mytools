@@ -291,7 +291,7 @@ EOF
 function systemSSProxy() {
   [ ! -d /etc/systemd/system/docker.service.d ] && sudo mkdir -p /etc/systemd/system/docker.service.d
 
-  sudo apt install -y python python-pip m2crypto
+  sudo apt install -y python python-pip m2crypto polipo
   if ! sudo systemctl -l | ${GREP} marsloProxy; then
     if ! sudo -H pip list --format=columns | ${GREP} shadowsocks 2> /dev/null; then
       sudo -H pip install git+https://github.com/shadowsocks/shadowsocks.git@master
