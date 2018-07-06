@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-07-06 11:09:15
+#  LastChange: 2018-07-06 14:42:45
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -637,8 +637,8 @@ function systemDconf() {
   dconf write /apps/guake/general/tab-ontop true
 
   # gnome-terminal
-  dconf write /org/gnome/terminal/legacy/keybindings/prev-tab "'<Primary><Shift>l'"
-  dconf write /org/gnome/terminal/legacy/keybindings/next-tab "'<Primary><Shift>h'"
+  dconf write /org/gnome/terminal/legacy/keybindings/prev-tab "'<Primary><Shift>h'"
+  dconf write /org/gnome/terminal/legacy/keybindings/next-tab "'<Primary><Shift>l'"
   dconf write /org/gnome/terminal/legacy/keybindings/find-previous "'<Primary><Shift>F3'"
   dconf write /org/gnome/terminal/legacy/keybindings/find-clear "'disabled'"
   dconf write o/org/gnome/terminal/legacy/theme-variant "'dark'"
