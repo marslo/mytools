@@ -641,7 +641,7 @@ function systemDconf() {
   dconf write /org/gnome/terminal/legacy/keybindings/next-tab "'<Primary><Shift>l'"
   dconf write /org/gnome/terminal/legacy/keybindings/find-previous "'<Primary><Shift>F3'"
   dconf write /org/gnome/terminal/legacy/keybindings/find-clear "'disabled'"
-  dconf write o/org/gnome/terminal/legacy/theme-variant "'dark'"
+  dconf write /org/gnome/terminal/legacy/theme-variant "'dark'"
 
   # imarslo theme
   # dconf read /org/gnome/terminal/legacy/profiles:/list
