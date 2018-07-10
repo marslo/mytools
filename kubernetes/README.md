@@ -29,7 +29,7 @@ Inspired by the [CloudMan](https://www.cnblogs.com/CloudMan6/p/9097274.html)
 $ kubectl apply -f admin-user.yaml
 ```
 
-#### Get Token:
+#### [Get Token](https://github.com/kubernetes/dashboard/wiki/Creating-sample-user#bearer-token)
 ```
 $ admName=$(kubectl -n kube-system get secret | grep admin | awk -F' ' '{print $1}')
 $ echo $admName
@@ -112,3 +112,26 @@ status:
 </details>
 
 ![dashboard-as-services](../others/images/dashboard-3.png)
+
+### Alternative Login
+Login by using **Endpoints**:
+
+![dashboard-with-endpoints](../others/images/dashboard-4.png)
+```
+$ kc describe services kubernetes-dashboard
+Name:                     kubernetes-dashboard
+Namespace:                kube-system
+Labels:                   k8s-app=kubernetes-dashboard
+Annotations:              kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"k8s-app":"kubernetes-dashboard"},"name":"kubernetes-dashboard","namespace":...
+Selector:                 k8s-app=kubernetes-dashboard
+Type:                     NodePort
+IP:                       10.104.201.101
+Port:                     <unset>  443/TCP
+TargetPort:               8443/TCP
+NodePort:                 <unset>  31351/TCP
+Endpoints:                10.244.0.3:8443
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
