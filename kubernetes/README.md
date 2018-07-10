@@ -75,3 +75,5 @@ status:
   loadBalancer: {}
 </code></pre>
 </details>
+
+![dashboard-as-services](../others/images/dashboard-3.png)
