@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Usage](#usage)
+    - [admin-dashboard.yaml](#admin-dashboardyaml)
+    - [admin-user.yaml](#admin-useryaml)
+- [Expose the dashboard to service](#expose-the-dashboard-to-service)
+    - [Original](#original)
+    - [Change `type: ClusterIP` to `type: NodePort`](#change-type-clusterip-to-type-nodeport)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Usage
 
 ### admin-dashboard.yaml
