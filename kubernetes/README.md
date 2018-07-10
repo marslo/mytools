@@ -40,7 +40,7 @@ NAME                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)       
 kube-dns               ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP   23h
 kubernetes-dashboard   NodePort    10.104.201.101   <none>        443:31351/TCP   22h
 ```
-![dashboard-type-nodeport](others/images/dashboard-2.png)
+![dashboard-type-nodeport](../others/images/dashboard-2.png)
 
 <details><summary>Click to check original yaml</summary>
 <pre><code># Please edit the object below. Lines beginning with a '#' will be ignored,
