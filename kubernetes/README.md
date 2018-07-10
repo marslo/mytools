@@ -74,6 +74,9 @@ kubernetes-dashboard   NodePort    10.104.201.101   <none>        443:31351/TCP 
 
 $ nc -zv localhost 31351
 Connection to localhost 31351 port [tcp/*] succeeded!
+
+$ sudo netstat -anpl | grep 31351
+tcp6       0      0 :::31351                :::*                    LISTEN      9240/kube-proxy
 ```
 ![dashboard-type-nodeport](../others/images/dashboard-2.png)
 
