@@ -5,6 +5,8 @@
 - [Usage](#usage)
     - [admin-dashboard.yaml](#admin-dashboardyaml)
     - [admin-user.yaml](#admin-useryaml)
+        - [Get Token:](#get-token)
+        - [Start dashboard](#start-dashboard)
 - [Expose the dashboard to service](#expose-the-dashboard-to-service)
     - [Original](#original)
     - [Change `type: ClusterIP` to `type: NodePort`](#change-type-clusterip-to-type-nodeport)
