@@ -79,6 +79,7 @@ $ sudo netstat -anpl | grep 31351
 tcp6       0      0 :::31351                :::*                    LISTEN      9240/kube-proxy
 ```
 ![dashboard-type-nodeport](../others/images/dashboard-2.png)
+![dashboard-services](../others/images/dashboard-5.png)
 
 <details><summary>Click to check original yaml</summary>
 <pre><code># Please edit the object below. Lines beginning with a '#' will be ignored,
@@ -111,6 +112,53 @@ spec:
   type: ClusterIP
 status:
   loadBalancer: {}
+</code></pre>
+</details>
+
+<details><summary>Click to check more details</summary>
+<pre><code>$ kc describe deployment.apps/kubernetes-dashboard
+Name:                   kubernetes-dashboard
+Namespace:              kube-system
+CreationTimestamp:      Mon, 09 Jul 2018 17:36:38 +0800
+Labels:                 k8s-app=kubernetes-dashboard
+Annotations:            deployment.kubernetes.io/revision=1
+                        kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"apps/v1beta2","kind":"Deployment","metadata":{"annotations":{},"labels":{"k8s-app":"kubernetes-dashboard"},"name":"kubernetes-dashboard"...
+Selector:               k8s-app=kubernetes-dashboard
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:           k8s-app=kubernetes-dashboard
+  Service Account:  kubernetes-dashboard
+  Containers:
+   kubernetes-dashboard:
+    Image:      k8s.gcr.io/kubernetes-dashboard-amd64:v1.8.3
+    Port:       8443/TCP
+    Host Port:  0/TCP
+    Args:
+      --auto-generate-certificates
+    Liveness:     http-get https://:8443/ delay=30s timeout=30s period=10s #success=1 #failure=3
+    Environment:  <none>
+    Mounts:
+      /certs from kubernetes-dashboard-certs (rw)
+      /tmp from tmp-volume (rw)
+  Volumes:
+   kubernetes-dashboard-certs:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  kubernetes-dashboard-certs
+    Optional:    false
+   tmp-volume:
+    Type:    EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   kubernetes-dashboard-7d5dcdb6d9 (1/1 replicas created)
+Events:          <none>
 </code></pre>
 </details>
 
