@@ -115,8 +115,6 @@ status:
 
 ### Alternative Login
 Login by using **Endpoints**:
-
-![dashboard-with-endpoints](../others/images/dashboard-4.png)
 ```
 $ kc describe services kubernetes-dashboard
 Name:                     kubernetes-dashboard
@@ -133,5 +131,9 @@ Endpoints:                10.244.0.3:8443
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   <none>
+
+$ nc -zv 10.244.0.3 8443
+Connection to 10.244.0.3 8443 port [tcp/*] succeeded!
 ```
 
+![dashboard-with-endpoints](../others/images/dashboard-4.png)
