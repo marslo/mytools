@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-07-10 15:16:19
+#  LastChange: 2018-07-11 17:14:08
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -321,7 +321,7 @@ function systemSSProxy() {
   sudo chown -R $(whoami):$(whoami) ~/.marslo
 }
 
-function systemProxyService(){
+function systemNetworkService(){
 bash -c "cat > /usr/local/bin/ssmarslo" << EOF
 #!/bin/bash
 
@@ -363,8 +363,15 @@ EOF
   curl -x ${SOCKSPROXY} -l https://k8s.gcr.io/v1/_ping
   curl -x ${SOCKSPORT} -fsSL https://dl.k8s.io/release/stable-1.10.txt
   # docker pull k8s.gcr.io/kube-apiserver-amd64:v1.10.1
-}
 
+  sudo cp /etc/resolvconf/resolv.conf.d/head{,.org}
+  sudo bash -c "cat > /etc/resolvconf/resolv.conf.d/head" << EOF
+nameserver 130.147.236.5
+nameserver 161.92.35.78
+search cn-132.lan.philips.com
+EOF
+  sudo resolvconf -u
+}
 
 function systemAPTIntranet() {
   [ -f /etc/apt/sources.list ] && sudo cp /etc/apt/sources.list{,.org.${TIMESTAMPE}}
@@ -457,7 +464,7 @@ function aptInstall() {
   sudo apt install -y libnvidia-cfg1-390 libnvidia-common-390 libnvidia-compute-390 libnvidia-decode-390 libnvidia-encode-390 libnvidia-fbc1-390 libnvidia-gl-390 libnvidia-ifr1-390 nvidia-compute-utils-390 nvidia-dkms-390 nvidia-driver-390 nvidia-kernel-common-390 nvidia-kernel-source-390 nvidia-prime nvidia-settings nvidia-utils-390 xserver-xorg-video-nvidia-390
 
   sudo apt install -y ubuntu-restricted-extras
-  sudo apt install -y bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi plymouth-x11
+  sudo apt install -y bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi plymouth-x11 resolvconf
   sudo apt install -y sysstat
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
   sudo apt install -y glibc-doc:i386 locales:i386
@@ -484,6 +491,7 @@ function aptInstall() {
   sudo dpkg-reconfigure Plymouth
   sudo usermod -a -G docker "$(whoami)"
   sudo apt-mark hold docker-ce
+
 }
 
 function devEnvGetPackage(){
@@ -756,7 +764,7 @@ function rockInRoll() {
   systemAPTIntranet
   aptInstall
   systemSSProxy
-  systemProxyService
+  systemNetworkService
   devEnvGetPackage
   devEnvInstall
   systemSSH
