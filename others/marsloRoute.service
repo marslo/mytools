@@ -1,0 +1,10 @@
+[Unit]
+Description=Add static route for two interface
+After=syslog.target network.target network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/addr
+
+[Install]
+WantedBy=multi-user.target
+Alias=marsloRoute.service

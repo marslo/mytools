@@ -126,9 +126,7 @@ function appsInstall() {
   sudo apt install -y kubelet kubeadm kubectl
   echo "docker-ce hold" | sudo dpkg --set-selections
   sudo apt-mark hold docker-ce
-  sudo apt-mark hold kubeadm
-  sudo apt-mark hold kubectl
-  sudo apt-mark hold kubelet
+  sudo apt-mark hold cri-tools ebtables ethtool kubeadm kubectl kubelet kubernetes-cni socat
 
   apt-mark showhold
   ls -altrh /etc/kubernetes /var/lib/kubelet /var/lib/etcd

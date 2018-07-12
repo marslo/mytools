@@ -142,10 +142,12 @@ HTTPS_PROXY=\$myproxy
 FTP_PROXY=\$myproxy
 SOCKS_PROXY=\$myproxy
 
-kubeIPRange="130.147.182.240,130.147.180.86,130.147.180.89"
+kubeIP="130.147.182.240,130.147.180.86,130.147.180.89,130.147.182.57"
+flannelIP="$(echo 10.244.0.{0..255} | sed 's: :,:g')"
+privIP="$(echo 192.168.10.{0..255} | sed 's: :,:g')"
 compIP="130.147.0.0/16,130.145.0.0/16,130.*.*.*,161.*.*.*,130.147.219.19,130.147.183.165,161.85.30.130,130.147.219.20,130.147.219.15,130.147.219.24,130.147.219.18,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,161.85.30.130,130.147.219.23,161.85.30.130"
 compDomain=".cdi.philips.com,.philips.com,pww.*.cdi.philips.com,pww.artifactory.cdi.philips.com,healthyliving.cn-132.lan.philips.com,*.cn-132.lan.philips.com,pww.sonar.cdi.philips.com,pww.gitlab.cdi.philips.com,pww.slave01.cdi.philips.com,pww.confluence.cdi.philips.com,pww.jira.cdi.philips.com,bdhub.pic.philips.com,tfsemea1.ta.philips.com,pww.jenkins.cdi.philips.com,blackduck.philips.com,fortify.philips.com"
-no_proxy="localhost,127.0.0.1,127.0.1.1,$hostIP,\${compIP},\${compDomain},\${kubeIPRange}"
+no_proxy="localhost,127.0.0.1,127.0.1.1,$hostIP,\${compIP},\${compDomain},\${flannelIP},\${privIP},\${kubeIP}"
 NO_PROXY=\$no_proxy
 
 # export all_proxy ALL_PROXY http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
@@ -533,6 +535,7 @@ function devEnvGetPackage(){
 
   wget ${ARTIFACTORYHOME}/devops/ubuntu/tools/chrome/google-chrome-unstable_current_amd64.deb
   sudo dpkg -i google-chrome-unstable_current_amd64.deb
+  sudo mv ${APTSOURCEPATH}/google-chrome-unstable.list{,.save}
 }
 
 function devEnvInstall() {
