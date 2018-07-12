@@ -51,10 +51,6 @@ function systemEnv() {
   mkdir -p /opt/{maven,gradle,sonarqube,groovy,java}
   [ ! -d ~/.marslo/ss ] && mkdir -p ~/.marslo/ss
 
-  if grep 'managed=false' /etc/NetworkManager/NetworkManager.conf > /dev/null 2>&1; then
-    sudo ${SED} -i 's/^managed=false/managed=true/' /etc/NetworkManager/NetworkManager.conf
-  fi
-
   sudo hostname "${MYHOSTNAME}"
   sudo bash -c "echo \"${MYHOSTNAME}\" > /etc/hostname"
   sudo ${SED} -i -e "s:^\\(127\\.0\\.1\\.1\\).*$:\\1\\t${MYHOSTNAME}:" /etc/hosts
@@ -78,6 +74,7 @@ function systemEnv() {
   sudo bash -c "${SED} -i -e 's:^\\(.*swap.*\\)$:# \\1:' /etc/fstab"
 
   [ -f /etc/sysctl.conf ] && sudo cp /etc/sysctl.conf{,.bak.${TIMESTAMPE}}
+  [ -f /etc/ufw/sysctl.conf ] && sudo cp /etc/ufw/sysctl.conf{,.bak.${TIMESTAMPE}}
   sudo sysctl net.bridge.bridge-nf-call-iptables=1
   sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
 
@@ -85,6 +82,12 @@ sudo bash -c "cat >> /etc/sysctl.conf" << EOF
 net.ipv4.ip_forward=1
 net.bridge.bridge-nf-call-iptables=1
 net.bridge.bridge-nf-call-ip6tables=1
+EOF
+
+sudo bash -c "cat >> /etc/ufw/sysctl.conf" << EOF
+net/bridge/bridge-nf-call-ip6tables = 1
+net/bridge/bridge-nf-call-iptables = 1
+net/bridge/bridge-nf-call-arptables = 1
 EOF
 
 sudo ${SED} -r 's:(^GRUB_TIMEOUT=).*$:\12:' -i /etc/default/grub
@@ -139,9 +142,10 @@ HTTPS_PROXY=\$myproxy
 FTP_PROXY=\$myproxy
 SOCKS_PROXY=\$myproxy
 
+kubeIPRange="130.147.182.240,130.147.180.86,130.147.180.89"
 compIP="130.147.0.0/16,130.145.0.0/16,130.*.*.*,161.*.*.*,130.147.219.19,130.147.183.165,161.85.30.130,130.147.219.20,130.147.219.15,130.147.219.24,130.147.219.18,130.147.219.16,161.*.*.*,162.*.*.*,130.*.*.*,161.85.30.130,130.147.219.23,161.85.30.130"
 compDomain=".cdi.philips.com,.philips.com,pww.*.cdi.philips.com,pww.artifactory.cdi.philips.com,healthyliving.cn-132.lan.philips.com,*.cn-132.lan.philips.com,pww.sonar.cdi.philips.com,pww.gitlab.cdi.philips.com,pww.slave01.cdi.philips.com,pww.confluence.cdi.philips.com,pww.jira.cdi.philips.com,bdhub.pic.philips.com,tfsemea1.ta.philips.com,pww.jenkins.cdi.philips.com,blackduck.philips.com,fortify.philips.com"
-no_proxy="localhost,127.0.0.1,$hostIP,\$compIP,\$compDomain"
+no_proxy="localhost,127.0.0.1,127.0.1.1,$hostIP,\${compIP},\${compDomain},\${kubeIPRange}"
 NO_PROXY=\$no_proxy
 
 # export all_proxy ALL_PROXY http_proxy HTTP_PROXY https_proxy HTTPS_PROXY no_proxy NO_PROXY
@@ -250,9 +254,9 @@ EOF
 
 function systemX11() {
   [ -f /etc/gdm3/custom.conf ] && sudo cp /etc/gdm3/custom.conf{,.bak.${TIMESTAMPE}}
-  sudo /bin/${SED} -r -e 's:^#(WaylandEnable.*false.*$):\1:' -i /etc/gdm3/custom.conf
-  sudo /bin/${SED} -r -e 's:^#.*(AutomaticLoginEnable.*$):\1:' -i /etc/gdm3/custom.conf
-  sudo /bin/${SED} -r -e "s:^#.*(AutomaticLogin[^Enable]*=).*$:\1 $(whoami):" -i /etc/gdm3/custom.conf
+  sudo ${SED} -r -e 's:^#(WaylandEnable.*false.*$):\1:' -i /etc/gdm3/custom.conf
+  sudo ${SED} -r -e 's:^#.*(AutomaticLoginEnable.*$):\1:' -i /etc/gdm3/custom.conf
+  sudo ${SED} -r -e "s:^#.*(AutomaticLogin[^Enable]*=).*$:\1 $(whoami):" -i /etc/gdm3/custom.conf
 
   gsettings set org.gnome.Vino prompt-enabled false
   gsettings set org.gnome.Vino require-encryption false
@@ -261,7 +265,7 @@ function systemX11() {
   sudo update-alternatives --auto vino-server
 }
 
-function systemNetwork() {
+function systemIPV6Network() {
 if ! grep 'disable ipv6 by marslo' /etc/default/grub > /dev/null 2>&1; then
 sudo bash -c "cat >> /etc/default/grub" << EOF
 # disable ipv6 by marslo
@@ -368,7 +372,13 @@ EOF
   curl -x ${SOCKSPORT} -fsSL https://dl.k8s.io/release/stable-1.10.txt
   # docker pull k8s.gcr.io/kube-apiserver-amd64:v1.10.1
 
-  sudo cp /etc/resolvconf/resolv.conf.d/head{,.org}
+  [ -f /etc/NetworkManager/NetworkManager.conf ] && sudo cp /etc/NetworkManager/NetworkManager.conf{,.bak.${TIMESTAMPE}}
+  if grep 'managed=false' /etc/NetworkManager/NetworkManager.conf > /dev/null 2>&1; then
+    sudo ${SED} -i 's/^managed=false/managed=true/' /etc/NetworkManager/NetworkManager.conf
+    sudo restart network-manager
+  fi
+
+  [ -f /etc/resolvconf/resolv.conf.d/head ] && sudo cp /etc/resolvconf/resolv.conf.d/head{,.org}
   sudo bash -c "cat > /etc/resolvconf/resolv.conf.d/head" << EOF
 nameserver 130.147.236.5
 nameserver 161.92.35.78
@@ -412,6 +422,7 @@ deb ${ARTIFACTORYHOME}/debian-remote-google kubernetes-xenial main
 # deb ${ARTIFACTORYHOME}/debian-remote-kubernetes kubernetes-yakkety-unstable main
 # deb ${ARTIFACTORYHOME}/debian-remote-kubernetes cloud-sdk-yakkety-unstable main
 # deb ${ARTIFACTORYHOME}/debian-remote-kubernetes cloud-sdk-yakkety main
+# deb http://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
 sudo bash -c "cat > ${APTSOURCEPATH}/webupd8team-ubuntu-y-ppa-manager-bionic.list " << EOF
@@ -423,16 +434,15 @@ EOF
   ${CURL} -fsSL ${ARTIFACTORYHOME}/debian-remote-google/doc/apt-key.gpg | sudo apt-key add
   ${CURL} -fsSL ${ARTIFACTORYHOME}/debian-remote-docker/gpg | sudo apt-key add
 
-  sudo apt-key fingerprint 0EBFCD88
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3746C208A7317B0F
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6DA746A05F00FA99
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6A030B21BA07F4FB
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7EA0A9C3F273FCD8
-  # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 0x6DA746A05F00FA99
-
   sudo add-apt-repository -y "deb http://ppa.launchpad.net/hzwhuang/ss-qt5/ubuntu artful main"
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 0x6DA746A05F00FA99
+  sudo apt-key fingerprint 0EBFCD88
+
+  # KNOWN_MISSING_KEYS="3746C208A7317B0F C2518248EEA14886 6DA746A05F00FA99 6A030B21BA07F4FB 7EA0A9C3F273FCD8"
+  for key in $(sudo apt update | grep "NO_PUBKEY" | sed "s:.*NO_PUBKEY ::" | uniq); do
+    echo -e "\nProcessing key: ${key}";
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ${key}
+  done
+  # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 0x6DA746A05F00FA99
 }
 
 function systemAPTInternet() {
@@ -486,7 +496,7 @@ function aptInstall() {
   sudo apt remove -y ttf-mscorefonts-installer
   wget http://ftp.de.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.6_all.deb
   sudo dpkg -i ttf-mscorefonts-installer_3.6_all.deb
-  sudo apt --fix-broken install
+  sudo apt -y --fix-broken install
 
   sudo apt install y-ppa-manager -y
   sudo apt upgrade -y
@@ -697,6 +707,7 @@ function systemDconf() {
   dconf write /org/gnome/terminal/legacy/profiles:/:${GNOMETERMPRO}/scroll-on-output true
 
   ss -lnt
+  apt-mark showhold
 }
 
 function marslorized() {
