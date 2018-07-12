@@ -51,6 +51,10 @@ function systemEnv() {
   mkdir -p /opt/{maven,gradle,sonarqube,groovy,java}
   [ ! -d ~/.marslo/ss ] && mkdir -p ~/.marslo/ss
 
+  if grep 'managed=false' /etc/NetworkManager/NetworkManager.conf > /dev/null 2>&1; then
+    sudo ${SED} -i 's/^managed=false/managed=true/' /etc/NetworkManager/NetworkManager.conf
+  fi
+
   sudo hostname "${MYHOSTNAME}"
   sudo bash -c "echo \"${MYHOSTNAME}\" > /etc/hostname"
   sudo ${SED} -i -e "s:^\\(127\\.0\\.1\\.1\\).*$:\\1\\t${MYHOSTNAME}:" /etc/hosts
@@ -501,7 +505,6 @@ function devEnvGetPackage(){
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.marslorc" "$HOME/.marslo/.marslorc"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.bello_ubuntu" "$HOME/.marslo/.bello_ubuntu"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.bye_marslo" "$HOME/.marslo/.bye_marslo"
-  echo "source /home/marslo/.marslo/.marslorc" >> ~/.bashrc
 
   ${CURL} -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz --create-dirs -o ${JAVADIR}/jdk-8u171-linux-x64.tar.gz
 
@@ -697,6 +700,12 @@ function systemDconf() {
 
 function marslorized() {
   sudo vim /etc/bash.bashrc +retab! +wq
+  echo "source /home/marslo/.marslo/.marslorc" >> ~/.bashrc
+  cat >> $HOME/.bashrc << EOF
+  if command -v kubectl >/dev/null 2>&1; then
+    source <(kubectl completion bash)
+  fi
+EOF
 
   # auto startup for gnome-session-properity
   [ ! -d $HOME/.config/autostart ] && mkdir -p $HOME/.config/autostart
