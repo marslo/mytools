@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-07-12 11:42:22
+#  LastChange: 2018-07-12 13:40:28
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -428,6 +428,7 @@ EOF
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6DA746A05F00FA99
   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6A030B21BA07F4FB
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7EA0A9C3F273FCD8
   # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 0x6DA746A05F00FA99
 
   sudo add-apt-repository -y "deb http://ppa.launchpad.net/hzwhuang/ss-qt5/ubuntu artful main"
