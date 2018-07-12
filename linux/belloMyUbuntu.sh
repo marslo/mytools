@@ -19,7 +19,7 @@ GRADLEDIR="/opt/gradle"
 GROOVYDIR="/opt/groovy"
 APTSOURCEPATH="/etc/apt/sources.list.d"
 
-MYHOSTNAME="iMarslo18"
+MYHOSTNAME="MYHOSTNAME"
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 
 ARTIFACTORYNAME="my.artifactory.com"
@@ -772,6 +772,11 @@ function rockInRoll() {
   systemDconf
   marslorized
 }
+
+if [ "MYHOSTNAME" == "${MYHOSTNAME}" ]; then
+  reportError "HostName haven't been setup!"
+  exit 1
+fi
 
 if [ "my.artifactory.com" == "${ARTIFACTORYNAME}" ]; then
   reportError "Artifactory Name haven't been setup!"
