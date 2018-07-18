@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-07-12 13:40:28
+#  LastChange: 2018-07-18 14:40:57
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -77,6 +77,12 @@ function systemEnv() {
   [ -f /etc/ufw/sysctl.conf ] && sudo cp /etc/ufw/sysctl.conf{,.bak.${TIMESTAMPE}}
   sudo sysctl net.bridge.bridge-nf-call-iptables=1
   sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
+
+  # https://support.cloudbees.com/hc/en-us/articles/115001416548-dedicated-JNLP-agents-formerly-slaves-get-disconnected
+  sudo sysctl -w net.ipv4.tcp_keepalive_time=120
+  sudo sysctl -w net.ipv4.tcp_keepalive_intvl=30
+  sudo sysctl -w net.ipv4.tcp_keepalive_probes=8
+  sudo sysctl -w net.ipv4.tcp_fin_timeout=30
 
 sudo bash -c "cat >> /etc/sysctl.conf" << EOF
 net.ipv4.ip_forward=1
@@ -451,15 +457,23 @@ EOF
 
 function systemAPTInternet() {
   ${CURL} -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
+  ${CURL} -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+
   sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) edge"
   sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu zesty stable"
   sudo add-apt-repository -y ppa:hzwhuang/ss-qt5
   sudo add-apt-repository -y ppa:webupd8team/y-ppa-manager
   sudo add-apt-repository -y "deb http://ppa.launchpad.net/hzwhuang/ss-qt5/ubuntu artful main"
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3746C208A7317B0F
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6DA746A05F00FA99
-  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 0x6DA746A05F00FA99
+
+  echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a ${APTSOURCEPATH}/kubernetes.list
+  echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee -a ${APTSOURCEPATH}/google-chrome-unstable.list
+  echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ unstable main" | sudo tee -a ${APTSOURCEPATH}/google-chrome-unstable.list
+
+  for key in $(sudo apt update | grep "NO_PUBKEY" | sed "s:.*NO_PUBKEY ::" | uniq); do
+    echo -e "\nProcessing key: ${key}";
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ${key}
+  done
+
   sudo apt-key fingerprint 0EBFCD88
 }
 
