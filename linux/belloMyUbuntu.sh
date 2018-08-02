@@ -45,7 +45,8 @@ usage="""USAGE:
 function help() # show list of functions
 {
   echo -e ${usage}
-  ${GREP} '^function' $0 | sed -re "s:^function([^(.]*).*$:\t\1:g"
+  # ${GREP} '^function' $0 | sed -re "s:^function([^(.]*).*$:\t\1:g"
+  declare -F -p | sed -re "s:^.*-f(.*)$:\t\1:g"
 }
 
 function reportError(){
