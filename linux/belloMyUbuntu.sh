@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-07-18 14:40:57
+#  LastChange: 2018-08-02 18:19:17
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -32,6 +32,21 @@ CURL="/usr/bin/curl"
 WGET="/usr/bin/wget"
 GREP="/bin/grep"
 SED="/bin/sed"
+
+usage="""USAGE:
+\n\t$0 [help] [independent function name]
+
+\n\nNOTICE:
+\n\tPlease repace the ARTIFACTORYHOST, HOSTNAME and SOCKSSERVER to your own situation
+
+\n\nINDEPENDENT FUNCTION NAME:
+"""
+
+function help() # show list of functions
+{
+  echo -e ${usage}
+  ${GREP} '^function' $0 | sed -re "s:^function([^(.]*).*$:\t\1:g"
+}
 
 function reportError(){
   set +H
@@ -778,11 +793,10 @@ EOF
   [ ! -d "${GITHOME}/tools" ] && mkdir -p ${GITHOME}/tools
   [ ! -d "$HOME/.local/share/gnome-shell/extensions" ] && mkdir -p "$HOME/.local/share/gnome-shell/extensions"
 
-  git clone https://github.com/Marslo/mytools.git ${GITHOME}/marslo/mytools
-  git clone https://github.com/Marslo/myvim.git ${GITHOME}/marslo/myvim
-  git clone https://github.com/Marslo/mylinux.git ${GITHOME}/marslo/mylinux
-  git clone https://github.com/Marslo/myblog.git ${GITHOME}/marslo/myblog
-  # git clone git@github.com:paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/tools/gnome-shell-system-monitor-applet
+  for i in mytools myvim mylinux myblog; do
+    git clone https://github.com/Marslo/${i}.git ${GITHOME}/marslo/${i}
+  done
+
   if git clone https://github.com/paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/tools/gnome-shell-system-monitor-applet; then
     ln -sf "${GITHOME}/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
     gnome-shell-extension-tool --enable-extension=system-monitor@paradoxxx.zero.gmail.com
@@ -795,17 +809,20 @@ EOF
   sudo updatedb
 }
 
-function systemSetup() {
+function systemSetup() # function collection for systemEnv & systemX11
+{
   systemEnv
   systemX11
 }
 
-function personalSetup() {
+function personalSetup() # function collection for systemDualNetwork & systemMadCatzMouse
+{
   systemDualNetwork
   systemMadCatzMouse
 }
 
-function rockInRoll() {
+function rockInRoll() # main function
+{
   systemSetup
   personalSetup
   systemAPTIntranet
@@ -819,26 +836,38 @@ function rockInRoll() {
   marslorized
 }
 
-if [ "MYHOSTNAME" == "${MYHOSTNAME}" ]; then
-  reportError "HostName haven't been setup!"
-  exit 1
-fi
+if [ "$1" = "help" ]; then
+  help
+else
+  for cmd in ${GREP} ${CURL} ${SED} ${WGET}; do
+    if [ ! -f ${cmd} ]; then
+      reportError "Command $cmd cannot be found in system!"
+    fi
+  done
 
-if [ "my.artifactory.com" == "${ARTIFACTORYNAME}" ]; then
-  reportError "Artifactory Name haven't been setup!"
-  exit 1
-fi
-
-if [ "45.35.34.44" == "${SOCKSSERVER}" ]; then
-  reportError "ssmarslo.json haven't been setup!"
-  exit 1
-fi
-
-for cmd in ${GREP} ${CURL} ${SED} ${WGET}; do
-  if [ ! -f ${cmd} ]; then
-    reportError "Command $cmd cannot be found in system!"
+  if [ "MYHOSTNAME" == "${MYHOSTNAME}" ]; then
+    reportError "HostName haven't been setup!"
+    # exit 1
   fi
-done
 
-rockInRoll
-sudo /usr/share/update-notifier/notify-reboot-required
+  if [ "my.artifactory.com" == "${ARTIFACTORYNAME}" ]; then
+    reportError "Artifactory Name haven't been setup!"
+    # exit 1
+  fi
+
+  if [ "45.35.34.44" == "${SOCKSSERVER}" ]; then
+    reportError "ssmarslo.json haven't been setup!"
+    # exit 1
+  fi
+
+  # if no parameters, then run all of default installation and configuration
+  if [ $# -eq 0 ]; then
+    rockInRoll
+    sudo /usr/share/update-notifier/notify-reboot-required
+  # execute specified the functions
+  else
+    for func do
+      [ "$(type -t -- "$func")" = function ] && "$func"
+    done
+  fi
+fi
