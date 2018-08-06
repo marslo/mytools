@@ -555,7 +555,7 @@ function devEnvGetPackage(){
   # 8u171
   ${CURL} -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz --create-dirs -o ${JAVADIR}/jdk-8u171-linux-x64.tar.gz
 
-  8u181
+  # 8u181
   ${CURL} -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz -o ${JAVADIR}/jdk-8u181-linux-x64.tar.gz
 
   # ${CURL} http://apache.mirrors.pair.com/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz
@@ -584,16 +584,10 @@ function devEnvInstall() {
   sudo systemctl restart docker.service
 
   tar xvzf ${JAVADIR}/jdk-8u171-linux-x64.tar.gz -C ${JAVADIR}
-  sudo update-alternatives --install /usr/local/bin/java    java    ${JAVAHOME}/bin/java    99
-  sudo update-alternatives --install /usr/local/bin/javac   javac   ${JAVAHOME}/bin/javac   99
-  sudo update-alternatives --install /usr/local/bin/javah   javah   ${JAVAHOME}/bin/javah   99
-  sudo update-alternatives --install /usr/local/bin/javap   javap   ${JAVAHOME}/bin/javap   99
-  sudo update-alternatives --install /usr/local/bin/javadoc javadoc ${JAVAHOME}/bin/javadoc 99
-  sudo update-alternatives --auto java
-  sudo update-alternatives --auto javac
-  sudo update-alternatives --auto javah
-  sudo update-alternatives --auto javap
-  sudo update-alternatives --auto javadoc
+  for jbin in java javac javah javap javadoc; do
+    sudo update-alternatives --install /usr/local/bin/${jbin} ${jbin} ${JAVAHOME}/bin/${jbin} 99
+    sudo update-alternatives --auto ${jbin}
+  done
 
   tar xvzf ${MAVENDIR}/apache-maven-3.5.0-bin.tar.gz -C ${MAVENDIR}
   sudo update-alternatives --install /usr/local/bin/mvn mvn ${MAVENDIR}/apache-maven-3.5.0/bin/mvn 99
