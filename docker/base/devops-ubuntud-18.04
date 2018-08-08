@@ -1,0 +1,103 @@
+# =============================================================================
+#    FileName: devops-ubuntud-18.04
+#      Author: marslo.jiao@gmail.com
+#     Created: 2018-08-01 15:54:41
+#  LastChange: 2018-08-08 14:29:53
+# =============================================================================
+
+FROM  pww.artifactory.cdi.philips.com/ubuntu:18.04
+MAINTAINER marslo.jiao@philips.com
+
+LABEL version="1.0"
+LABEL maintainer="marslo.jiao@gmail.com"
+LABEL description="From official Ubuntu 18.04; \
+Installed and integrated docker 17.03 in this docker container; \
+With specified Artifactory APT repo; \
+Working user is devops; \
+And also added the Artifactory docker registry certifaction; \
+Maintained by marslo.jiao@gmail.com."
+
+ARG user=devops
+ARG group=devops
+ARG uid=1000
+ARG gid=1000
+ARG HOME=/home/devops
+ARG JAVA_DIR=/opt/java
+ARG DOCKER_DIR=/opt/docker
+ARG ARTIFACTORY_NAME=my.company.com
+ARG ARTIFACTORY_HOME=http://my.company.com:8081/artifactory
+
+RUN mkdir -p $HOME \
+    && chown -R ${uid}:${gid} $HOME \
+    && groupadd -g ${gid} ${group} \
+    && useradd -d "$HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user} \
+    && chown -R ${uid}:${gid} $HOME /opt/
+
+RUN mv /etc/apt/sources.list /etc/apt/sources.list.org \
+      && echo "# Added by Dockerfile \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu bionic main restricted \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu bionic-updates main restricted \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu bionic universe \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu bionic-updates universe \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu bionic multiverse \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu bionic-updates multiverse \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu bionic-backports main restricted universe multiverse \n\
+deb $ARTIFACTORY_HOME/debian-remote-canonical bionic partner \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu-security bionic-security main restricted \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu-security bionic-security universe \n\
+deb $ARTIFACTORY_HOME/debian-remote-ubuntu-security bionic-security multiverse \n" \
+> /etc/apt/sources.list
+
+RUN apt update \
+    && apt install curl wget gnupg -y
+
+# RUN curl -fsSL $ARTIFACTORY_HOME/debian-remote-google/doc/apt-key.gpg | apt-key add \
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add \
+    && apt-key adv \
+       --keyserver keyserver.ubuntu.com \
+       --recv-keys 7EA0A9C3F273FCD8
+
+RUN echo "deb [arch=amd64] $ARTIFACTORY_HOME/debian-remote-docker bionic edge \n\
+deb [arch=amd64] $ARTIFACTORY_HOME/debian-remote-docker bionic stable \n\
+deb [arch=amd64] $ARTIFACTORY_HOME/debian-remote-docker xenial edge \n\
+deb [arch=amd64] $ARTIFACTORY_HOME/debian-remote-docker xenial stable \n" \
+> /etc/apt/sources.list.d/docker-artifactory.list
+RUN add-apt-repository \
+        "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+        bionic stable" \
+    && add-apt-repository \
+        "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+        xenial stable" \
+RUN apt update \
+    && apt install docker-ce=17.03.2~ce-0~ubuntu-xenial -y
+
+RUN echo "# added by dockerfile \n\
+export LANG=en_US.UTF-8 \n\
+export LANGUAGE=\$LANG \n\
+export LC_MONETARY=\$LANG \n" \
+>> /etc/bash.bashrc
+
+RUN usermod -a -G docker ${user} \
+      && usermod -a -G adm ${user} \
+      && usermod -a -G root ${user}
+
+RUN curl $ARTIFACTORY_HOME/devops/docker/$ARTIFACTORY_NAME-ca.crt \
+         --create-dirs \
+         --output \
+         $DOCKER_DIR/$ARTIFACTORY_NAME-ca.crt \
+    && curl $ARTIFACTORY_HOME/devops/docker/$SWCOE_ARTIFACTORY_NAME-ca.crt \
+       --create-dirs \
+       --output \
+       $DOCKER_DIR/$SWCOE_ARTIFACTORY_NAME-ca.crt
+
+RUN cp $DOCKER_DIR/$SWCOE_ARTIFACTORY_NAME-ca.crt \
+       $DOCKER_DIR/$ARTIFACTORY_NAME-ca.crt \
+       /usr/local/share/ca-certificates/ \
+    && update-ca-certificates
+
+RUN rm -rf $DOCKER_DIR \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/cache/apt/archives/*
+
+WORKDIR $HOME
+USER ${user}
