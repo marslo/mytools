@@ -1,7 +1,7 @@
 ## Dockerfiles
 ### base
 
-- devops-ubuntu<font style="color:red">b</font>-18.04: for ubuntu 18.04 <font style="color: red">b</font>asic
+- devops-ubuntu<font color="red">b</font>-18.04: for ubuntu 18.04 <font color="red">b</font>asic
 - devops-ubuntud-18.04: for ubuntu 18.04 **d**ocker in docker
 
 ### java
