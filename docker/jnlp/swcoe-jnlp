@@ -1,0 +1,87 @@
+# =============================================================================
+#    FileName: swcoe-jnlp
+#      Author: marslo.jiao@gmail.com
+#     Created: 2018-08-09 10:12:43
+#  LastChange: 2018-08-10 20:10:59
+# =============================================================================
+
+FROM  my.artifactory.com/swcoe/swcoe-ubuntu:18.04
+MAINTAINER Marslo Jiao <marslo.jiao@gmail.com>
+
+LABEL version="1.0"
+LABEL maintainer="marslo.jiao@gmail.com"
+LABEL description="Inherited from SWCoE Basic Ubuntu 18.04; \
+Integrated with GIT and JDK 8u181; \
+Maintained by marslo.jiao@gmail.com."
+
+ARG user=devops
+ARG JENKINS_NAME=my.jenkins.com
+ARG ARTIFACTORY_NAME=my.artifactory.com
+ARG JENKINS_HOME=http://${JENKINS_NAME}:8080
+ARG ARTIFACTORY_HOME=http://${ARTIFACTORY_NAME}:8081/artifactory
+ARG JAVA_DIR=/opt/java
+ARG JAVA_HOME=${JAVA_DIR}/jdk1.8.0_181
+ARG AGENT_WORKDIR=${HOME}/agent
+ENV AGENT_WORKDIR=${AGENT_WORKDIR}
+ENV HOME=${HOME}
+
+RUN curl --create-dirs -sSLo ${JAVA_DIR}/jdk-8u181-linux-x64.tar.gz ${ARTIFACTORY_HOME}/devops/common/java/jdk-8u181-linux-x64.tar.gz \
+    && tar xzf ${JAVA_DIR}/jdk-8u181-linux-x64.tar.gz -C ${JAVA_DIR} \
+    && rm -rf ${JAVA_DIR}/jdk-8u181-linux-x64.tar.gz
+
+USER root
+RUN apt update && apt install git -y
+RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar $JENKINS_HOME/jnlpJars/agent.jar \
+    && chmod 755 /usr/share/jenkins \
+    && chmod 644 /usr/share/jenkins/slave.jar
+
+RUN update-alternatives --install /usr/local/bin/java     java      $JAVA_HOME/bin/java     99 \
+    && update-alternatives --install /usr/local/bin/javac    javac     $JAVA_HOME/bin/javac    99 \
+    && update-alternatives --install /usr/local/bin/javap    javap     $JAVA_HOME/bin/javap    99 \
+    && update-alternatives --install /usr/local/bin/javah    javah     $JAVA_HOME/bin/javah    99 \
+    && update-alternatives --install /usr/local/bin/javadoc  javadoc   $JAVA_HOME/bin/javadoc  99
+
+RUN update-alternatives --auto java \
+    && update-alternatives --auto javac \
+    && update-alternatives --auto javap \
+    && update-alternatives --auto javah \
+    && update-alternatives --auto javadoc
+
+RUN echo "# added by marslo \n\
+JAVA_HOME="/opt/java/jdk1.8.0_171" \n\
+CLASSPATH=".:\$JAVA_HOME/lib/tools.jar:\$JAVA_HOME/lib/dt.jar" \n\
+PATH=\$JAVA_HOME/bin:\$PATH \n\
+export JAVA_HOME CLASSPATH PATH \n" \
+>> /etc/bash.bashrc
+
+RUN mkdir -p ${HOME}/.ssh
+COPY swcoe.k8s@devops ${HOME}/.ssh/swcoe.k8s@devops
+RUN echo "# added by marslo \n\
+HOST  * \n\
+      GSSAPIAuthentication no \n\
+      StrictHostKeyChecking no \n\
+      UserKnownHostsFile /dev/null \n\
+      IdentityFile  /home/${user}/.ssh/swcoe.k8s@devops \n" \
+> ~/.ssh/config
+
+RUN chown -R ${user}:${user} ${HOME}/.ssh \
+    && chmod 700 ${HOME}/.ssh \
+    && chmod 600 ${HOME}/.ssh/swcoe.k8s@devops
+
+USER ${user}
+RUN mkdir ${HOME}/.jenkins \
+    && mkdir -p ${AGENT_WORKDIR}
+
+RUN git config --global user.name 'swcoe.k8s.devops' \
+    && git config --global user.email 'scm.di.pins@gmail.com' \
+    && git clone git@pww.gitlab.cdi.gmail.com:devops_home/env.git ${HOME}/env
+
+VOLUME ${HOME}/.jenkins
+VOLUME ${HOME}/env
+VOLUME ${HOME}/.ssh
+VOLUME ${AGENT_WORKDIR}
+WORKDIR ${HOME}
+
+# jenkins-slave get from official [jenkinsci/jnlp](https://github.com/jenkinsci/docker-jnlp-slave/blob/master/jenkins-slave)
+COPY jenkins-slave /usr/local/bin/jenkins-slave
+ENTRYPOINT ["jenkins-slave"]
