@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-08-02 18:19:17
+#  LastChange: 2018-08-13 17:25:34
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -689,7 +689,7 @@ function systemDconf() {
   dconf write /org/gnome/desktop/peripherals/mouse/speed 0.66
   dconf write /org/gnome/desktop/session/idle-delay "uint32 0"
   dconf write /org/gnome/settings-daemon/plugins/power/power-button-action "'interactive'"
-  dconf write /org/gnome/shell/favorite-apps "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop']"
+  dconf write /org/gnome/shell/favorite-apps "['firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'google-chrome-unstable.desktop']"
 
   # guake
   dconf write /apps/guake/style/background/transparency 88
@@ -753,6 +753,9 @@ function marslorized() {
     source <(kubectl completion bash)
   fi
 EOF
+
+  # disable the login keyring for chrome
+  # sed -i /usr/share/applications/google-chrome-unstable.desktop
 
   # auto startup for gnome-session-properity
   [ ! -d $HOME/.config/autostart ] && mkdir -p $HOME/.config/autostart

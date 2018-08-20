@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>KeepAlive</key>
+	<false/>
+	<key>Label</key>
+	<string>i.marslo.shadowsocks</string>
+	<key>LaunchOnlyOnce</key>
+	<true/>
+	<key>LimitLoadToSessionType</key>
+	<array>
+		<string>LoginWindow</string>
+		<string>Aqua</string>
+	</array>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/local/bin/ssmarslo</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/marslo/.marslo/ss/logs/i.marslo.shadowsocks.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/marslo/.marslo/ss/logs/i.marslo.shadowsocks.err.log</string>
+</dict>
+</plist>
