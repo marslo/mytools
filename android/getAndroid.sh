@@ -5,7 +5,7 @@
 #     Author: marslo
 #      Email: marslo.jiao@gmail.com
 #    Created: 2018-08-23 18:41:12
-# LastChange: 2018-08-23 21:17:06
+# LastChange: 2018-08-23 21:43:11
 # =============================================================================
 
 ANDROID_HOME=/opt/android
@@ -20,9 +20,6 @@ SOCKSSERVER="127.0.0.1"
 
 CURL="/usr/bin/curl"
 CURLOPT="-x socks5://${SOCKSSERVER}:${SOCKSPORT} --create-dirs -sSLo"
-
-[ -d ${ANDROID_HOME} ] && mkdir -p ${ANDROID_HOME}
-[ -d ${ANDROID_TEMP} ] && mkdir -p ${ANDROID_TEMP}
 
 platformsList="""
 android-16_r05.zip
@@ -57,17 +54,33 @@ build-tools_r21.1.2-linux.zip
 build-tools_r20-linux.zip
 build-tools_r19.1-linux.zip
 """
+platformstools="platform-tools_r28.0.0-linux.zip"
+
+# platform-tools
+function getPlatformTools() {
+  if [ ! -e  ${ANDROID_TEMP}/${platformstools} ]; then
+    ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${platformstools} ${ANDROID_REPO_URL}/${platformstools}
+  fi
+  unzipPlatformTools
+}
+function unzipPlatformTools()
+{
+  [ ! -d  ${ANDROID_HOME}/platform-tools ] && unzip -q ${ANDROID_TEMP}/platform-tools_r28.0.0-linux.zip -d ${ANDROID_HOME}/
+}
 
 # build-tools
 function getBuildTools()
 {
   for bt in ${buildtoolsList}; do
-    ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${bt} ${ANDROID_REPO_URL}/${bt}
+    if [ ! -e ${ANDROID_TEMP}/${bt} ]; then
+      ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${bt} ${ANDROID_REPO_URL}/${bt}
+    fi
   done
   unzipBuildTools
 }
 function unzipBuildTools()
 {
+  [ -d ${tempf} ] && rm -rf ${tempf}
   tempf="${ANDROID_TEMP}/btfolder"
 
   for bt in ${buildtoolsList}; do
@@ -78,41 +91,40 @@ function unzipBuildTools()
       curver=${curver}.0
     fi
 
-    [ -d ${tempf} ] && rm -rf ${tempf}
-    unzip ${ANDROID_TEMP}/${bt} -d ${tempf}
-    mv ${tempf}/* ${ANDROID_BUILDTOOLS}/${curver}
+    if [ ! -d  ${ANDROID_BUILDTOOLS}/${curver} ]; then
+      unzip -q ${ANDROID_TEMP}/${bt} -d ${tempf}
+      mv ${tempf}/* ${ANDROID_BUILDTOOLS}/${curver}
+    fi
   done
-}
-
-# platform-tools
-function getPlatformTools() {
-  pt="platform-tools_r28.0.0-linux.zip"
-  ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${pt} ${ANDROID_REPO_URL}/${pt}
-  unzipPlatformTools
-}
-function unzipPlatformTools()
-{
-  unzip ${ANDROID_TEMP}/platform-tools_r28.0.0-linux.zip -d ${ANDROID_HOME}/
 }
 
 # platforms
 function getPlatforms()
 {
   for pl in ${platformsList}; do
-    ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${pl} ${ANDROID_REPO_URL}/${pl}
+    if [ ! -e ${ANDROID_TEMP}/${pl} ]; then
+      ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${pl} ${ANDROID_REPO_URL}/${pl}
+    fi
   done
   unzipPlatforms
 }
 function unzipPlatforms()
 {
   tempf="${ANDROID_TEMP}/plfolder"
+  [ -d ${tempf} ] && rm -rf ${tempf}
+
   for pl in ${platformsList}; do
     plname="android-$(echo ${pl} | sed -re "s:^.*-([0-9]*)_.*$:\1:")"
-
-    [ -d ${tempf} ] && rm -rf ${tempf}
-    unzip ${ANDROID_TEMP}/${pl} -d ${tempf}
-    mv ${tempf}/* ${ANDROID_BUILDTOOLS}/${plname}
+    if [ ! -d ${ANDROID_PLATFORMS}/${plname} ]; then
+      unzip -q ${ANDROID_TEMP}/${pl} -d ${tempf}
+      mv ${tempf}/* ${ANDROID_PLATFORMS}/${plname}
+    fi
   done
+}
+
+function clrTemp()
+{
+  rm -rf ${ANDROID_TEMP}
 }
 
 function getAndroid() {
@@ -120,3 +132,7 @@ function getAndroid() {
   getBuildTools
   getPlatforms
 }
+
+for adir in ${ANDROID_HOME} ${ANDROID_PLATFORMS} ${ANDROID_BUILDTOOLS} ${ANDROID_TEMP}; do
+  [ ! -d ${adir} ] && mkdir -p ${adir}
+done
