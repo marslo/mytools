@@ -4,7 +4,7 @@
 #   FileName: belloMyOSX.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2017-10-30 16:38:58
-# LastChange: 2018-04-02 13:40:40
+# LastChange: 2018-08-23 18:10:47
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -433,7 +433,7 @@ function setupBrewApps(){
   which -a bash
   /usr/local/bin/bash --version
 
-  brew install wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap
+  brew install wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils
   brew install shellcheck --HEAD
   brew install bats --HEAD
   brew install jq --devel --HEAD
@@ -447,6 +447,7 @@ function setupBrewApps(){
   brew install findutils --with-default-names
   brew install wdiff --with-gettext
   brew install gnu-indent --with-default-names
+  brew install less --with-pcre
   # brew install vim --override-system-vi
 
   brew cask install dash little-snitch iterm2-beta firefox google-chrome alfred vlc etcher imageoptim omnigraffle licecap xca manico snip jietu tickeys macdown xscreensaver
