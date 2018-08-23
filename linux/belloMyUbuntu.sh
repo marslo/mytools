@@ -395,7 +395,7 @@ EOF
     sudo systemctl restart docker.service
 
   curl -x ${SOCKSPROXY} -l https://k8s.gcr.io/v1/_ping
-  curl -x ${SOCKSPORT} -fsSL https://dl.k8s.io/release/stable-1.10.txt
+  curl -x ${SOCKSPROXY} -fsSL https://dl.k8s.io/release/stable-1.10.txt
   # docker pull k8s.gcr.io/kube-apiserver-amd64:v1.10.1
 
   [ -f /etc/NetworkManager/NetworkManager.conf ] && sudo cp /etc/NetworkManager/NetworkManager.conf{,.bak.${TIMESTAMPE}}
