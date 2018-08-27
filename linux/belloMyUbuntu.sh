@@ -524,7 +524,7 @@ function aptInstall() {
   sudo apt install -y libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386
 
   # for io status
-  sudo apt install -y inotify-tools iotop
+  sudo apt install -y inotify-tools iotop auditd
 
   sudo apt install -y shadowsocks-qt5
   sudo apt install -y docker-ce="$(apt-cache madison docker-ce | /bin/grep 17.03 | head -1 | awk '{print $3}')"
