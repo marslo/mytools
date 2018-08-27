@@ -5,7 +5,7 @@
 #     Author: marslo
 #      Email: marslo.jiao@gmail.com
 #    Created: 2018-08-23 18:41:12
-# LastChange: 2018-08-23 21:43:11
+# LastChange: 2018-08-27 11:16:31
 # =============================================================================
 
 ANDROID_HOME=/opt/android
@@ -21,59 +21,72 @@ SOCKSSERVER="127.0.0.1"
 CURL="/usr/bin/curl"
 CURLOPT="-x socks5://${SOCKSSERVER}:${SOCKSPORT} --create-dirs -sSLo"
 
+sdktools="sdk-tools-linux-4333796"
+platformstools="platform-tools_r28.0.0-linux"
 platformsList="""
-android-16_r05.zip
-android-17_r03.zip
-android-18_r03.zip
-android-20_r02.zip
-android-22_r02.zip
-platform-24_r02.zip
-platform-27_r03.zip
-android-19_r04.zip
-android-21_r02.zip
-platform-23_r03.zip
-platform-26_r02.zip
-platform-28_r06.zip
+android-16_r05
+android-17_r03
+android-18_r03
+android-20_r02
+android-22_r02
+platform-24_r02
+platform-27_r03
+android-19_r04
+android-21_r02
+platform-23_r03
+platform-26_r02
+platform-28_r06
 """
 
 buildtoolsList="""
-build-tools_r26.0.2-linux.zip
-build-tools_r25.0.3-linux.zip
-build-tools_r25.0.2-linux.zip
-build-tools_r25.0.1-linux.zip
-build-tools_r25-linux.zip
-build-tools_r24.0.3-linux.zip
-build-tools_r24.0.2-linux.zip
-build-tools_r24.0.1-linux.zip
-build-tools_r24-linux.zip
-build-tools_r23.0.3-linux.zip
-build-tools_r23.0.2-linux.zip
-build-tools_r23.0.1-linux.zip
-build-tools_r22.0.1-linux.zip
-build-tools_r21.1.2-linux.zip
-build-tools_r20-linux.zip
-build-tools_r19.1-linux.zip
+build-tools_r26.0.2-linux
+build-tools_r25.0.3-linux
+build-tools_r25.0.2-linux
+build-tools_r25.0.1-linux
+build-tools_r25-linux
+build-tools_r24.0.3-linux
+build-tools_r24.0.2-linux
+build-tools_r24.0.1-linux
+build-tools_r24-linux
+build-tools_r23.0.3-linux
+build-tools_r23.0.2-linux
+build-tools_r23.0.1-linux
+build-tools_r22.0.1-linux
+build-tools_r21.1.2-linux
+build-tools_r20-linux
+build-tools_r19.1-linux
 """
-platformstools="platform-tools_r28.0.0-linux.zip"
+
+# sdk-tools
+function getSDKTools() {
+  if [ ! -e  ${ANDROID_TEMP}/${sdktools}.zip ]; then
+    ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${sdktools}.zip ${ANDROID_REPO_URL}/${sdktools}.zip
+  fi
+  unzipSDKTools
+}
+function unzipSDKTools() {
+  [ ! -d  ${ANDROID_HOME}/tools ] && unzip -q ${ANDROID_TEMP}/${sdktools}.zip -d ${ANDROID_HOME}/
+}
 
 # platform-tools
 function getPlatformTools() {
-  if [ ! -e  ${ANDROID_TEMP}/${platformstools} ]; then
-    ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${platformstools} ${ANDROID_REPO_URL}/${platformstools}
+  if [ ! -e  ${ANDROID_TEMP}/${platformstools}.zip ]; then
+    ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${platformstools}.zip ${ANDROID_REPO_URL}/${platformstools}.zip
   fi
   unzipPlatformTools
 }
 function unzipPlatformTools()
 {
-  [ ! -d  ${ANDROID_HOME}/platform-tools ] && unzip -q ${ANDROID_TEMP}/platform-tools_r28.0.0-linux.zip -d ${ANDROID_HOME}/
+  [ ! -d  ${ANDROID_HOME}/platform-tools ] && unzip -q ${ANDROID_TEMP}/${platformstools}.zip -d ${ANDROID_HOME}/
 }
 
 # build-tools
 function getBuildTools()
 {
   for bt in ${buildtoolsList}; do
-    if [ ! -e ${ANDROID_TEMP}/${bt} ]; then
-      ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${bt} ${ANDROID_REPO_URL}/${bt}
+    btname=${bt}.zip
+    if [ ! -e ${ANDROID_TEMP}/${btname} ]; then
+      ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${btname} ${ANDROID_REPO_URL}/${btname}
     fi
   done
   unzipBuildTools
@@ -92,7 +105,7 @@ function unzipBuildTools()
     fi
 
     if [ ! -d  ${ANDROID_BUILDTOOLS}/${curver} ]; then
-      unzip -q ${ANDROID_TEMP}/${bt} -d ${tempf}
+      unzip -q ${ANDROID_TEMP}/${bt}.zip -d ${tempf}
       mv ${tempf}/* ${ANDROID_BUILDTOOLS}/${curver}
     fi
   done
@@ -102,8 +115,9 @@ function unzipBuildTools()
 function getPlatforms()
 {
   for pl in ${platformsList}; do
-    if [ ! -e ${ANDROID_TEMP}/${pl} ]; then
-      ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${pl} ${ANDROID_REPO_URL}/${pl}
+    plname=${pl}.zip
+    if [ ! -e ${ANDROID_TEMP}/${plname} ]; then
+      ${CURL} ${CURLOPT} ${ANDROID_TEMP}/${plname} ${ANDROID_REPO_URL}/${plname}
     fi
   done
   unzipPlatforms
@@ -116,7 +130,7 @@ function unzipPlatforms()
   for pl in ${platformsList}; do
     plname="android-$(echo ${pl} | sed -re "s:^.*-([0-9]*)_.*$:\1:")"
     if [ ! -d ${ANDROID_PLATFORMS}/${plname} ]; then
-      unzip -q ${ANDROID_TEMP}/${pl} -d ${tempf}
+      unzip -q ${ANDROID_TEMP}/${pl}.zip -d ${tempf}
       mv ${tempf}/* ${ANDROID_PLATFORMS}/${plname}
     fi
   done
