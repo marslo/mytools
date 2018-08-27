@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-08-13 17:25:34
+#  LastChange: 2018-08-27 15:48:44
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -24,6 +24,7 @@ TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
 
 ARTIFACTORYNAME="my.artifactory.com"
 ARTIFACTORYHOME="http://${ARTIFACTORYNAME}:8081/artifactory"
+
 SOCKSPORT=1880
 SOCKSSERVER="45.35.34.44"
 SOCKSPROXY="socks5://127.0.0.1:${SOCKSPORT}"
@@ -518,6 +519,13 @@ function aptInstall() {
   sudo apt install -y sysstat
   sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
   sudo apt install -y glibc-doc:i386 locales:i386
+  # for android sdk
+  sudo dpkg --add-architecture i386
+  sudo apt install -y libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386
+
+  # for io status
+  sudo apt install -y inotify-tools iotop
+
   sudo apt install -y shadowsocks-qt5
   sudo apt install -y docker-ce="$(apt-cache madison docker-ce | /bin/grep 17.03 | head -1 | awk '{print $3}')"
   sudo apt-mark hold docker-ce
