@@ -1,0 +1,39 @@
+# =============================================================================
+#   FileName: blueocean-deployment.yaml
+#       Desc: Inspired from https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster
+#     Author: marslo.jiao@gmail.com
+#    Created: 2018-08-30 17:42:05
+# LastChange: 2018-08-30 17:44:11
+# =============================================================================
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: blueocean
+  namespace: swcoe-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blueocean
+    spec:
+      containers:
+        - name: bluecoean
+          image: jenkinsci/blueocean
+          env:
+            - name: JAVA_OPTS
+              value: -Djenkins.install.runSetupWizard=true
+          ports:
+            - name: http-port
+              containerPort: 8080
+            - name: jnlp-port
+              containerPort: 50000
+          volumeMounts:
+            - name: blueocean-home
+              mountPath: /home/marslo/BLUEOCEAN_HOME
+      nodeSelector:
+        mylabel: marslo
+      volumes:
+        - name: blueocean-home
+          emptyDir: {}
