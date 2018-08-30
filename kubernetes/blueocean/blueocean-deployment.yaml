@@ -3,16 +3,19 @@
 #       Desc: Inspired from https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster
 #     Author: marslo.jiao@gmail.com
 #    Created: 2018-08-30 17:42:05
-# LastChange: 2018-08-30 17:44:11
+# LastChange: 2018-08-30 21:34:17
 # =============================================================================
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blueocean
   namespace: swcoe-system
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: blueocean
   template:
     metadata:
       labels:
@@ -20,10 +23,25 @@ spec:
     spec:
       containers:
         - name: bluecoean
-          image: jenkinsci/blueocean
+          image: jenkinsci/blueocean:latest
+          imagePullPolicy: IfNotPresent
           env:
             - name: JAVA_OPTS
-              value: -Djenkins.install.runSetupWizard=true
+              value: -Xms2048m
+                     -Xmx10240m
+                     -XX:PermSize=2048m
+                     -XX:MaxPermSize=10240m
+                     -Duser.timezone='Asia/Shanghai'
+                     -Dhudson.model.DirectoryBrowserSupport.CSP="sandbox allow-same-origin allow-scripts; default-src 'self'; script-src * 'unsafe-eval'; img-src *; style-src * 'unsafe-inline'; font-src *;"
+                     -Djenkins.slaves.NioChannelSelector.disabled=true
+                     -Djenkins.slaves.JnlpSlaveAgentProtocol3.enabled=false
+                     -Djava.awt.headless=true
+                     -Djenkins.security.ClassFilterImpl.SUPPRESS_WHITELIST=true
+                     -Dhudson.model.ParametersAction.keepUndefinedParameters=true
+                     -Dcom.cloudbees.workflow.rest.external.ChangeSetExt.resolveCommitAuthors=true
+                     -Djenkins.install.runSetupWizard=true
+            - name: JNLP_PROTOCOL_OPTS
+              value: -Dorg.jenkinsci.remoting.engine.JnlpProtocol3.disabled=false
           ports:
             - name: http-port
               containerPort: 8080
@@ -31,9 +49,21 @@ spec:
               containerPort: 50000
           volumeMounts:
             - name: blueocean-home
-              mountPath: /home/marslo/BLUEOCEAN_HOME
+              mountPath: /var/jenkins_home
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            - name: docker
+              mountPath: /usr/bin/docker
       nodeSelector:
         mylabel: marslo
       volumes:
         - name: blueocean-home
-          emptyDir: {}
+          hostPath:
+            path: /home/marslo/BLUEOCEAN_HOME
+            type: Directory
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker
+          hostPath:
+            path: /usr/bin/docker
