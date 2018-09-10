@@ -55,7 +55,7 @@ spec:
             - name: docker
               mountPath: /usr/bin/docker
       nodeSelector:
-        mylabel: marslo
+        jenkinsmaster: MadeInMarslo
       volumes:
         - name: jenkins-home
           hostPath:

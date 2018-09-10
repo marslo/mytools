@@ -3,7 +3,7 @@
 #       Desc: Inspired from https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster
 #     Author: marslo.jiao@gmail.com
 #    Created: 2018-08-30 17:42:05
-# LastChange: 2018-08-30 21:34:17
+# LastChange: 2018-09-10 12:09:04
 # =============================================================================
 
 apiVersion: apps/v1
@@ -22,7 +22,7 @@ spec:
         app: blueocean
     spec:
       containers:
-        - name: bluecoean
+        - name: blueocean
           image: jenkinsci/blueocean:latest
           imagePullPolicy: IfNotPresent
           env:
@@ -55,7 +55,7 @@ spec:
             - name: docker
               mountPath: /usr/bin/docker
       nodeSelector:
-        mylabel: marslo
+        blueocean: MadeInMarslo
       volumes:
         - name: blueocean-home
           hostPath:
