@@ -3,7 +3,7 @@
 #       Desc: Inspired from https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster
 #     Author: marslo.jiao@gmail.com
 #    Created: 2018-08-30 17:42:05
-# LastChange: 2018-09-10 10:57:05
+# LastChange: 2018-09-10 12:19:31
 # =============================================================================
 
 apiVersion: v1
@@ -17,11 +17,11 @@ spec:
     - name: jenkins
       port: 8080
       targetPort: 8080
-      nodePort: 8080
+      nodePort: 30838
     - name: jenkins-agent
       port: 50000
-      nodePort: 32500
-      targetPort: 32500
+      targetPort: 50000
+      nodePort: 30380
   selector:
     app: jenkins
   selector:
