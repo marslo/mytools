@@ -1,0 +1,33 @@
+# =============================================================================
+#    FileName: jenkins-admin.yaml
+#        Desc: Inspired from https://blog.csdn.net/a632189007/article/details/79311795
+#      Author: marslo.jiao@gmail.com
+#     Created: 2018-08-30 19:50:28
+#  LastChange: 2018-09-10 10:57:09
+# =============================================================================
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: jenkins
+  name: jenkins-admin
+  namespace: swcoe-system
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: jenkins-admin
+  labels:
+    app: jenkins
+subjects:
+  - kind: ServiceAccount
+    name: jenkins-admin
+    namespace: swcoe-system
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---

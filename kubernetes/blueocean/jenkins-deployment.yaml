@@ -1,0 +1,69 @@
+# =============================================================================
+#   FileName: jenkins-deployment.yaml
+#       Desc: Inspired from https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster
+#     Author: marslo.jiao@gmail.com
+#    Created: 2018-08-30 17:42:05
+# LastChange: 2018-09-10 10:59:32
+# =============================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: swcoe-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+        - name: jenkins
+          image: pww.artifactory.cdi.philips.com/jenkinsci/jenkins:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JAVA_OPTS
+              value: -Xms2048m
+                     -Xmx10240m
+                     -XX:PermSize=2048m
+                     -XX:MaxPermSize=10240m
+                     -Duser.timezone='Asia/Shanghai'
+                     -Dhudson.model.DirectoryBrowserSupport.CSP="sandbox allow-same-origin allow-scripts; default-src 'self'; script-src * 'unsafe-eval'; img-src *; style-src * 'unsafe-inline'; font-src *;"
+                     -Djenkins.slaves.NioChannelSelector.disabled=true
+                     -Djenkins.slaves.JnlpSlaveAgentProtocol3.enabled=false
+                     -Djava.awt.headless=true
+                     -Djenkins.security.ClassFilterImpl.SUPPRESS_WHITELIST=true
+                     -Dhudson.model.ParametersAction.keepUndefinedParameters=true
+                     -Dcom.cloudbees.workflow.rest.external.ChangeSetExt.resolveCommitAuthors=true
+                     -Djenkins.install.runSetupWizard=true
+            - name: JNLP_PROTOCOL_OPTS
+              value: -Dorg.jenkinsci.remoting.engine.JnlpProtocol3.disabled=false
+          ports:
+            - name: http-port
+              containerPort: 8080
+            - name: jnlp-port
+              containerPort: 50000
+          volumeMounts:
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            - name: docker
+              mountPath: /usr/bin/docker
+      nodeSelector:
+        mylabel: marslo
+      volumes:
+        - name: jenkins-home
+          hostPath:
+            path: /home/devops/JENKINS_HOME
+            type: Directory
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker
+          hostPath:
+            path: /usr/bin/docker
