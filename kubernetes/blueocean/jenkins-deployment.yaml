@@ -3,7 +3,7 @@
 #       Desc: Inspired from https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster
 #     Author: marslo.jiao@gmail.com
 #    Created: 2018-08-30 17:42:05
-# LastChange: 2018-09-10 10:59:32
+# LastChange: 2018-09-10 17:11:56
 # =============================================================================
 
 apiVersion: apps/v1
@@ -47,6 +47,8 @@ spec:
               containerPort: 8080
             - name: jnlp-port
               containerPort: 50000
+            - name: cli-port
+              containerPort: 38238
           volumeMounts:
             - name: jenkins-home
               mountPath: /var/jenkins_home
@@ -59,7 +61,7 @@ spec:
       volumes:
         - name: jenkins-home
           hostPath:
-            path: /home/devops/JENKINS_HOME
+            path: /home/swcoe-jenkins/SWCOE_JENKINS_HOME
             type: Directory
         - name: docker-sock
           hostPath:

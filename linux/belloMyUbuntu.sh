@@ -4,10 +4,11 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-08-27 15:48:44
+#  LastChange: 2018-09-12 19:54:27
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
+#     Sync time to JENKINS MASTER: date --set="$(ssh user@domain date)"
 
 MYHOME="/home/$(whoami)/myubuntu"
 GITHOME="${MYHOME}/tools/git"

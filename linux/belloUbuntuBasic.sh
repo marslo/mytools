@@ -4,10 +4,11 @@
 #    FileName: belloUbuntuBasic.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-02-06 14:16:22
-#  LastChange: 2018-08-27 15:48:44
+#  LastChange: 2018-09-12 19:54:41
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
+#     Sync time to JENKINS MASTER: date --set="$(ssh user@domain date)"
 
 SSHDFILE="/etc/ssh/sshd_config"
 SLAVENAME="SlaveX"
