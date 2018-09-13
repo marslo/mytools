@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-09-12 19:54:27
+#  LastChange: 2018-09-13 17:58:01
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -554,11 +554,12 @@ function aptInstall() {
 
 }
 function devEnvGetPackageIntranet(){
-  ${CURL} -fsSL ${ARTIFACTORYHOME}/artifactory/devops/common/java/jdk-8u181-linux-x64.tar.gz | tar 
+  ${CURL} -fsSL ${ARTIFACTORYHOME}/artifactory/devops/common/java/jdk-8u181-linux-x64.tar.gz | tar xzf - -C ${JAVADIR}
   ${CURL} -fsSL ${ARTIFACTORYHOME}/devops/common/maven/apache-maven-3.5.0-bin.tar.gz | tar xzf - -C ${MAVENDIR}
   ${CURL} -fsSL ${ARTIFACTORYHOME}/devops/common/gradle/gradle-3.5-all.zip | bsdtar xzf - -C ${GRADLEDIR}
   ${CURL} -fsSL http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/gradle/gradle-4.8-all.zip | tar xzf - -C ${GRADLEDIR}
   wget ${ARTIFACTORYHOME}/devops/ubuntu/tools/chrome/google-chrome-unstable_current_amd64.deb
+  ${CURL} -sSLo --create-dirs /opt/chrome/google-chrome-stable_current_amd64.deb ${ARTIFACTORYHOME}/devops/ubuntu/tools/chrome/google-chrome-unstable_current_amd64.deb
 }
 
 function devEnvGetPackageInternet(){
@@ -575,7 +576,7 @@ function devEnvGetPackageInternet(){
   # ${WGET} --no-check-certificate -c https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip | bsdtar xzf - -C ${GROOVYDIR}
   ${CURL} -fsSL https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip | bsdtar xzf - -C ${GROOVYDIR}
 
-  ${CURL} -sSLo --create-dirs https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  ${CURL} -sSLo --create-dirs /opt/chrome/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 }
 
 function devEnvInstall() {
@@ -585,7 +586,7 @@ function devEnvInstall() {
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.bello_ubuntu" "$HOME/.marslo/.bello_ubuntu"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.bye_marslo" "$HOME/.marslo/.bye_marslo"
 
-  sudo dpkg -i google-chrome-unstable_current_amd64.deb
+  sudo dpkg -i /opt/chrome/google-chrome-unstable_current_amd64.deb
   sudo mv ${APTSOURCEPATH}/google-chrome-unstable.list{,.save}
 
   # docker certificate for artifactory
@@ -603,8 +604,6 @@ function devEnvInstall() {
   sudo update-alternatives --install /usr/local/bin/mvn mvn ${MAVENDIR}/apache-maven-3.5.0/bin/mvn 99
   sudo update-alternatives --auto mvn
 
-  unzip ${GRADLEDIR}/gradle-3.5-all.zip -d ${GRADLEDIR}
-  unzip ${GRADLEDIR}/gradle-4.8-all.zip -d ${GRADLEDIR}
   sudo update-alternatives --install /usr/local/bin/gradle gradle ${GRADLEDIR}/gradle-4.8/bin/gradle 99
   sudo update-alternatives --auto gradle
 
