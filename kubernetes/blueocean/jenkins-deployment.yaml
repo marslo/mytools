@@ -1,29 +1,29 @@
 # =============================================================================
-#   FileName: blueocean-deployment.yaml
+#   FileName: jenkins-deployment.yaml
 #       Desc: Inspired from https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster
 #     Author: marslo.jiao@gmail.com
 #    Created: 2018-08-30 17:42:05
-# LastChange: 2018-09-10 12:09:04
+# LastChange: 2018-09-10 17:11:56
 # =============================================================================
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blueocean
+  name: jenkins
   namespace: swcoe-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: blueocean
+      app: jenkins
   template:
     metadata:
       labels:
-        app: blueocean
+        app: jenkins
     spec:
       containers:
-        - name: blueocean
-          image: jenkinsci/blueocean:latest
+        - name: jenkins
+          image: pww.artifactory.cdi.philips.com/jenkinsci/jenkins:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: JAVA_OPTS
@@ -47,19 +47,21 @@ spec:
               containerPort: 8080
             - name: jnlp-port
               containerPort: 50000
+            - name: cli-port
+              containerPort: 38238
           volumeMounts:
-            - name: blueocean-home
+            - name: jenkins-home
               mountPath: /var/jenkins_home
             - name: docker-sock
               mountPath: /var/run/docker.sock
             - name: docker
               mountPath: /usr/bin/docker
       nodeSelector:
-        blueocean: MadeInMarslo
+        jenkinsmaster: MadeInMarslo
       volumes:
-        - name: blueocean-home
+        - name: jenkins-home
           hostPath:
-            path: /home/marslo/BLUEOCEAN_HOME
+            path: /home/swcoe-jenkins/SWCOE_JENKINS_HOME
             type: Directory
         - name: docker-sock
           hostPath:
