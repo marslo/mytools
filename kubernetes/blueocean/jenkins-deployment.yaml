@@ -40,6 +40,7 @@ spec:
                      -Dhudson.model.ParametersAction.keepUndefinedParameters=true
                      -Dcom.cloudbees.workflow.rest.external.ChangeSetExt.resolveCommitAuthors=true
                      -Djenkins.install.runSetupWizard=true
+                     -Dpermissive-script-security.enabled=true
             - name: JNLP_PROTOCOL_OPTS
               value: -Dorg.jenkinsci.remoting.engine.JnlpProtocol3.disabled=false
           ports:
