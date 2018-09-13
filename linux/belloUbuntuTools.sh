@@ -4,7 +4,7 @@
 #    FileName: belloUbuntuTools.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-01-18 20:42:27
-#  LastChange: 2018-04-01 12:41:51
+#  LastChange: 2018-09-13 14:22:11
 # =============================================================================
 # USAGE:
 #     please repace the GITLABHOST, SONARURL and ARTIFACTORYHOST to your own situation
@@ -46,13 +46,12 @@ function doMaven() {
 
 function mavenSetup() {
   [ -f ~/.m2/settings.xml ] && mv ~/.m2/settings.xml{,.org.${TIMESTAMPE}} || mkdir -p ~/.m2
-  curl ${ARTIFACTORYURL}/devops/common/settings.xml --create-dirs -o ~/.m2/settings.xml
+  curl --create-dirs -sSLo ~/.m2/settings.xml ${ARTIFACTORYURL}/devops/common/settings.xml
 }
 
 function doGradle() {
   if ! gradle --version > /dev/null 2>&1; then
-    curl ${ARTIFACTORYURL}/devops/common/gradle/gradle-3.5-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.5-all.zip
-    unzip ${GRADLEDIR}/gradle-3.5-all.zip -d ${GRADLEDIR}
+    curl -fsSL ${ARTIFACTORYURL}/devops/common/gradle/gradle-3.5-all.zip | bsdtar xzf - -C ${GRADLEDIR}
     sudo update-alternatives --install /usr/local/bin/gradle gradle ${GRADLEDIR}/gradle-3.5/bin/gradle 99
     sudo update-alternatives --auto gradle
     if ! gradle --version; then
@@ -61,8 +60,7 @@ function doGradle() {
   fi
 
   if ! gradle3.3 --version > /dev/null 2>&1; then
-    curl ${ARTIFACTORYURL}/devops/common/gradle/gradle-3.3-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.3-all.zip
-    unzip ${GRADLEDIR}/gradle-3.3-all.zip -d ${GRADLEDIR}
+    curl -fsSL ${ARTIFACTORYURL}/devops/common/gradle/gradle-3.3-all.zip | bsdtar xzf - -C ${GRADLEDIR}
     sudo update-alternatives --install /usr/local/bin/gradle3.3 gradle3.3 ${GRADLEDIR}/gradle-3.3/bin/gradle 99
     sudo update-alternatives --auto gradle3.3
     gradleSetup
@@ -121,8 +119,7 @@ function npmSetup() {
 
 function doJava() {
   if ! java -version; then
-    curl ${ARTIFACTORYURL}/devops/common/java/jdk-8u162-linux-x64.tar.gz --create-dirs -o ${JAVADIR}/jdk-8u162-linux-x64.tar.gz
-    tar xvzf ${JAVADIR}/jdk-8u162-linux-x64.tar.gz -C ${JAVADIR}
+    curl -fsSL ${ARTIFACTORYURL}/devops/common/java/jdk-8u162-linux-x64.tar.gz | tar xzf - -C ${JAVADIR}
     javaSetup
     if ! java -version; then
       reportError "java installed failed"
@@ -188,8 +185,7 @@ EOF
 
 function doSonar() {
   if ! sonar-scanner --version > /dev/null 2>&1; then
-    curl ${ARTIFACTORYURL}/devops/sca/sonar-scanner-cli-3.0.3.778-linux.zip --create-dirs -o ${SONARDIR}/sonar-scanner-3.0.3.zip
-    unzip ${SONARDIR}/sonar-scanner-3.0.3.zip -d ${SONARDIR}
+    curl ${ARTIFACTORYURL}/devops/sca/sonar-scanner-cli-3.0.3.778-linux.zip | bsdtar xzf - -C ${SONARDIR}
     mv ${SONARDIR}/sonar-scanner-3.0.3.778-linux ${SONARDIR}/sonar-scanner-3.0.3
     sudo update-alternatives --install /usr/local/bin/sonar-scanner sonar-scanner ${SONARDIR}/sonar-scanner-3.0.3/bin/sonar-scanner 99
     sudo update-alternatives --auto sonar-scanner

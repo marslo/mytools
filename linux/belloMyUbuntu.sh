@@ -553,38 +553,41 @@ function aptInstall() {
   sudo apt-mark hold docker-ce
 
 }
+function devEnvGetPackageIntranet(){
+  ${CURL} -fsSL ${ARTIFACTORYHOME}/artifactory/devops/common/java/jdk-8u181-linux-x64.tar.gz | tar 
+  ${CURL} -fsSL ${ARTIFACTORYHOME}/devops/common/maven/apache-maven-3.5.0-bin.tar.gz | tar xzf - -C ${MAVENDIR}
+  ${CURL} -fsSL ${ARTIFACTORYHOME}/devops/common/gradle/gradle-3.5-all.zip | bsdtar xzf - -C ${GRADLEDIR}
+  ${CURL} -fsSL http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/gradle/gradle-4.8-all.zip | tar xzf - -C ${GRADLEDIR}
+  wget ${ARTIFACTORYHOME}/devops/ubuntu/tools/chrome/google-chrome-unstable_current_amd64.deb
+}
 
-function devEnvGetPackage(){
+function devEnvGetPackageInternet(){
+  # 8u171
+  ${CURL} -fsSL -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz | tar xzf - -C ${JAVADIR}
+  # 8u181
+  ${CURL} -fsSL -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz | tar xzf - -C ${JAVADIR}
+
+  ${CURL} -fsSL http://apache.mirrors.pair.com/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz | tar xzf - -C ${MAVENDIR}
+
+  ${CURL} -fsSL https://services.gradle.org/distributions/gradle-4.7-all.zip | bsdtar xzf - -C ${GRADLEDIR}
+  ${CURL} -fsSL https://services.gradle.org/distributions/gradle-4.8-all.zip -P ${GRADLEDIR} | tar xzf - -C ${GRADLEDIR}
+
+  # ${WGET} --no-check-certificate -c https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip | bsdtar xzf - -C ${GROOVYDIR}
+  ${CURL} -fsSL https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip | bsdtar xzf - -C ${GROOVYDIR}
+
+  ${CURL} -sSLo --create-dirs https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+}
+
+function devEnvInstall() {
   cp "${GITHOME}/marslo/myvim/Configurations/vimrc_ubuntu" "$HOME/.vimrc"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/Git/.gitconfig" "$HOME/.gitconfig"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.marslorc" "$HOME/.marslo/.marslorc"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.bello_ubuntu" "$HOME/.marslo/.bello_ubuntu"
   cp "${GITHOME}/marslo/mylinux/Configs/HOME/.marslo/.bye_marslo" "$HOME/.marslo/.bye_marslo"
 
-  # 8u171
-  ${CURL} -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.tar.gz --create-dirs -o ${JAVADIR}/jdk-8u171-linux-x64.tar.gz
-
-  # 8u181
-  ${CURL} -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-x64.tar.gz -o ${JAVADIR}/jdk-8u181-linux-x64.tar.gz
-
-  # ${CURL} http://apache.mirrors.pair.com/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz
-  # tar xvzf ${MAVENDIR}/apache-maven-3.5.3-bin.tar.gz -C ${MAVENDIR}
-  ${CURL} ${ARTIFACTORYHOME}/devops/common/maven/apache-maven-3.5.0-bin.tar.gz --create-dirs -o ${MAVENDIR}/apache-maven-3.5.0-bin.tar.gz
-
-  # ${CURL} https://services.gradle.org/distributions/gradle-4.7-all.zip --create-dirs -o ${GRADLEDIR}/gradle-4.7-all.zip
-  ${CURL} ${ARTIFACTORYHOME}/devops/common/gradle/gradle-3.5-all.zip --create-dirs -o ${GRADLEDIR}/gradle-3.5-all.zip
-  # ${WGET} https://services.gradle.org/distributions/gradle-4.8-all.zip -P ${GRADLEDIR}
-  ${CURL} http://pww.artifactory.cdi.philips.com:8081/artifactory/devops/common/gradle/gradle-4.8-all.zip --create-dirs -o ${GRADLEDIR}/gradle-4.8-all.zip
-
-  # ${CURL} https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip --create-dirs -o ${GROOVYDIR}/apache-groovy-binary-3.0.0-alpha-2.zip
-  ${WGET} --no-check-certificate -c https://dl.bintray.com/groovy/maven/apache-groovy-binary-3.0.0-alpha-2.zip -P ${GROOVYDIR}
-
-  wget ${ARTIFACTORYHOME}/devops/ubuntu/tools/chrome/google-chrome-unstable_current_amd64.deb
   sudo dpkg -i google-chrome-unstable_current_amd64.deb
   sudo mv ${APTSOURCEPATH}/google-chrome-unstable.list{,.save}
-}
 
-function devEnvInstall() {
   # docker certificate for artifactory
   ${WGET} -L ${ARTIFACTORYHOME}/devops/docker/${ARTIFACTORYNAME}-ca.crt
   sudo cp ${ARTIFACTORYNAME}-ca.crt /usr/local/share/ca-certificates/
@@ -592,13 +595,11 @@ function devEnvInstall() {
   sudo update-ca-certificates
   sudo systemctl restart docker.service
 
-  tar xvzf ${JAVADIR}/jdk-8u171-linux-x64.tar.gz -C ${JAVADIR}
   for jbin in java javac javah javap javadoc; do
     sudo update-alternatives --install /usr/local/bin/${jbin} ${jbin} ${JAVAHOME}/bin/${jbin} 99
     sudo update-alternatives --auto ${jbin}
   done
 
-  tar xvzf ${MAVENDIR}/apache-maven-3.5.0-bin.tar.gz -C ${MAVENDIR}
   sudo update-alternatives --install /usr/local/bin/mvn mvn ${MAVENDIR}/apache-maven-3.5.0/bin/mvn 99
   sudo update-alternatives --auto mvn
 
@@ -607,7 +608,6 @@ function devEnvInstall() {
   sudo update-alternatives --install /usr/local/bin/gradle gradle ${GRADLEDIR}/gradle-4.8/bin/gradle 99
   sudo update-alternatives --auto gradle
 
-  unzip ${GROOVYDIR}/apache-groovy-binary-3.0.0-alpha-2.zip -d ${GROOVYDIR}
   sudo update-alternatives --install /usr/local/bin/groovy groovy ${GROOVYDIR}/groovy-3.0.0-alpha-2/bin/groovy 99
   sudo update-alternatives --auto groovy
 
