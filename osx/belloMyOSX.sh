@@ -4,7 +4,7 @@
 #   FileName: belloMyOSX.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2017-10-30 16:38:58
-# LastChange: 2018-08-23 18:10:47
+# LastChange: 2019-01-11 18:31:10
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -450,8 +450,9 @@ function setupBrewApps(){
   brew install less --with-pcre
   # brew install vim --override-system-vi
 
-  brew cask install dash little-snitch iterm2-beta firefox google-chrome alfred vlc etcher imageoptim omnigraffle licecap xca manico snip jietu tickeys macdown xscreensaver
-  # or $ brew cask install google-chrome-dev growl-fork android-sdk background-music
+  brew cask install dash iterm2-beta google-chrome-dev vlc etcher licecap jietu tickeys macdown xscreensaver firefox-developer-edition
+  brew install imagemagick --with-libheif
+  # or $ brew cask install google-chrome-dev growl-fork android-sdk background-music firefox google-chrome alfred omnigraffle xca manico snip little-snitch imageoptim
 
   brew tap macvim-dev/macvim
   # brew install --HEAD macvim-dev/macvim/macvim
@@ -533,14 +534,14 @@ function appManagement() {
 
   mas install 836500024     # WeChat
   mas install 467939042     # Growl
-  mas install 497799835     # xCode
   mas install 520993579     # pwSafe
   mas install 944848654     # NeteaseMusic
-  mas install 419330170     # moom
   mas install 405843582     # Alfred
   mas install 1176895641    # Spark
   mas install 1037126344    # Apple Configurator 2
   mas install 523620159     # CleanMyDrive 2
+  # mas install 497799835     # xCode
+  # mas install 419330170     # moom
   # mas install 1256503523    # System Indicators
   # mas install 736473980     # Paint
   # mas install 1233593954    # MailMaster
@@ -551,15 +552,17 @@ function appManagement() {
   # Spotlight
   sudo mdutil -i on /
   sudo mdutil -E /
-  sudo mdutil -E /Volumes/marslo/
+  sudo mdutil -E /Volumes/Macintosh\ HD/
 
-  pip install rainbow
-  pip install colout2
-  pip install pylint
+  # pip install rainbow
+  # pip install colout2
+  # pip install pylint
+  # pip install git-review
 
   sudo -H pip install rainbow
   sudo -H pip install colout2
   sudo -H pip install pylint
+  sudo -H pip install git-review
 
   sudo updatedb
 }
@@ -575,13 +578,15 @@ function setupDefaults() {
 
 function belloMarslo() {
   basicEnvSetup
-  setupStartups
+  # setupStartups
   setupDefaults
   setupXcode
   installHomebrew
   setupBrewApps
-  npmInstall
+  # npmInstall
   appManagement
 }
 
+installHomebrew
 setupBrewApps
+appManagement
