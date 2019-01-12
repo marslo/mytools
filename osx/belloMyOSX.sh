@@ -4,7 +4,7 @@
 #   FileName: belloMyOSX.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2017-10-30 16:38:58
-# LastChange: 2019-01-11 18:31:10
+# LastChange: 2019-01-11 18:36:28
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -451,6 +451,7 @@ function setupBrewApps(){
   # brew install vim --override-system-vi
 
   brew cask install dash iterm2-beta google-chrome-dev vlc etcher licecap jietu tickeys macdown xscreensaver firefox-developer-edition
+  # convert single: magick convert [-monitor] <name>.HEIC <new-name>.png; bulk convert: magick mogrify [-monitor] -format png *.HEIC
   brew install imagemagick --with-libheif
   # or $ brew cask install google-chrome-dev growl-fork android-sdk background-music firefox google-chrome alfred omnigraffle xca manico snip little-snitch imageoptim
 
