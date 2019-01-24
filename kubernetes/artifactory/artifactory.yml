@@ -1,0 +1,57 @@
+# =============================================================================
+#   FileName: artifactory.yml
+#     Author: marslo.jiao@gmail.com
+#    Created: 2019-01-24 14:03:06
+# LastChange: 2019-01-24 15:18:22
+# =============================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-artifactory
+  namespace: devops-ci
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-artifactory
+  template:
+    metadata:
+      labels:
+        app: devops-artifactory
+    spec:
+      nodeSelector:
+        jenkins: slave
+      containers:
+        - name: devops-artifactory
+          image: docker.bintray.io/jfrog/artifactory-pro:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: EXTRA_JAVA_OPTIONS
+              value: "-Xms1g -Xmx2g"
+          ports:
+            - name: http-port
+              containerPort: 8081
+          volumeMounts:
+            - name: devops-artifactory-home
+              mountPath: "/var/opt/jfrog/artifactory"
+      volumes:
+        - name: devops-artifactory-home
+          hostPath:
+            path: /home/devops/DEVOPS_ARTIFACTORY_HOME
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-artifactory
+  namespace: devops-ci
+spec:
+  type: NodePort
+  ports:
+    - name: devops-artifactory
+      port: 8080
+      targetPort: 8080
+      nodePort: 30666
+  selector:
+    app: devops-artifactory

@@ -1,0 +1,15 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: devops-nginx-claim
+  namespace: devops-ci
+  labels:
+    group: devops-artifactory
+spec:
+  nodeSelector:
+    jenkins: slave
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

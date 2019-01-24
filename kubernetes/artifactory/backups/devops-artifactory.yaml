@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: devops-artifactory
+  namespace: devops-ci
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: devops-artifactory
+        group: devops-artifactory
+    spec:
+      nodeSelector:
+        jenkins: slave
+      containers:
+      - name: devops-artifactory
+        image: docker.bintray.io/jfrog/artifactory-pro:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_TYPE
+          value: postgresql
+        - name: DB_USER
+          value: artifactory
+        - name: DB_PASSWORD
+          value: password
+        - name: DB_HOST
+          value: devops-postgresql
+        # Make sure to keep the memory java args aligned with the resources definitions
+        - name: EXTRA_JAVA_OPTIONS
+          value: "-Xms1g -Xmx2g"
+        ports:
+        - name: http-port
+          containerPort: 8081
+        volumeMounts:
+        - name: devops-artifactory-home
+          mountPath: "/var/opt/jfrog/artifactory"
+        # Make sure to keep the resources set with values matching EXTRA_JAVA_OPTIONS above
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1"
+      volumes:
+        - name: devops-artifactory-home
+          hostPath:
+            path: /home/devops/ARTIFACTORY_HOME
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-artifactory
+  namespace: devops-ci
+  labels:
+    app: devops-artifactory
+    group: devops-artifactory
+spec:
+  type: NodePort
+  ports:
+  - port: 8081
+    protocol: TCP
+    targetPort: 8081
+    nodePort: 31666
+    name: devops-artifactory
+  selector:
+    app: devops-artifactory

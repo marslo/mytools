@@ -1,0 +1,96 @@
+# =============================================================================
+#   FileName: devops-jenkins.yml
+#     Author: marslo.jiao@gmail.com
+#    Created: 2019-01-24 14:03:06
+# LastChange: 2019-01-24 14:03:39
+# =============================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-jenkins
+  namespace: devops-ci
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-jenkins
+  template:
+    metadata:
+      labels:
+        app: devops-jenkins
+    spec:
+      nodeSelector:
+        jenkins: master
+      containers:
+        - name: devops-jenkins
+          image: jenkinsci/jenkins:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JAVA_OPTS
+              value: -Xms2048m
+                     -Xmx10240m
+                     -XX:PermSize=2048m
+                     -XX:MaxPermSize=10240m
+                     -Duser.timezone='America/Los_Angeles'
+                     -Dhudson.model.DirectoryBrowserSupport.CSP="sandbox allow-same-origin allow-scripts; default-src 'self'; script-src * 'unsafe-eval'; img-src *; style-src * 'unsafe-inline'; font-src *;"
+                     -Djenkins.slaves.NioChannelSelector.disabled=true
+                     -Djenkins.slaves.JnlpSlaveAgentProtocol3.enabled=false
+                     -Djava.awt.headless=true
+                     -Djenkins.security.ClassFilterImpl.SUPPRESS_WHITELIST=true
+                     -Dhudson.model.ParametersAction.keepUndefinedParameters=true
+                     -Dcom.cloudbees.workflow.rest.external.ChangeSetExt.resolveCommitAuthors=true
+                     -Djenkins.install.runSetupWizard=true
+                     -Dpermissive-script-security.enabled=true
+                     -DsessionTimeout=1440
+                     -DsessionEviction=43200
+            - name: JNLP_PROTOCOL_OPTS
+              value: -Dorg.jenkinsci.remoting.engine.JnlpProtocol3.disabled=false
+          ports:
+            - name: http-port
+              containerPort: 8080
+            - name: jnlp-port
+              containerPort: 50000
+            - name: cli-port
+              containerPort: 38238
+          volumeMounts:
+            - name: devops-jenkins-home
+              mountPath: /var/jenkins_home
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            - name: docker
+              mountPath: /usr/bin/docker
+      volumes:
+        - name: devops-jenkins-home
+          hostPath:
+            path: /home/devops/DEVOPS_JENKINS_HOME
+            type: Directory
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker
+          hostPath:
+            path: /usr/bin/docker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-jenkins
+  namespace: devops-ci
+spec:
+  type: NodePort
+  ports:
+    - name: devops-jenkins
+      port: 8080
+      targetPort: 8080
+      nodePort: 30838
+    - name: jenkins-agent
+      port: 50000
+      targetPort: 50000
+      nodePort: 30380
+    - name: cli-agent
+      port: 38238
+      targetPort: 38238
+      nodePort: 32380
+  selector:
+    app: devops-jenkins

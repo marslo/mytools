@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-nginx
+  namespace: devops-ci
+  labels:
+    app: devops-nginx
+    group: devops-artifactory
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    name: port-1
+    protocol: TCP
+    targetPort: 80
+  - port: 443
+    name: port-2
+    protocol: TCP
+    targetPort: 443
+  selector:
+    app: devops-nginx
