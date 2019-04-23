@@ -433,7 +433,7 @@ function setupBrewApps(){
   which -a bash
   /usr/local/bin/bash --version
 
-  brew install wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils
+  brew install wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils
   brew install shellcheck --HEAD
   brew install bats --HEAD
   brew install jq --devel --HEAD
@@ -447,7 +447,7 @@ function setupBrewApps(){
   brew install findutils --with-default-names
   brew install wdiff --with-gettext
   brew install gnu-indent --with-default-names
-  brew install less --with-pcre
+  # brew install less --with-pcre
   # brew install vim --override-system-vi
 
   brew cask install dash iterm2-beta google-chrome-dev vlc etcher licecap jietu tickeys macdown xscreensaver firefox-developer-edition

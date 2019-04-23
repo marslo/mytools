@@ -182,7 +182,7 @@ function installBrew() {
 function setupBrewApps() {
   brew install wget tmux corkscrew tig bash-completion ifstat jq jshon telnet coreutils tree watch figlet cmake screenfetch
 
-  brew install bash gawk
+  brew install bash gawk less
   brew install gnu-sed --with-default-names
   brew install findutils --with-default-names
   brew install gnu-tar --with-default-names
