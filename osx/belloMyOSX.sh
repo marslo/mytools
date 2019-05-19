@@ -4,7 +4,7 @@
 #   FileName: belloMyOSX.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2017-10-30 16:38:58
-# LastChange: 2019-01-11 18:36:28
+# LastChange: 2019-05-18 22:13:48
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -433,27 +433,33 @@ function setupBrewApps(){
   which -a bash
   /usr/local/bin/bash --version
 
-  brew install wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils
+
+  regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv"
+  for regularpkg in ${regularlist}; do
+    brew install ${regularpkg}
+  done
   brew install shellcheck --HEAD
   brew install bats --HEAD
-  brew install jq --devel --HEAD
+  brew install jq --HEAD
   brew install gradle-completion --HEAD
 
-  brew install gnu-sed --with-default-names
-  brew install gnu-tar --with-default-names
-  brew install gnu-which --with-default-names
-  brew install grep --with-default-names
-  brew install ed --with-default-names
-  brew install findutils --with-default-names
+  gnulist="gnu-sed gnu-tar gnu-which grep ed findutils gnu-indent"
+  for gnupkg in ${gnulist}; do
+    # brew install ${gnupkg} --with-default-names
+    brew install ${gnupkg}
+  done
   brew install wdiff --with-gettext
-  brew install gnu-indent --with-default-names
-  # brew install less --with-pcre
+  brew install less --with-pcre
   # brew install vim --override-system-vi
 
-  brew cask install dash iterm2-beta google-chrome-dev vlc etcher licecap jietu tickeys macdown xscreensaver firefox-developer-edition
+  # or $ brew cask install growl-fork android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim
+  casklist="dash iterm2-beta google-chrome-dev vlc etcher licecap jietu tickeys macdown xscreensaver firefox-developer-edition"
+  for caskpkg in ${casklist}; do
+    brew cask install ${caskpkg}
+  done
+
   # convert single: magick convert [-monitor] <name>.HEIC <new-name>.png; bulk convert: magick mogrify [-monitor] -format png *.HEIC
   brew install imagemagick --with-libheif
-  # or $ brew cask install google-chrome-dev growl-fork android-sdk background-music firefox google-chrome alfred omnigraffle xca manico snip little-snitch imageoptim
 
   brew tap macvim-dev/macvim
   # brew install --HEAD macvim-dev/macvim/macvim
@@ -467,7 +473,7 @@ function setupBrewApps(){
 
   brew cask outdated
   brew tap buo/cask-upgrade
-  brew cu -a -f
+  brew cu -a -f -y
 
   # setup mavim in /Applications
   VIMVER=$(/bin/ls -A1 /usr/local/Cellar/macvim/ | head -1)
@@ -581,13 +587,14 @@ function belloMarslo() {
   basicEnvSetup
   # setupStartups
   setupDefaults
-  setupXcode
+  # setupXcode
   installHomebrew
-  setupBrewApps
+  # setupBrewApps
   # npmInstall
   appManagement
 }
 
-installHomebrew
+# installHomebrew
+setupXcode
 setupBrewApps
-appManagement
+# appManagement
