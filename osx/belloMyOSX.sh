@@ -4,7 +4,7 @@
 #   FileName: belloMyOSX.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2017-10-30 16:38:58
-# LastChange: 2019-05-18 22:13:48
+# LastChange: 2019-05-20 21:05:30
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -416,6 +416,8 @@ function installHomebrew(){
     brew --config
     brew tap caskroom/versions -v
     brew tap homebrew/dupes -v
+    brew tap buo/cask-upgrade
+    brew tap macvim-dev/macvim
     # brew tap homebrew/python -v
     brew update -v
     # setupBrewApps
@@ -428,32 +430,36 @@ function setupBrewApps(){
   which -a brew
   whereis brew
   # git -C "$(brew --repo homebrew/core)" fetch --unshallow
-  brew install coreutils
-  brew install bash
+  systemlist="coreutils bash"
+  regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv"
+  regularheadlist="shellcheck bats jq gradle-completion"
+  gnulist="gnu-sed gnu-tar gnu-which grep ed findutils gnu-indent"
+  casklist="dash iterm2-beta google-chrome-dev vlc licecap jietu tickeys macdown xscreensaver firefox-developer-edition macvim balenaetcher"
+  # "growl-fork android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
+
+  for systempkg in ${systemlist}; do
+    brew install ${systempkg}
+  done
   which -a bash
   /usr/local/bin/bash --version
 
-
-  regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv"
   for regularpkg in ${regularlist}; do
     brew install ${regularpkg}
   done
-  brew install shellcheck --HEAD
-  brew install bats --HEAD
-  brew install jq --HEAD
-  brew install gradle-completion --HEAD
 
-  gnulist="gnu-sed gnu-tar gnu-which grep ed findutils gnu-indent"
+  for regularheadpkg in ${regularheadlist}; do
+    brew install ${regularheadpkg} --HEAD
+  done
+
   for gnupkg in ${gnulist}; do
     # brew install ${gnupkg} --with-default-names
     brew install ${gnupkg}
   done
+
   brew install wdiff --with-gettext
   brew install less --with-pcre
   # brew install vim --override-system-vi
 
-  # or $ brew cask install growl-fork android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim
-  casklist="dash iterm2-beta google-chrome-dev vlc etcher licecap jietu tickeys macdown xscreensaver firefox-developer-edition"
   for caskpkg in ${casklist}; do
     brew cask install ${caskpkg}
   done
@@ -461,28 +467,12 @@ function setupBrewApps(){
   # convert single: magick convert [-monitor] <name>.HEIC <new-name>.png; bulk convert: magick mogrify [-monitor] -format png *.HEIC
   brew install imagemagick --with-libheif
 
-  brew tap macvim-dev/macvim
-  # brew install --HEAD macvim-dev/macvim/macvim
-  # OR
-  brew install macvim --with-override-system-vim --HEAD
-
-
   brew install berkeley-db jack libmad libid3tag ffmpeg youtube-dl        # jackd -d coreaudio
   brew install moc --with-ncurses
   brew install mkdryden/homebrew-misc/namei
 
   brew cask outdated
-  brew tap buo/cask-upgrade
   brew cu -a -f -y
-
-  # setup mavim in /Applications
-  VIMVER=$(/bin/ls -A1 /usr/local/Cellar/macvim/ | head -1)
-  mkdir -p /Applications/gVim.app/Contents
-  ln -sf /usr/local/Cellar/macvim/${VIMVER}/MacVim.app/Contents/* /Applications/gVim.app/Contents/
-  mv /Applications/gVim.app/Contents/Info.plist{,.lnk}
-  mv /Applications/gVim.app/Contents/PkgInfo{,.lnk}
-  cp /Applications/gVim.app/Contents/Info.plist{.lnk,}
-  cp /Applications/gVim.app/Contents/PkgInfo{.lnk,}
 
   # cat >> ~/.bash_profile << EOF
   # if [ -f $(brew --prefix)/etc/bash_completion ]; then"
@@ -497,6 +487,21 @@ function setupBrewApps(){
     chsh -s /usr/local/bin/bash
     sudo chsh -s /usr/local/bin/bash
   fi
+}
+
+function setupGvim() {
+  # brew install --HEAD macvim-dev/macvim/macvim
+  # OR
+  # brew install macvim --with-override-system-vim --HEAD
+
+  # setup mavim in /Applications
+  VIMVER=$(/bin/ls -A1 /usr/local/Cellar/macvim/ | head -1)
+  mkdir -p /Applications/gVim.app/Contents
+  ln -sf /usr/local/Cellar/macvim/${VIMVER}/MacVim.app/Contents/* /Applications/gVim.app/Contents/
+  mv /Applications/gVim.app/Contents/Info.plist{,.lnk}
+  mv /Applications/gVim.app/Contents/PkgInfo{,.lnk}
+  cp /Applications/gVim.app/Contents/Info.plist{.lnk,}
+  cp /Applications/gVim.app/Contents/PkgInfo{.lnk,}
 }
 
 function npmInstall() {
