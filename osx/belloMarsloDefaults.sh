@@ -1,10 +1,10 @@
 #!/bin/bash
 # shellcheck disable=SC2034
 # =============================================================================
-#    FileName: osx_automation_default.sh
+#    FileName: belloMarsloDefaults.sh
 #      Author: marslo.jiao@philips.com
 #     Created: 2018-02-27 13:48:08
-#  LastChange: 2018-02-27 13:48:08
+#  LastChange: 2019-06-04 20:11:14
 # =============================================================================
 
 modifierNoOp=0
@@ -43,6 +43,9 @@ defaults write com.apple.menuextra.battery ShowPercent -string 'NO'
 defaults write com.apple.dashboard mcx-disabled -boolean YES
 # Disable system sleep
 sudo systemsetup -setcomputersleep Never
+# sounds
+defaults write .GlobalPreferences com.apple.sound.beep.sound /System/Library/Sounds/Tink.aiff
+defaults write .GlobalPreferences com.apple.sound.beep.volume "0.5"
 
 # Press repet key
 defaults write -g ApplePressAndHoldEnabled -bool false
