@@ -1,0 +1,36 @@
+# =============================================================================
+#   FileName: pvc.yaml
+#     Author: marslo@marvell.com
+#    Created: 2019-06-17 04:23:43
+# LastChange: 2019-08-05 18:58:44
+# =============================================================================
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: my-pv
+  labels:
+    project: my-proj
+spec:
+  capacity:
+    storage: 5Mi
+  accessModes:
+    - ReadOnlyMany
+  hostPath:
+    path: "/home/devops/.data/my.data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: my-pvc
+  namespace: devops-ci
+spec:
+  accessModes:
+    - ReadOnlyMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 5Mi
+  selector:
+    matchLabels:
+      project: my-proj
