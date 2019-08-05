@@ -1,0 +1,68 @@
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+sudo systemctl mask firewalld
+sudo systemctl is-enabled firewalld
+sudo firewall-cmd --state
+sudo swapoff -a
+sudo bash -c "sed -e 's:^\\(.*swap.*\\)$:# \\1:' -i /etc/fstab"
+sudo setenforce 0
+sudo sed 's/^SELINUX=enforcing$/SELINUX=permissive/' -i /etc/selinux/config
+sudo bash -c "cat >  /etc/sysctl.d/k8s.conf" << EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum-config-manager --enable docker-ce-edge
+sudo yum install -y yum-config-manager
+sudo bash -c 'cat > /etc/yum.repos.d/kubernetes.repo' << EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://abcd-repo-dev.mycompany.com/artifactory/rpm/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+exclude=kube*
+EOF
+sudo yum check-update
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum-config-manager --enable docker-ce-edge
+sudo yum search yum-config-manager
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum-config-manager --enable docker-ce-edge
+sudo yum install -y docker-ce
+sudo vi /usr/lib/systemd/system/docker.service
+sudo systemctl daemon-reload
+sudo systemctl start docker && sudo systemctl enable docker
+sudo usermod -a -G docker "$(whoami)"
+
+docker pull abcd-repo-dev.mycompany.com/docker/prometheus/node-exporter:v0.18.1
+docker pull abcd-repo-dev.mycompany.com/docker/coreos/kube-rbac-proxy:v0.4.1
+docker pull abcd-repo-dev.mycompany.com/docker/coreos/flannel:v0.10.0-amd64
+docker pull abcd-repo-dev.mycompany.com/docker/metrics-server-amd64:v0.3.3
+docker pull abcd-repo-dev.mycompany.com/docker/kube-proxy:v1.12.3
+docker pull abcd-repo-dev.mycompany.com/docker/kube-apiserver:v1.12.3
+docker pull abcd-repo-dev.mycompany.com/docker/kube-controller-manager:v1.12.3
+docker pull abcd-repo-dev.mycompany.com/docker/kube-scheduler:v1.12.3
+docker pull abcd-repo-dev.mycompany.com/docker/addon-resizer:v1.12.3
+docker pull abcd-repo-dev.mycompany.com/docker/addon-resizer:1.8.4
+docker pull abcd-repo-dev.mycompany.com/docker/etcd:3.2.24
+docker pull abcd-repo-dev.mycompany.com/docker/coredns:1.2.2
+docker pull abcd-repo-dev.mycompany.com/docker/pause:3.1
+docker pull abcd-repo-dev.mycompany.com/docker/node-problem-detector:v0.6.3
+docker tag abcd-repo-dev.mycompany.com/docker/prometheus/node-exporter:v0.18.1 quay.io/prometheus/node-exporter:v0.18.1
+docker tag abcd-repo-dev.mycompany.com/docker/coreos/kube-rbac-proxy:v0.4.1 quay.io/coreos/kube-rbac-proxy:v0.4.1
+docker tag abcd-repo-dev.mycompany.com/docker/coreos/flannel:v0.10.0-amd64 quay.io/coreos/flannel:v0.10.0-amd64
+docker tag abcd-repo-dev.mycompany.com/docker/metrics-server-amd64:v0.3.3 k8s.gcr.io/metrics-server-amd64:v0.3.3
+docker tag abcd-repo-dev.mycompany.com/docker/kube-proxy:v1.12.3 k8s.gcr.io/kube-proxy:v1.12.3
+docker tag abcd-repo-dev.mycompany.com/docker/kube-apiserver:v1.12.3 k8s.gcr.io/kube-apiserver:v1.12.3
+docker tag abcd-repo-dev.mycompany.com/docker/kube-controller-manager:v1.12.3 k8s.gcr.io/kube-controller-manager:v1.12.3
+docker tag abcd-repo-dev.mycompany.com/docker/kube-scheduler:v1.12.3 k8s.gcr.io/kube-scheduler:v1.12.3
+docker tag abcd-repo-dev.mycompany.com/docker/addon-resizer:1.8.4 k8s.gcr.io/addon-resizer:1.8.4
+docker tag abcd-repo-dev.mycompany.com/docker/etcd:3.2.24 k8s.gcr.io/etcd:3.2.24
+docker tag abcd-repo-dev.mycompany.com/docker/coredns:1.2.2 k8s.gcr.io/coredns:1.2.2
+docker tag abcd-repo-dev.mycompany.com/docker/pause:3.1 k8s.gcr.io/pause:3.1
+docker images
+sudo yum install -y kubectl-1.12.3-0.x86_64 kubelet-1.12.3-0.x86_64 kubeadm-1.12.3-0.x86_64 kubernetes-cni-0.6.0-0.x86_64 --disableexcludes=kubernetes
+sudo systemctl start kubelet && sudo systemctl enable kubelet
+sudo kubeadm join 10.69.78.63:6443 --token 3blo8q.waqukiv5pt9z5kni --discovery-token-ca-cert-hash sha256:ee5a3140b27ac24eb3cd0bbff4e735c05e735f77e37fbdee0e8575b2e83f1615 --ignore-preflight-errors=all
