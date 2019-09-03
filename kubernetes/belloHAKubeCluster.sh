@@ -338,7 +338,7 @@ function cniSetup() {
           https://raw.githubusercontent.com/coreos/flannel/62e44c867a2846fefb68bd5f178daf4da3095ccb/Documentation/kube-flannel.yml
 }
 
-function setupLeadCertificates() {
+function setupLeadMaster() {
   sudo mkdir -p '/etc/kubernetes/pki/etcd'
   certCA
   certClient
@@ -350,7 +350,7 @@ function setupLeadCertificates() {
   cniSetup
 }
 
-function setupFollowerCertificates() {
+function setupFollowerMaster() {
   sudo mkdir -p '/etc/kubernetes/pki/etcd'
   syncCert
   certServerNPeer
