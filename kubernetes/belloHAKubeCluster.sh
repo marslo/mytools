@@ -12,37 +12,38 @@
   # https://k8smeetup.github.io/docs/setup/independent/high-availability/
 
 # hardcode
-master1IP='127.0.0.40'
-master2IP='127.0.0.42'
-master3IP='127.0.0.43'
-master1Host='mytest-tst1'
-master2Host='mytest-tst2'
-master3Host='mytest-tst3'
-virtual_ipaddress='127.0.0.50'
-leadIP="${master1IP}"
-leadHost="${master1Host}"
+master1Ip='127.0.0.40'
+master2Ip='127.0.0.42'
+master3Ip='127.0.0.43'
+master1Name='mytest-tst1'
+master2Name='mytest-tst2'
+master3Name='mytest-tst3'
+virtualIpAddr='127.0.0.50'
+leadIP="${master1Ip}"
+leadHost="${master1Name}"
 
+k8sVer='v1.15.3'
 rtUrl='artifactory.my.com/artifactory'
 
-# cfssl_url='https://pkg.cfssl.org/R1.2'
-cfssl_artifactory_url="https://${rtUrl}/devops-local/k8s/R1.2/"
-cfssl_download_url="${cfssl_artifactory_url}"
+# cfsslofficialUrl='https://pkg.cfssl.org/R1.2'
+cfsslRtUrl="https://${rtUrl}/devops-local/k8s/R1.2/"
+cfsslDownloadUrl="${cfsslRtUrl}"
 
-etcd_version='v3.3.15'
-# etcd_google_download='https://storage.googleapis.com/etcd'
-# etcd_github_download='https://github.com/etcd-io/etcd/releases/download'
-etcd_artifactory_download="https://${rtUrl}/devops-local/k8s"
-etcd_download_url="${etcd_artifactory_download}"
+etcdVer='v3.3.15'
+# etcdGoogleDownload='https://storage.googleapis.com/etcd'
+# etcdGithubDownload='https://github.com/etcd-io/etcd/releases/download'
+etcdRtDownload="https://${rtUrl}/devops-local/k8s"
+etcdDownloadUrl="${etcdRtDownload}"
+etcdInitialCluster="${master1Name}=https://${master1Ip}:2380,${master2Name}=https://${master2Ip}:2380,${master3Name}=https://${master3Ip}:2380"
 
-keepalive_version='2.0.18'
-# keepalive_url='https://www.keepalived.org/software'
-keepalive_artifactory_url="https://${rtUrl}/devops-local/k8s/software"
-keepalive_download_url="${keepalive_artifactory_url}"
+keepaliveVer='2.0.18'
+# keepaliveUrl='https://www.keepalived.org/software'
+keepaliveRtUrl="https://${rtUrl}/devops-local/k8s/software"
+keepaliveDownloadUrl="${keepaliveRtUrl}"
 
-interface=$(ip route get 127.0.0.55 | sed -rn 's|.*dev\s+(\S+)\s+src.*$|\1|p')
-ipaddr=$(ip a s ${interface} | sed -rn 's|.*inet ([0-9\.]{11}).*$|\1|p')
-peer_name=$(hostname)
-etcd_initial_cluster="${master1Host}=https://${master1IP}:2380,${master2Host}=https://${master2IP}:2380,${master3Host}=https://${master3IP}:2380"
+interface=$(ip route get 13.250.177.223 | sed -rn 's|.*dev\s+(\S+)\s+src.*$|\1|p') # get the route to github
+ipAddr=$(ip a s ${interface} | sed -rn 's|.*inet ([0-9\.]{11}).*$|\1|p')
+peerName=$(hostname)
 
 function reportError(){
   set +H
@@ -51,13 +52,13 @@ function reportError(){
 }
 
 function cfsslInstallation() {
-  sudo bash -c "curl -o /usr/local/bin/cfssl ${cfssl_download_url}/cfssl_linux-amd64"
-  sudo bash -c "curl -o /usr/local/bin/cfssljson ${cfssl_download_url}/cfssljson_linux-amd64"
+  sudo bash -c "curl -o /usr/local/bin/cfssl ${cfsslDownloadUrl}/cfssl_linux-amd64"
+  sudo bash -c "curl -o /usr/local/bin/cfssljson ${cfsslDownloadUrl}/cfssljson_linux-amd64"
   sudo chmod +x /usr/local/bin/cfssl*
 }
 
 function etcdInstallation() {
-  curl -sSL ${etcd_download_url}/${etcd_version}/etcd-${etcd_version}-linux-amd64.tar.gz \
+  curl -sSL ${etcdDownloadUrl}/${etcdVer}/etcd-${etcdVer}-linux-amd64.tar.gz \
       | sudo tar -xzv --strip-components=1 -C /usr/local/bin/
 }
 
@@ -142,9 +143,9 @@ EOF
 
 function certServerNPeer() {
   sudo bash -c '/usr/local/bin/cfssl print-defaults csr > /etc/kubernetes/pki/etcd/config.json'
-  sudo sed -i '0,/CN/{s/example\.net/'"${peer_name}"'/}' /etc/kubernetes/pki/etcd/config.json
-  sudo sed -i 's/www\.example\.net/'"${ipaddr}"'/' /etc/kubernetes/pki/etcd/config.json
-  sudo sed -i 's/example\.net/'"${peer_name}"'/' /etc/kubernetes/pki/etcd/config.json
+  sudo sed -i '0,/CN/{s/example\.net/'"${peerName}"'/}' /etc/kubernetes/pki/etcd/config.json
+  sudo sed -i 's/www\.example\.net/'"${ipAddr}"'/' /etc/kubernetes/pki/etcd/config.json
+  sudo sed -i 's/example\.net/'"${peerName}"'/' /etc/kubernetes/pki/etcd/config.json
 
   pushd .
   cd /etc/kubernetes/pki/etcd/
@@ -174,8 +175,8 @@ function syncCert() {
 
 function etcdService() {
   touch /etc/etcd.env
-  echo "peer_name=${peer_name}" >> /etc/etcd.env
-  echo "ipaddr=${ipaddr}" >> /etc/etcd.env
+  echo "peerName=${peerName}" >> /etc/etcd.env
+  echo "ipAddr=${ipAddr}" >> /etc/etcd.env
 
   sudo bash -c 'cat > /etc/systemd/system/etcd.service' <<EOF
 [Unit]
@@ -192,12 +193,12 @@ RestartSec=5s
 LimitNOFILE=40000
 TimeoutStartSec=0
  
-ExecStart=/usr/local/bin/etcd --name ${peer_name} \\
+ExecStart=/usr/local/bin/etcd --name ${peerName} \\
     --data-dir /var/lib/etcd \\
-    --listen-client-urls https://${ipaddr}:2379 \\
-    --advertise-client-urls https://${ipaddr}:2379 \\
-    --listen-peer-urls https://${ipaddr}:2380 \\
-    --initial-advertise-peer-urls https://${ipaddr}:2380 \\
+    --listen-client-urls https://${ipAddr}:2379 \\
+    --advertise-client-urls https://${ipAddr}:2379 \\
+    --listen-peer-urls https://${ipAddr}:2380 \\
+    --initial-advertise-peer-urls https://${ipAddr}:2380 \\
     --cert-file=/etc/kubernetes/pki/etcd/server.pem \\
     --key-file=/etc/kubernetes/pki/etcd/server-key.pem \\
     --client-cert-auth \\
@@ -206,7 +207,7 @@ ExecStart=/usr/local/bin/etcd --name ${peer_name} \\
     --peer-key-file=/etc/kubernetes/pki/etcd/peer-key.pem \\
     --peer-client-cert-auth \\
     --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem \\
-    --initial-cluster ${etcd_initial_cluster} \\
+    --initial-cluster ${etcdInitialCluster} \\
     --initial-cluster-token my-etcd-token \\
     --initial-cluster-state new
  
@@ -222,9 +223,9 @@ keepaliveSetup() {
   mkdir -p ~/temp
   sudo mkdir -p /etc/keepalived/
 
-  curl -fsSL ${keepalive_download_url}/keepalived-${keepalive_version}.tar.gz \
+  curl -fsSL ${keepaliveDownloadUrl}/keepalived-${keepaliveVer}.tar.gz \
        | tar xzf - -C ~/temp
-  cd ~/temp/keepalived-${keepalive_version}
+  cd ~/temp/keepalived-${keepaliveVer}
   ./configure
   make && sudo make install
   sudo cp keepalived/keepalived.service /etc/systemd/system/
@@ -250,8 +251,8 @@ vrrp_instance VI_1 {
     auth_type PASS
     auth_pass 4be37dc3b4c90194d1600c483e10ad1d
   }
-  virtual_ipaddress {
-    ${virtual_ipaddress}
+  virtualIpAddr {
+    ${virtualIpAddr}
   }
   track_script {
     check_apiserver
@@ -266,8 +267,8 @@ errorExit() {
   exit 1
 }
 curl --silent --max-time 2 --insecure https://localhost:6443/ -o /dev/null || errorExit "Error GET https://localhost:6443/"
-if ip addr | grep -q ${virtual_ipaddress}; then
-    curl --silent --max-time 2 --insecure https://${virtual_ipaddress}:6443/ -o /dev/null || errorExit "Error GET https://${virtual_ipaddress}:6443/"
+if ip addr | grep -q ${virtualIpAddr}; then
+    curl --silent --max-time 2 --insecure https://${virtualIpAddr}:6443/ -o /dev/null || errorExit "Error GET https://${virtualIpAddr}:6443/"
 fi
 EOF
 
@@ -279,14 +280,14 @@ function kubeadmConfig() {
   cat > kubeadm-conf.yaml <<EOF
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
-kubernetesVersion: v1.15.3
-controlPlaneEndpoint: "${virtual_ipaddress}:6443"
+kubernetesVersion: ${k8sVer}
+controlPlaneEndpoint: "${virtualIpAddr}:6443"
 etcd:
   external:
     endpoints:
-      - https://${master1IP}:2379
-      - https://${master2IP}:2379
-      - https://${master3IP}:2379
+      - https://${master1Ip}:2379
+      - https://${master2Ip}:2379
+      - https://${master3Ip}:2379
     caFile: /etc/kubernetes/pki/etcd/ca.pem
     certFile: /etc/kubernetes/pki/etcd/client.pem
     keyFile: /etc/kubernetes/pki/etcd/client-key.pem
@@ -296,13 +297,13 @@ networking:
   serviceSubnet: 10.96.0.0/12
 apiServer:
   certSANs:
-    - ${virtual_ipaddress}
-    - ${master1IP}
-    - ${master1Host}
-    - ${master2IP}
-    - ${master2Host}
-    - ${master3IP}
-    - ${master3Host}
+    - ${virtualIpAddr}
+    - ${master1Ip}
+    - ${master1Name}
+    - ${master2Ip}
+    - ${master2Name}
+    - ${master3Ip}
+    - ${master3Name}
   extraArgs:
     etcd-cafile: /etc/kubernetes/pki/etcd/ca.pem
     etcd-certfile: /etc/kubernetes/pki/etcd/client.pem
