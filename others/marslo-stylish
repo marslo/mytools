@@ -1,4 +1,5 @@
 /* i really want this to be global */
+/* match url:  ^((?!job.*configure|.*Monitor/$|.*detail.*pipeline|.*api|.*replay).)*$ */
 
 /*
 
@@ -6,51 +7,83 @@
    	pre *, code *, div.line-numbers, div.code : HTML TAG with Class. E.g.: <div class="code"></div>; <div class="line-numbers"></div>
 	.line, .line-number, .monospaced: Specified Class Name.
 */
+span.vsts-build-log,
 
-span.vsts-build-log,											/* TFS Log Content */
-div.ace_layer *{												/* Jenkins Pipeline Script Textarea*/
-    font-family: "Ubuntu Mono", "Consolas", "Menlo", "Monaco" !important;
+
+
+/* TFS Log Content */
+div.ace_layer * {
+    /* Jenkins Pipeline Script Textarea*/
+    font-family: "Ubuntu", "Ubuntu Mono", "Consolas", "Menlo", "Monaco" !important;
 }
 
-textarea,														/* Stylish Editor area*/
+textarea,
+
+
+/*
+.editor,                                    Github Codeblock
+div.ace_content                     Gitlab Diff content ; Jenkins Script Box
+.solarized-dark,                      http://www.myregexp.com
+.js-file-line *,                            http://thisdavej.com
+.changeset-message,             Jenkins Console Editor
+.node-log-frame,                    Jenkins Change list
+#terminal *                              Jenkins Stage View    
+shellcheck
+*/
+
+/* Stylish Editor area*/
 kbd,
 pre,
-code,
 pre *,
+code,
 code *,
 div.code *,
 table.code,
-tr.line_holder *,												/* Gitlab Diff content */
-div.ace_content *,												/* http://www.myregexp.com */
+tr.line_holder *,
+.editor,
+div.ace_content,
 .solarized-dark,
-.EnlighterJS *,													/* http://thisdavej.com */
-.js-file-line *,												/* Github Codeblock */
-.editor,														/* Jenkins Console Editor*/
-.changeset-message,												/* Jenkins Change list */
-.node-log-frame,												/* Jenkins Stage View */
-#terminal *{													/* shellcheck */
-    font-family: "Ubuntu Mono", "monofur", "Menlo" !important;
-    font-size: 18px !important;
+.EnlighterJS *,
+.js-file-line *,
+.changeset-message,
+.node-log-frame,
+#terminal * {
+    font-family: "Andale Mono", "Ubuntu", "Ubuntu Mono", "monofur", "Menlo" !important;
+/*     font-size: 18px !important; */
 }
 
 
+/*
+.editor,
+div.ace_content * {
+    font-family: "Ubuntu Mono" !important;
+  font-size: 15px !important
+}
+*/
 input,
 select,
-a.jstree-anchor,												/* Artifactory Tree List */
+a.jstree-anchor,/* Artifactory Tree List */
 div.line-numbers *,
 .line-numbers,
-.js-line-number,												/* Github Codeblock */
+.js-line-number,/* Github Codeblock */
 .line,
 .line-number,
 .CodeMirror-line,
-pre.console-output, 											/* Jenkins Console Output finished */
-.console-output *, 												/* Jenkins Console Output */
-.blockInner,													/* Json Viewer */
-.jsonpOpener,													/* Json Viewer */
-.timestamp{
-    font-family: "Ubuntu Mono", "Consolas", "Menlo", "Monaco" !important;
-    font-size: 18px !important;
+.gr-diff, /* Gerrit Review diff */
+pre.console-output,/* Jenkins Console Output finished */
+.console-output *,/* Jenkins Console Output */
+.blockInner,/* Json Viewer */
+.jsonpOpener,/* Json Viewer */
+td.wysiwyg-macro-body *,
+.timestamp {
+    font-family: "Andale Mono", "Ubuntu", "Ubuntu Mono", "Consolas", "Menlo", "Monaco" !important;
+/*     background-color: red; */
+/*     font-size: 18px !important; */
 }
+
+
+
+
 
 /* 	"fa":       														Gitlab
    	"octicon":  														Atom & Github
@@ -68,9 +101,8 @@ pre.console-output, 											/* Jenkins Console Output finished */
 /*
 Mac default fonts: , "LucidaGrande", "Kailasa", "Thonburi", "GeezaPro", "KohinoorBangla-Regular"
 */
-*:not(code):not(h1):not(h2):not(h3):not(h4):not(pre):not(kbd):not(icon):not(input):not(button):not(i):not([class*="icon"]):not([class*="fa"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ace_"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]):not([class*="drop"]):not([class*="bowtie-"]):not([class*="view-"]):not([class*="pl-"]):not([class*="avatar-"]) {
+*:not(code):not(h1):not(h2):not(pre):not(kbd):not(icon):not(input):not(button):not(i):not([class*="icon"]):not([class*="fa"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ace_"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]):not([class*="drop"]):not([class*="bowtie-"]):not([class*="view-"]):not([class*="pl-"]):not([class*="avatar-"]):not([class*='wysiwyg-macro-*']) {
     font-family: "Titillium", "Gisha", "Candara", ".AppleSystemFallback-Regular";
-    /* font-size: 16px */
-    /* font-size: 100%; */
-	/* font-size: 18px; */
+    /*font-size: 16px*/
+    font-size: 100%;
 }
