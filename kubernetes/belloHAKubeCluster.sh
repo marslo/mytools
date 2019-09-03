@@ -225,10 +225,12 @@ keepaliveSetup() {
 
   curl -fsSL ${keepaliveDownloadUrl}/keepalived-${keepaliveVer}.tar.gz \
        | tar xzf - -C ~/temp
+  pushd .
   cd ~/temp/keepalived-${keepaliveVer}
-  ./configure
-  make && sudo make install
+  ./configure && make
+  sudo make install
   sudo cp keepalived/keepalived.service /etc/systemd/system/
+  popd
 
   sudo bash -c 'cat > /etc/keepalived/keepalived.conf' <<EOF
 ! Configuration File for keepalived
