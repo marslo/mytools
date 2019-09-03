@@ -119,7 +119,7 @@ EOF
 }
 
 function certClient() {
-sudo bash -c 'cat > /etc/kubernetes/pki/etcd/client.json' << EOF
+  sudo bash -c 'cat > /etc/kubernetes/pki/etcd/client.json' << EOF
 {
   "CN": "client",
   "key": {
