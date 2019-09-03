@@ -2,23 +2,27 @@
 # shellcheck disable=SC2224,SC1117,SC2009
 # =============================================================================
 #   FileName: belloHAKubeCluster.sh
-#     Author: marslo.jiao@philips.com
+#     Author: marslo.jiao@gmail.com
 #    Created: 2019-09-02 22:48:57
 # LastChange: 2019-09-02 22:49:22
 # =============================================================================
 
+# Inspired by:
+  # https://blog.csdn.net/chenleiking/article/details/80136449
+  # https://k8smeetup.github.io/docs/setup/independent/high-availability/
+
 # hardcode
-master1IP='10.69.78.40'
-master2IP='10.69.78.42'
-master3IP='10.69.78.43'
-master1Host='dc5-ssdfwtst1'
-master2Host='dc5-ssdfwtst2'
-master3Host='dc5-ssdfwtst3'
-virtual_ipaddress='10.69.78.50'
+master1IP='127.0.0.40'
+master2IP='127.0.0.42'
+master3IP='127.0.0.43'
+master1Host='mytest-tst1'
+master2Host='mytest-tst2'
+master3Host='mytest-tst3'
+virtual_ipaddress='127.0.0.50'
 leadIP="${master1IP}"
 leadHost="${master1Host}"
 
-rtUrl='ssdfw-repo-dev.marvell.com/artifactory'
+rtUrl='artifactory.my.com/artifactory'
 
 # cfssl_url='https://pkg.cfssl.org/R1.2'
 cfssl_artifactory_url="https://${rtUrl}/devops-local/k8s/R1.2/"
@@ -35,11 +39,10 @@ keepalive_version='2.0.18'
 keepalive_artifactory_url="https://${rtUrl}/devops-local/k8s/software"
 keepalive_download_url="${keepalive_artifactory_url}"
 
-interface=$(ip route get 10.69.78.55 | sed -rn 's|.*dev\s+(\S+)\s+src.*$|\1|p')
+interface=$(ip route get 127.0.0.55 | sed -rn 's|.*dev\s+(\S+)\s+src.*$|\1|p')
 ipaddr=$(ip a s ${interface} | sed -rn 's|.*inet ([0-9\.]{11}).*$|\1|p')
 peer_name=$(hostname)
 etcd_initial_cluster="${master1Host}=https://${master1IP}:2380,${master2Host}=https://${master2IP}:2380,${master3Host}=https://${master3IP}:2380"
-
 
 function reportError(){
   set +H
@@ -59,74 +62,82 @@ function etcdInstallation() {
 }
 
 function certCA() {
-sudo bash -c 'cat > /etc/kubernetes/pki/etcd/ca-config.json' << EOF
+  sudo bash -c 'cat > /etc/kubernetes/pki/etcd/ca-config.json' << EOF
 {
-    "signing": {
-        "default": {
-            "expiry": "43800h"
-        },
-        "profiles": {
-            "server": {
-                "expiry": "43800h",
-                "usages": [
-                    "signing",
-                    "key encipherment",
-                    "server auth",
-                    "client auth"
-                ]
-            },
-            "client": {
-                "expiry": "43800h",
-                "usages": [
-                    "signing",
-                    "key encipherment",
-                    "client auth"
-                ]
-            },
-            "peer": {
-                "expiry": "43800h",
-                "usages": [
-                    "signing",
-                    "key encipherment",
-                    "server auth",
-                    "client auth"
-                ]
-            }
-        }
+  "signing": {
+    "default": {
+      "expiry": "43800h"
+    },
+    "profiles": {
+      "server": {
+        "expiry": "43800h",
+        "usages": [
+          "signing",
+          "key encipherment",
+          "server auth",
+          "client auth"
+        ]
+      },
+      "client": {
+        "expiry": "43800h",
+        "usages": [
+          "signing",
+          "key encipherment",
+          "client auth"
+        ]
+      },
+      "peer": {
+        "expiry": "43800h",
+        "usages": [
+          "signing",
+          "key encipherment",
+          "server auth",
+          "client auth"
+        ]
+      }
     }
+  }
 }
 EOF
 
 sudo bash -c 'cat > /etc/kubernetes/pki/etcd/ca-csr.json' << EOF
 {
-    "CN": "etcd",
-    "key": {
-        "algo": "rsa",
-        "size": 2048
-    }
+  "CN": "etcd",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  }
 }
 EOF
 
-cd /etc/kubernetes/pki/etcd/
-sudo /usr/local/bin/cfssl gencert -initca ca-csr.json | sudo /usr/local/bin/cfssljson -bare ca -
-ls -altrh /etc/kubernetes/pki/etcd/
+  pushd .
+  cd /etc/kubernetes/pki/etcd/
+  sudo /usr/local/bin/cfssl gencert \
+       -initca ca-csr.json \
+       | sudo /usr/local/bin/cfssljson -bare ca -
+  popd
 }
 
 function certClient() {
 sudo bash -c 'cat > /etc/kubernetes/pki/etcd/client.json' << EOF
 {
-    "CN": "client",
-    "key": {
-        "algo": "ecdsa",
-        "size": 256
-    }
+  "CN": "client",
+  "key": {
+    "algo": "ecdsa",
+    "size": 256
+  }
 }
 EOF
  
+  pushd .
   cd /etc/kubernetes/pki/etcd/
-  ls -altrh /etc/kubernetes/pki/etcd/
-  sudo /usr/local/bin/cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client client.json | sudoi /usr/local/bin/cfssljson -bare client
-  ls -altrh /etc/kubernetes/pki/etcd/
+  sudo /usr/local/bin/cfssl gencert \
+       -ca=ca.pem \
+       -ca-key=ca-key.pem \
+       -config=ca-config.json \
+       -profile=client client.json \
+       | sudo /usr/local/bin/cfssljson -bare client
+  popd
 }
 
 function certServerNPeer() {
@@ -135,17 +146,29 @@ function certServerNPeer() {
   sudo sed -i 's/www\.example\.net/'"${ipaddr}"'/' /etc/kubernetes/pki/etcd/config.json
   sudo sed -i 's/example\.net/'"${peer_name}"'/' /etc/kubernetes/pki/etcd/config.json
 
+  pushd .
   cd /etc/kubernetes/pki/etcd/
-  ls -altrh /etc/kubernetes/pki/etcd/
-  sudo /usr/local/bin/cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server config.json | sudo /usr/local/bin/cfssljson -bare server
-  ls -altrh /etc/kubernetes/pki/etcd/
-  sudo /usr/local/bin/cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer config.json | sudo /usr/local/bin/cfssljson -bare peer
-  ls -altrh /etc/kubernetes/pki/etcd/
+  sudo /usr/local/bin/cfssl gencert \
+       -ca=ca.pem \
+       -ca-key=ca-key.pem \
+       -config=ca-config.json \
+       -profile=server config.json \
+       | sudo /usr/local/bin/cfssljson -bare server
+  sudo /usr/local/bin/cfssl gencert \
+       -ca=ca.pem \
+       -ca-key=ca-key.pem \
+       -config=ca-config.json \
+       -profile=peer config.json \
+       | sudo /usr/local/bin/cfssljson -bare peer
+  popd
 }
 
 function syncCert() {
   for pkg in ca-config.json  ca-key.pem  ca.pem  client-key.pem  client.pem; do
-    sudo rsync -avzrlpgoDP --rsync-path='sudo rsync' root@${leadHost}:/etc/kubernetes/pki/etcd/${pkg} /etc/kubernetes/pki/etcd/
+    sudo rsync -avzrlpgoDP \
+               --rsync-path='sudo rsync' \
+               root@${leadHost}:/etc/kubernetes/pki/etcd/${pkg} \
+               /etc/kubernetes/pki/etcd/
   done
 }
 
@@ -219,28 +242,28 @@ vrrp_script check_apiserver {
   rise 2
 }
 vrrp_instance VI_1 {
-    state MASTER
-    interface ${interface}
-    virtual_router_id 51
-    priority 101
-    authentication {
-        auth_type PASS
-        auth_pass 4be37dc3b4c90194d1600c483e10ad1d
-    }
-    virtual_ipaddress {
-        ${virtual_ipaddress}
-    }
-    track_script {
-        check_apiserver
-    }
+  state MASTER
+  interface ${interface}
+  virtual_router_id 51
+  priority 101
+  authentication {
+    auth_type PASS
+    auth_pass 4be37dc3b4c90194d1600c483e10ad1d
+  }
+  virtual_ipaddress {
+    ${virtual_ipaddress}
+  }
+  track_script {
+    check_apiserver
+  }
 }
 EOF
 
   sudo bash -c 'cat > /etc/keepalived/check_apiserver.sh' <<EOF
 #!/bin/sh
 errorExit() {
-    echo "*** \$\*" 1>&2
-    exit 1
+  echo "*** \$\*" 1>&2
+  exit 1
 }
 curl --silent --max-time 2 --insecure https://localhost:6443/ -o /dev/null || errorExit "Error GET https://localhost:6443/"
 if ip addr | grep -q ${virtual_ipaddress}; then
@@ -257,7 +280,7 @@ function kubeadmConfig() {
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
 kubernetesVersion: v1.15.3
-controlPlaneEndpoint: "${leadIP}:6443"
+controlPlaneEndpoint: "${virtual_ipaddress}:6443"
 etcd:
   external:
     endpoints:
@@ -273,6 +296,7 @@ networking:
   serviceSubnet: 10.96.0.0/12
 apiServer:
   certSANs:
+    - ${virtual_ipaddress}
     - ${master1IP}
     - ${master1Host}
     - ${master2IP}
@@ -296,20 +320,23 @@ function initMaster() {
 }
 
 function syncPKI() {
-  sudo rsync -avzrlpgoDP --rsync-path='sudo rsync' root@${leadIP}:/etc/kubernetes/pki/*.key /etc/kubernetes/pki/
-  sudo rsync -avzrlpgoDP --rsync-path='sudo rsync' root@${leadIP}:/etc/kubernetes/pki/*.crt /etc/kubernetes/pki/
-  sudo rsync -avzrlpgoDP --rsync-path='sudo rsync' root@${leadIP}:/etc/kubernetes/pki/*.key /etc/kubernetes/pki/
-  sudo rsync -avzrlpgoDP --rsync-path='sudo rsync' root@${leadIP}:/etc/kubernetes/pki/*.pub /etc/kubernetes/pki/
+  for pkg in '*.key' '*.crt' '*.pub'; do
+    sudo rsync -avzrlpgoDP \
+               --rsync-path='sudo rsync' \
+               root@${leadIP}:/etc/kubernetes/pki/${pkg} \
+               /etc/kubernetes/pki/
+  done
   sudo rm -rf /etc/kubernetes/pki/apiserver*
   # sudo cp -r /root/etcd* /etc/kubernetes/pki/
 }
 
 function cniSetup() {
-  kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/62e44c867a2846fefb68bd5f178daf4da3095ccb/Documentation/kube-flannel.yml
+  kubectl apply -f \
+          https://raw.githubusercontent.com/coreos/flannel/62e44c867a2846fefb68bd5f178daf4da3095ccb/Documentation/kube-flannel.yml
 }
 
 function setupLeadCertificates() {
-  sudo mkdir -p /etc/kubernetes/pki/etcd
+  sudo mkdir -p '/etc/kubernetes/pki/etcd'
   certCA
   certClient
   certServerNPeer
