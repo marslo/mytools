@@ -100,7 +100,7 @@ function certCA() {
 }
 EOF
 
-sudo bash -c 'cat > /etc/kubernetes/pki/etcd/ca-csr.json' << EOF
+  sudo bash -c 'cat > /etc/kubernetes/pki/etcd/ca-csr.json' << EOF
 {
   "CN": "etcd",
   "key": {
