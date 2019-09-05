@@ -1,8 +1,7 @@
 #!/bin/bash
 # =============================================================================
 #   FileName: belloRPi.sh
-#     Author: marslo.fssdw
-#      Email: marslo.jiao@gmail.com
+#     Author: marslo.jiao@gmail.com
 #    Created: 2019-03-06 22:07:24
 # LastChange: 2019-03-06 22:47:27
 # =============================================================================
@@ -61,7 +60,7 @@ EOF
   sudo su devops -c "git config --global user.email marslo.jiao@gmail.com"
   sudo su devops -c "git config --global alias.st status"
   sudo su devops -c "git config --global alias.br branch"
-
+  sudo su devops -c "git config --global alias.co checkout"
 }
 
 function setupLanguage() {
@@ -92,17 +91,17 @@ sudo su devops -c "cat > ${DEVOPSHOME}/.ssh/config" << EOF
 HOST  *
       GSSAPIAuthentication no
       StrictHostKeyChecking no
-      IdentityFile   ~/.ssh/devops@fssdw
+      IdentityFile   ~/.ssh/devops
 # todo
 EOF
 
-sudo su devops -c "cat > ${DEVOPSHOME}/.ssh/devops@fssdw" << EOF
+sudo su devops -c "cat > ${DEVOPSHOME}/.ssh/devops" << EOF
 # todo
 EOF
 
-  sudo su devops -c "ln -sf ${DEVOPSHOME}/.ssh/devops@fssdw ${DEVOPSHOME}/.ssh/id_rsa"
+  sudo su devops -c "ln -sf ${DEVOPSHOME}/.ssh/devops ${DEVOPSHOME}/.ssh/id_rsa"
   sudo su devops -c "chmod 700 ${DEVOPSHOME}/.ssh"
-  sudo su devops -c "chmod 400 ${DEVOPSHOME}/.ssh/{authorized_keys,devops@fssdw,id_rsa}"
+  sudo su devops -c "chmod 400 ${DEVOPSHOME}/.ssh/{authorized_keys,devops,id_rsa}"
   sudo su devops -c "restorecon -Rf ~/.ssh"
 }
 

@@ -253,7 +253,7 @@ vrrp_instance VI_1 {
     auth_type PASS
     auth_pass 4be37dc3b4c90194d1600c483e10ad1d
   }
-  virtualIpAddr {
+  virtual_ipaddress {
     ${virtualIpAddr}
   }
   track_script {
@@ -265,7 +265,7 @@ EOF
   sudo bash -c 'cat > /etc/keepalived/check_apiserver.sh' <<EOF
 #!/bin/sh
 errorExit() {
-  echo "*** \$\*" 1>&2
+  echo "*** \$*" 1>&2
   exit 1
 }
 curl --silent --max-time 2 --insecure https://localhost:6443/ -o /dev/null || errorExit "Error GET https://localhost:6443/"
@@ -318,8 +318,12 @@ EOF
 
 function initMaster() {
   sudo sysctl net.bridge.bridge-nf-call-iptables=1
-  sudo swap off
+  sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
+  sudo swapoff -a
   sudo kubeadm init --config kubeadm-conf.yaml --ignore-preflight-errors=all
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
 }
 
 function syncPKI() {
