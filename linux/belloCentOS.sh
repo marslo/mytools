@@ -162,7 +162,7 @@ EOF
   sudo bash -c "cat > /etc/yum.repos.d/rt-centos.repo" << EOF
 [rtBase]
 name=artifactory-centos-$releasever - base
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-centos-remote/$releasever/os/$basearch/
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/os/$basearch/
 enabled=1
 gpgcheck=0
 #Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
@@ -171,7 +171,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
 
 [rtUpdates]
 name=artifactory-centos-$releasever - updates
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-centos-remote/$releasever/updates/$basearch/
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/updates/$basearch/
 enabled=1
 gpgcheck=0
 #Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
@@ -181,7 +181,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
 
 [rtCentosPlus]
 name=artifactory-centos-$releasever - centosplus
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-centos-remote/$releasever/centosplus/$basearch/
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/centosplus/$basearch/
 enabled=1
 gpgcheck=0
 #Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
@@ -190,7 +190,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
 
 [rtExtra]
 name=artifactory-centos-$releasever - extras
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-centos-remote/$releasever/extras/$basearch/
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/extras/$basearch/
 enabled=1
 gpgcheck=0
 #Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
@@ -201,14 +201,14 @@ EOF
   sudo bash -c "cat > /etc/yum.repos.d/rt-epel.repo" << EOF
 [rtEpel]
 name=artifactory-epel
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-epel-remote/$releasever/$basearch/
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-epel-remote/$releasever/$basearch/
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-epel-7
 
 [rtEpelDebug]
 name=artifactory-epel-debug
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-epel-remote/$releasever/$basearch/debug
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-epel-remote/$releasever/$basearch/debug
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-epel-7
@@ -217,7 +217,7 @@ EOF
   sudo bash -c "cat > /etc/yum.repos.d/rt-k8s.repo" << EOF
 [rtk8s]
 name=artifactory-kubernetes
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-k8s-remotes/
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-k8s-remotes/
 enabled=1
 gpgcheck=1
 repo_gpgcheck=1
@@ -226,60 +226,90 @@ exclude=kube*
 EOF
 
   sudo bash -c "cat > /etc/yum.repos.d/rt-docker-ce.repo" << EOF
-  [rtDockerCEStable]
+[rtDockerCEStable]
 name=artifactory-dockerCEStable - $basearch
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/$releasever/$basearch/stable
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-docker-remote/$releasever/$basearch/stable
 enabled=1
 gpgcheck=1
-gpgkey=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/gpg
+gpgkey=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-docker-remote/gpg
 
 [rtDockerCEEdge]
 name=artifactory-dockerCEEdge - $basearch
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/$releasever/$basearch/edge
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-docker-remote/$releasever/$basearch/edge
 enabled=1
 gpgcheck=1
-gpgkey=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/gpg
+gpgkey=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-docker-remote/gpg
 
 [rtDockerCETest]
 name=artifactory-dockerCETest - $basearch
-baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/$releasever/$basearch/test
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-docker-remote/$releasever/$basearch/test
 enabled=1
 gpgcheck=1
-gpgkey=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/gpg
+gpgkey=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-docker-remote/gpg
 EOF
 
-
-  sudo yum-config-manager --disable base
-  sudo yum-config-manager --disable centosplus
-  sudo yum-config-manager --disable updates
-  sudo yum-config-manager --disable extras
-  sudo yum-config-manager --disable epel
-
   # sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-  # sudo yum-config-manager --disable docker-ce-edge
-  # sudo yum-config-manager --disable docker-ce-test
-  # sudo yum-config-manager --disable docker-ce-nightly
-  # sudo yum-config-manager --enable extras
+  # sudo yum install -y epel-release
+
+  sudo yum-config-manager --disable base centosplus updates extras epel
+  sudo yum-config-manager --disable docker-ce-edge docker-ce-test docker-ce-nightly
 
   sudo rpm --import http://opensource.wandisco.com/RPM-GPG-KEY-WANdisco
   sudo yum -y check-update
-  sudo yum install -y yum-utils device-mapper-persistent-data lvm2 epel-release
+  sudo yum install -y yum-utils device-mapper-persistent-data lvm2 
 
+  sudo yum -y check-update
   yes | sudo yum repolist
-  sudo yum -y check-update
-  sudo yum install -y dos2unix figlet shellcheck tree iftop htop dstat sysstat traceroute ctags tig screen inxi hdparm cmake cmake3 cmake3-doc openssl-devel clang-devel clang clang-analyzer ntp ntpdate ntp-doc tmux yum-plugin-versionlock ImageMagick gcc libcap-devel mlocate usbutils bash-completion bash-completion-extras
+  sudo yum install -y dos2unix \
+                      figlet \
+                      shellcheck \
+                      tree \
+                      iftop \
+                      htop \
+                      dstat \
+                      sysstat \
+                      traceroute \
+                      ctags \
+                      tig \
+                      screen \
+                      inxi \
+                      hdparm \
+                      cmake \
+                      cmake3 \
+                      cmake3-doc \
+                      openssl-devel \
+                      clang-devel \
+                      clang \
+                      clang-analyzer \
+                      ntp \
+                      ntpdate \
+                      ntp-doc \
+                      tmux \
+                      yum-plugin-versionlock \
+                      ImageMagick \
+                      gcc \
+                      libcap-devel \
+                      mlocate \
+                      usbutils \
+                      bash-completion \
+                      bash-completion-extras \
+                      nmap-ncat
 
   sudo yum -y check-update
-  sudo yum remove docker \
-                  docker-client \
-                  docker-client-latest \
-                  docker-common \
-                  docker-latest \
-                  docker-latest-logrotate \
-                  docker-logrotate \
-                  docker-engine
-  sudo yum install -y docker-ce-19.03.1-3.el7 docker-ce-cli-19.03.1-3.el7 containerd.io
-  # sudo yum install -y docker-ce-18.06.1.ce-3.el7.x86_64
+  sudo yum remove -y docker \
+                     docker-client \
+                     docker-client-latest \
+                     docker-common \
+                     docker-latest \
+                     docker-latest-logrotate \
+                     docker-logrotate \
+                     docker-engine
+  sudo yum --showduplicates search docker-ce | grep 18\.09
+  sudo yum install -y docker-ce-18.09.9-3.el7.x86_64 \
+                      docker-ce-cli-18.09.9-3.el7.x86_64 \
+                      containerd.io
+  # sudo yum install -y docker-ce-19.03.1-3.el7 docker-ce-cli-19.03.1-3.el7 containerd.io
+  # sudo yum downgrade -y docker-ce-18.06.1.ce-3.el7.x86_64
   sudo yum versionlock docker-ce*
   yum versionlock list
 

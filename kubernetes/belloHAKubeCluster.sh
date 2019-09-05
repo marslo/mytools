@@ -320,6 +320,9 @@ function initMaster() {
   sudo sysctl net.bridge.bridge-nf-call-iptables=1
   sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
   sudo swapoff -a
+  sudo bash -c "sed -e 's:^\\(.*swap.*\\)$:# \\1:' -i /etc/fstab"
+  setenforce 0
+  sudo bash -c "sed 's/^SELINUX=enforcing$/SELINUX=permissive/' -i /etc/selinux/config"
   sudo kubeadm init --config kubeadm-conf.yaml --ignore-preflight-errors=all
   mkdir -p $HOME/.kube
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
