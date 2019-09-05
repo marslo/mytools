@@ -1,9 +1,9 @@
 #!/bin/bash
 # =============================================================================
-#   FileName: setupKubernetes.sh
+#   FileName: belloKubernetes.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2018-11-08 17:58:12
-# LastChange: 2019-01-23 18:08:44
+# LastChange: 2019-09-05 11:54:57
 # =============================================================================
 
 CURL="/usr/bin/curl"

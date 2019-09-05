@@ -1,0 +1,36 @@
+[artifactoryBase]
+name=artifactory-centos-$releasever - base
+baseurl=https://<myname>:<mypw>@<myrt>/artifactory/rpm-centos-remote/$releasever/os/$basearch/
+enabled=1
+gpgcheck=0
+#Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
+repo_gpgcheck=1
+
+[artifactoryUpdates]
+name=artifactory-centos-$releasever - updates
+baseurl=https://<myname>:<mypw>@<myrt>/artifactory/rpm-centos-remote/$releasever/updates/$basearch/
+enabled=1
+gpgcheck=0
+#Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
+repo_gpgcheck=1
+
+
+[artifactoryCentosPlus]
+name=artifactory-centos-$releasever - centosplus
+baseurl=https://<myname>:<mypw>@<myrt>/artifactory/rpm-centos-remote/$releasever/centosplus/$basearch/
+enabled=1
+gpgcheck=0
+#Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
+repo_gpgcheck=1
+
+[artifactoryExtra]
+name=artifactory-centos-$releasever - extras
+baseurl=https://<myname>:<mypw>@<myrt>/artifactory/rpm-centos-remote/$releasever/extras/$basearch/
+enabled=1
+gpgcheck=0
+#Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
+repo_gpgcheck=1

@@ -16,6 +16,10 @@ GREP="/usr/bin/grep"
 SED="/usr/bin/sed"
 SERVERNAME="SERVERNAME"
 
+rtUser='srv-user-name'
+rtPasswd='srv-user-pw'
+rtName='artifactory.my.com'
+
 usage="""This script for setup the basic environment in CentOS.
 \n\nUSAGE:
 \n\t$0 [help]
@@ -146,7 +150,7 @@ function setupSSH() {
 }
 
 function installApp() {
-sudo bash -c "cat > /etc/yum.repos.d/wandisco-git.repo" << EOF
+  sudo bash -c "cat > /etc/yum.repos.d/wandisco-git.repo" << EOF
 [wandisco-git]
 name=Wandisco GIT Repository
 baseurl=http://opensource.wandisco.com/centos/7/git/\$basearch/
@@ -154,6 +158,65 @@ enabled=1
 gpgcheck=1
 gpgkey=http://opensource.wandisco.com/RPM-GPG-KEY-WANdisco
 EOF
+
+  sudo bash -c "cat > /etc/yum.repos.d/artifactory-centos.repo" << EOF
+[artifactoryBase]
+name=artifactory-centos-$releasever - base
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/os/$basearch/
+enabled=1
+gpgcheck=0
+#Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
+repo_gpgcheck=1
+
+[artifactoryUpdates]
+name=artifactory-centos-$releasever - updates
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/updates/$basearch/
+enabled=1
+gpgcheck=0
+#Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
+repo_gpgcheck=1
+
+[artifactoryCentosPlus]
+name=artifactory-centos-$releasever - centosplus
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/centosplus/$basearch/
+enabled=1
+gpgcheck=0
+#Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
+repo_gpgcheck=1
+
+[artifactoryExtra]
+name=artifactory-centos-$releasever - extras
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/extras/$basearch/
+enabled=1
+gpgcheck=0
+#Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
+repo_gpgcheck=1
+EOF
+
+  sudo bash -c "cat > /etc/yum.repos.d/artifactory-epel.repo" << EOF
+[artifactoryepel]
+name=artifactory-epel
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-epel-remote/$releasever/$basearch/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-epel-7
+
+[artifactoryepelDebug]
+name=artifactory-epel-debug
+baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-epel-remote/$releasever/$basearch/debug
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-epel-7
+EOF
+
+  sudo yum-config-manager --disable base
+  sudo yum-config-manager --disable centosplus
+  sudo yum-config-manager --disable updates
+  sudo yum-config-manager --disable epel
 
   sudo rpm --import http://opensource.wandisco.com/RPM-GPG-KEY-WANdisco
   sudo yum -y check-update

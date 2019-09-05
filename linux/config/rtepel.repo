@@ -1,0 +1,14 @@
+[artifactoryepel]
+name=artifactory-epel
+baseurl=https://<myname>:<mypw>@<myrt>/artifactory/rpm-epel-remote/$releasever/$basearch/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-epel-7
+
+[artifactoryepelDebug]
+name=artifactory-epel-debug
+baseurl=https://<myname>:<mypw>@<myrt>/artifactory/rpm-epel-remote/$releasever/$basearch/debug
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-epel-7
+
