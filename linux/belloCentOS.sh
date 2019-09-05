@@ -159,80 +159,117 @@ gpgcheck=1
 gpgkey=http://opensource.wandisco.com/RPM-GPG-KEY-WANdisco
 EOF
 
-  sudo bash -c "cat > /etc/yum.repos.d/artifactory-centos.repo" << EOF
-[artifactoryBase]
+  sudo bash -c "cat > /etc/yum.repos.d/rt-centos.repo" << EOF
+[rtBase]
 name=artifactory-centos-$releasever - base
-baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/os/$basearch/
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-centos-remote/$releasever/os/$basearch/
 enabled=1
 gpgcheck=0
 #Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
-repo_gpgcheck=1
+#repo_gpgcheck=1
 
-[artifactoryUpdates]
+[rtUpdates]
 name=artifactory-centos-$releasever - updates
-baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/updates/$basearch/
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-centos-remote/$releasever/updates/$basearch/
 enabled=1
 gpgcheck=0
 #Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
-repo_gpgcheck=1
+#repo_gpgcheck=1
 
-[artifactoryCentosPlus]
+
+[rtCentosPlus]
 name=artifactory-centos-$releasever - centosplus
-baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/centosplus/$basearch/
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-centos-remote/$releasever/centosplus/$basearch/
 enabled=1
 gpgcheck=0
 #Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
-repo_gpgcheck=1
+#repo_gpgcheck=1
 
-[artifactoryExtra]
+[rtExtra]
 name=artifactory-centos-$releasever - extras
-baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-centos-remote/$releasever/extras/$basearch/
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-centos-remote/$releasever/extras/$basearch/
 enabled=1
 gpgcheck=0
 #Optional - if you have GPG signing keys installed, use the below flags to verify the repository metadata signature:
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centos-7
-repo_gpgcheck=1
+#repo_gpgcheck=1
 EOF
 
-  sudo bash -c "cat > /etc/yum.repos.d/artifactory-epel.repo" << EOF
-[artifactoryepel]
+  sudo bash -c "cat > /etc/yum.repos.d/rt-epel.repo" << EOF
+[rtEpel]
 name=artifactory-epel
-baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-epel-remote/$releasever/$basearch/
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-epel-remote/$releasever/$basearch/
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-epel-7
 
-[artifactoryepelDebug]
+[rtEpelDebug]
 name=artifactory-epel-debug
-baseurl=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-epel-remote/$releasever/$basearch/debug
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-epel-remote/$releasever/$basearch/debug
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-epel-7
 EOF
+
+  sudo bash -c "cat > /etc/yum.repos.d/rt-k8s.repo" << EOF
+[rtk8s]
+name=artifactory-kubernetes
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-k8s-remotes/
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://ssdfw-repo-dev.marvell.com/artifactory/devops-local/gpg/k8s-yum-key.gpg https://ssdfw-repo-dev.marvell.com/artifactory/devops-local/gpg/k8s-rpm-package-key.gpg
+exclude=kube*
+EOF
+
+  sudo bash -c "cat > /etc/yum.repos.d/rt-docker-ce.repo" << EOF
+  [rtDockerCEStable]
+name=artifactory-dockerCEStable - $basearch
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/$releasever/$basearch/stable
+enabled=1
+gpgcheck=1
+gpgkey=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/gpg
+
+[rtDockerCEEdge]
+name=artifactory-dockerCEEdge - $basearch
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/$releasever/$basearch/edge
+enabled=1
+gpgcheck=1
+gpgkey=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/gpg
+
+[rtDockerCETest]
+name=artifactory-dockerCETest - $basearch
+baseurl=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/$releasever/$basearch/test
+enabled=1
+gpgcheck=1
+gpgkey=https://<myname>:<mypw>@<myrt.com>/artifactory/rpm-docker-remote/gpg
+EOF
+
 
   sudo yum-config-manager --disable base
   sudo yum-config-manager --disable centosplus
   sudo yum-config-manager --disable updates
+  sudo yum-config-manager --disable extras
   sudo yum-config-manager --disable epel
+
+  # sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  # sudo yum-config-manager --disable docker-ce-edge
+  # sudo yum-config-manager --disable docker-ce-test
+  # sudo yum-config-manager --disable docker-ce-nightly
+  # sudo yum-config-manager --enable extras
 
   sudo rpm --import http://opensource.wandisco.com/RPM-GPG-KEY-WANdisco
   sudo yum -y check-update
   sudo yum install -y yum-utils device-mapper-persistent-data lvm2 epel-release
-  sudo yum-config-manager --enable extras
+
+  yes | sudo yum repolist
+  sudo yum -y check-update
+  sudo yum install -y dos2unix figlet shellcheck tree iftop htop dstat sysstat traceroute ctags tig screen inxi hdparm cmake cmake3 cmake3-doc openssl-devel clang-devel clang clang-analyzer ntp ntpdate ntp-doc tmux yum-plugin-versionlock ImageMagick gcc libcap-devel mlocate usbutils bash-completion bash-completion-extras
 
   sudo yum -y check-update
-  sudo yum install -y dos2unix figlet shellcheck tree iftop htop dstat sysstat traceroute ctags tig screen inxi hdparm cmake cmake3 cmake3-doc openssl-devel clang-devel clang clang-analyzer ntp ntpdate ntp-doc tmux yum-plugin-versionlock ImageMagick gcc libcap-devel mlocate
-
-  sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-  sudo yum-config-manager --disable docker-ce-edge
-  sudo yum-config-manager --disable docker-ce-test
-  sudo yum-config-manager --disable docker-ce-nightly
-  sudo yum-config-manager --enable extras
-
-  sudo yum check-update
   sudo yum remove docker \
                   docker-client \
                   docker-client-latest \
