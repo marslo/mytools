@@ -1,10 +1,10 @@
 #!/bin/bash
-# shellcheck disable=SC2224,SC1117,SC2009
+# shellcheck disable=SC2224,SC1117,SC2009,SC1078,SC1079
 # =============================================================================
 #   FileName: belloHAKubeCluster.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2019-09-02 22:48:57
-# LastChange: 2019-09-17 22:10:41
+# LastChange: 2019-09-17 22:36:36
 # =============================================================================
 
 # Inspired by:
@@ -47,6 +47,43 @@ keepaliveDownloadUrl="${keepaliveRtUrl}"
 interface=$(netstat -nr | grep -E 'UG|UGSc' | grep -E '^0.0.0|default' | grep -E '[0-9.]{7,15}' | awk -F' ' '{print $NF}')
 ipAddr=$(ip a s ${interface} | sed -rn 's|.*inet ([0-9\.]{7,15})/[0-9]{2} brd.*$|\1|p')
 peerName=$(hostname)
+
+usage="""USAGE:
+\n\t$0 [help] [independent function name]
+
+\n\nNOTICE:
+\n\tPlease execute the leadMaster first to setup certificate; And then execute the followerMaster.
+\n\tMake sure all servers can be visit passwordless by ssh for common user and root.
+
+\n\nINDEPENDENT FUNCTION NAME:
+"""
+
+info="""Server Information
+\ncurrent network interface: \t${interface}
+\ncurrent IP address: \t\t${ipAddr}
+
+\nIP \t\t\t Hostname
+\n${master1Ip} \t~~>\t ${master1Name}
+\n${master2Ip} \t~~>\t ${master2Name}
+\n${master3Ip} \t~~>\t ${master3Name}
+\n
+\nvirtualIpAddr: \t\t${virtualIpAddr}
+\nleadIP: \t\t${leadIP}
+\nleadHost: \t\t${leadHost}
+\netcdInitialCluster: \t${etcdInitialCluster}
+\n
+"""
+
+function help() # show list of functions
+{
+  echo -e ${usage}
+  # ${GREP} '^function' $0 | sed -re "s:^function([^(.]*).*$:\t\1:g"
+  declare -F -p | sed -re "s:^.*-f(.*)$:\t\1:g"
+}
+
+function showInfo() {
+  echo -e ${info}
+}
 
 function reportError(){
   set +H
@@ -582,3 +619,17 @@ function setupFollowerMaster() {
   syncPKI
   initMaster
 }
+
+if [ "$1" = "help" ]; then
+  help
+else
+  # if no parameters, then run all of default installation and configuration
+  if [ $# -eq 0 ]; then
+    showInfo
+  # execute specified the functions
+  else
+    for func do
+      [ "$(type -t -- "$func")" = function ] && "$func"
+    done
+  fi
+fi
