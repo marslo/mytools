@@ -31,6 +31,10 @@ function setupEnv() {
   sudo systemctl is-active firewalld
   sudo firewall-cmd --state
 
+  sudo modprobe br_netfilter
+  sudo sysctl net.bridge.bridge-nf-call-iptables=1
+  sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
+
   sudo swapoff -a
   sudo bash -c "${SED} -e 's:^\\(.*swap.*\\)$:# \\1:' -i /etc/fstab"
 

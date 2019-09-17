@@ -4,7 +4,7 @@
 #   FileName: belloHAKubeCluster.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2019-09-02 22:48:57
-# LastChange: 2019-09-02 22:49:22
+# LastChange: 2019-09-17 15:24:16
 # =============================================================================
 
 # Inspired by:
@@ -24,6 +24,8 @@ leadHost="${master1Name}"
 
 k8sVer='v1.15.3'
 rtUrl='artifactory.my.com/artifactory'
+# etcdPath='/etc/kubernetes/pki'
+etcdPath='/etc/etcd/ssl'
 
 # cfsslofficialUrl='https://pkg.cfssl.org/R1.2'
 cfsslRtUrl="https://${rtUrl}/devops-local/k8s/R1.2/"
@@ -41,14 +43,19 @@ keepaliveVer='2.0.18'
 keepaliveRtUrl="https://${rtUrl}/devops-local/k8s/software"
 keepaliveDownloadUrl="${keepaliveRtUrl}"
 
-interface=$(ip route get 13.250.177.223 | sed -rn 's|.*dev\s+(\S+)\s+src.*$|\1|p') # get the route to github
-ipAddr=$(ip a s ${interface} | sed -rn 's|.*inet ([0-9\.]{11}).*$|\1|p')
+# interface=$(ip route get 13.250.177.223 | sed -rn 's|.*dev\s+(\S+)\s+src.*$|\1|p') # get the route to github
+interface=$(netstat -nr | grep -E 'UG|UGSc' | grep -E '^0.0.0|default' | grep -E '[0-9.]{7,15}' | awk -F' ' '{print $NF}')
+ipAddr=$(ip a s ${interface} | sed -rn 's|.*inet ([0-9\.]{7,15})/[0-9]{2} brd.*$|\1|p')
 peerName=$(hostname)
 
 function reportError(){
   set +H
   echo -e "\\033[31mERROR: $1 !!\\033[0m"
   set -H
+}
+
+function timeSync() {
+  sudo date --set="$(ssh ${leadIP} 'date ')"
 }
 
 function cfsslInstallation() {
@@ -63,7 +70,7 @@ function etcdInstallation() {
 }
 
 function certCA() {
-  sudo bash -c 'cat > /etc/kubernetes/pki/etcd/ca-config.json' << EOF
+  sudo bash -c "cat > ${etcdPath}/ca-config.json" << EOF
 {
   "signing": {
     "default": {
@@ -101,7 +108,7 @@ function certCA() {
 }
 EOF
 
-  sudo bash -c 'cat > /etc/kubernetes/pki/etcd/ca-csr.json' << EOF
+  sudo bash -c "cat > ${etcdPath}/ca-csr.json" << EOF
 {
   "CN": "etcd",
   "key": {
@@ -112,7 +119,7 @@ EOF
 EOF
 
   pushd .
-  cd /etc/kubernetes/pki/etcd/
+  cd ${etcdPath}
   sudo /usr/local/bin/cfssl gencert \
        -initca ca-csr.json \
        | sudo /usr/local/bin/cfssljson -bare ca -
@@ -120,7 +127,7 @@ EOF
 }
 
 function certClient() {
-  sudo bash -c 'cat > /etc/kubernetes/pki/etcd/client.json' << EOF
+  sudo bash -c "cat > ${etcdPath}/client.json" << EOF
 {
   "CN": "client",
   "key": {
@@ -129,9 +136,9 @@ function certClient() {
   }
 }
 EOF
- 
+
   pushd .
-  cd /etc/kubernetes/pki/etcd/
+  cd ${etcdPath}/
   sudo /usr/local/bin/cfssl gencert \
        -ca=ca.pem \
        -ca-key=ca-key.pem \
@@ -142,13 +149,13 @@ EOF
 }
 
 function certServerNPeer() {
-  sudo bash -c '/usr/local/bin/cfssl print-defaults csr > /etc/kubernetes/pki/etcd/config.json'
-  sudo sed -i '0,/CN/{s/example\.net/'"${peerName}"'/}' /etc/kubernetes/pki/etcd/config.json
-  sudo sed -i 's/www\.example\.net/'"${ipAddr}"'/' /etc/kubernetes/pki/etcd/config.json
-  sudo sed -i 's/example\.net/'"${peerName}"'/' /etc/kubernetes/pki/etcd/config.json
+  sudo bash -c "/usr/local/bin/cfssl print-defaults csr > ${etcdPath}/config.json"
+  sudo sed -i '0,/CN/{s/example\.net/'"${peerName}"'/}' ${etcdPath}/config.json
+  sudo sed -i 's/www\.example\.net/'"${ipAddr}"'/' ${etcdPath}/config.json
+  sudo sed -i 's/example\.net/'"${peerName}"'/' ${etcdPath}/config.json
 
   pushd .
-  cd /etc/kubernetes/pki/etcd/
+  cd ${etcdPath}/
   sudo /usr/local/bin/cfssl gencert \
        -ca=ca.pem \
        -ca-key=ca-key.pem \
@@ -168,8 +175,8 @@ function syncCert() {
   for pkg in ca-config.json  ca-key.pem  ca.pem  client-key.pem  client.pem; do
     sudo rsync -avzrlpgoDP \
                --rsync-path='sudo rsync' \
-               root@${leadHost}:/etc/kubernetes/pki/etcd/${pkg} \
-               /etc/kubernetes/pki/etcd/
+               root@${leadHost}:${etcdPath}/${pkg} \
+               ${etcdPath}/
   done
 }
 
@@ -184,7 +191,7 @@ Description=etcd
 Documentation=https://ewiki.marvell.com/x/sTJIBg
 Conflicts=etcd.service
 Conflicts=etcd2.service
- 
+
 [Service]
 EnvironmentFile=/etc/etcd.env
 Type=notify
@@ -192,25 +199,25 @@ Restart=always
 RestartSec=5s
 LimitNOFILE=40000
 TimeoutStartSec=0
- 
+
 ExecStart=/usr/local/bin/etcd --name ${peerName} \\
     --data-dir /var/lib/etcd \\
     --listen-client-urls https://${ipAddr}:2379 \\
     --advertise-client-urls https://${ipAddr}:2379 \\
     --listen-peer-urls https://${ipAddr}:2380 \\
     --initial-advertise-peer-urls https://${ipAddr}:2380 \\
-    --cert-file=/etc/kubernetes/pki/etcd/server.pem \\
-    --key-file=/etc/kubernetes/pki/etcd/server-key.pem \\
+    --cert-file=${etcdPath}/server.pem \\
+    --key-file=${etcdPath}/server-key.pem \\
     --client-cert-auth \\
-    --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem \\
-    --peer-cert-file=/etc/kubernetes/pki/etcd/peer.pem \\
-    --peer-key-file=/etc/kubernetes/pki/etcd/peer-key.pem \\
+    --trusted-ca-file=${etcdPath}/ca.pem \\
+    --peer-cert-file=${etcdPath}/peer.pem \\
+    --peer-key-file=${etcdPath}/peer-key.pem \\
     --peer-client-cert-auth \\
-    --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem \\
+    --peer-trusted-ca-file=${etcdPath}/ca.pem \\
     --initial-cluster ${etcdInitialCluster} \\
     --initial-cluster-token my-etcd-token \\
     --initial-cluster-state new
- 
+
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -290,9 +297,9 @@ etcd:
       - https://${master1Ip}:2379
       - https://${master2Ip}:2379
       - https://${master3Ip}:2379
-    caFile: /etc/kubernetes/pki/etcd/ca.pem
-    certFile: /etc/kubernetes/pki/etcd/client.pem
-    keyFile: /etc/kubernetes/pki/etcd/client-key.pem
+    caFile: ${etcdPath}/ca.pem
+    certFile: ${etcdPath}/client.pem
+    keyFile: ${etcdPath}/client-key.pem
 networking:
   dnsDomain: cluster.local
   podSubnet: 10.244.0.0/16
@@ -307,9 +314,9 @@ apiServer:
     - ${master3Ip}
     - ${master3Name}
   extraArgs:
-    etcd-cafile: /etc/kubernetes/pki/etcd/ca.pem
-    etcd-certfile: /etc/kubernetes/pki/etcd/client.pem
-    etcd-keyfile: /etc/kubernetes/pki/etcd/client-key.pem
+    etcd-cafile: ${etcdPath}/ca.pem
+    etcd-certfile: ${etcdPath}/client.pem
+    etcd-keyfile: ${etcdPath}/client-key.pem
   timeoutForControlPlane: 4m0s
 imageRepository: k8s.gcr.io
 clusterName: "dc5tst-cluster"
@@ -330,12 +337,12 @@ function initMaster() {
 }
 
 function syncPKI() {
-  for pkg in '*.key' '*.crt' '*.pub'; do
-    sudo rsync -avzrlpgoDP \
-               --rsync-path='sudo rsync' \
-               root@${leadIP}:/etc/kubernetes/pki/${pkg} \
-               /etc/kubernetes/pki/
-  done
+for pkg in '*.key' '*.crt' '*.pub'; do
+  sudo rsync -avzrlpgoDP \
+             --rsync-path='sudo rsync' \
+             root@${leadIP}:/etc/kubernetes/pki/${pkg} \
+             /etc/kubernetes/pki/
+done
   sudo rm -rf /etc/kubernetes/pki/apiserver*
   # sudo cp -r /root/etcd* /etc/kubernetes/pki/
 }
@@ -345,8 +352,48 @@ function cniSetup() {
           https://raw.githubusercontent.com/coreos/flannel/62e44c867a2846fefb68bd5f178daf4da3095ccb/Documentation/kube-flannel.yml
 }
 
+function teardown() {
+  sudo kubeadm reset
+
+  docker system prune -a -f
+  sudo yum versionlock delete docker-ce
+  sudo yum versionlock delete docker-ce-cli
+  sudo yum versionlock delete kubeadm
+  sudo yum versionlock delete kubelet
+  sudo yum versionlock delete kubectl
+  sudo yum versionlock delete kubernetes-cni
+
+  sudo systemctrl disable docker.service
+  sudo systemctrl disable kubectl.service
+
+  sudo yum remove -y \
+           docker-ce \
+           docker-ce-cli \
+           containerd.io \
+           kubectl \
+           kubeadm \
+           kubelet \
+           kubernetes-cni
+
+  rm -rf /home/devops/.kube
+  sudo rm -rf /var/log/pods/ \
+              /var/log/containers/ \
+              /etc/kubernetes/ \
+              /var/lib/yum/repos/x86_64/7/kubernetes \
+              /usr/libexec/kubernetes \
+              /var/cache/yum/x86_64/7/kubernetes \
+              /etc/systemd/system/multi-user.target.wants/kubelet.service  \
+              /usr/lib/systemd/system/kubelet.service.d \
+              /var/lib/kubelet \
+              /usr/libexec/kubernetes
+
+  sudo yum clean all
+  sudo rm -rf /var/cache/yum
+  sudo yum makecache
+}
+
 function setupLeadMaster() {
-  sudo mkdir -p '/etc/kubernetes/pki/etcd'
+  sudo mkdir -p "${etcdPath}"
   certCA
   certClient
   certServerNPeer
@@ -358,7 +405,8 @@ function setupLeadMaster() {
 }
 
 function setupFollowerMaster() {
-  sudo mkdir -p '/etc/kubernetes/pki/etcd'
+  sudo mkdir -p "${etcdPath}"
+  timeSync
   syncCert
   certServerNPeer
   etcdService
