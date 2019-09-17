@@ -4,7 +4,7 @@
 #   FileName: belloHAKubeCluster.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2019-09-02 22:48:57
-# LastChange: 2019-09-17 22:36:36
+# LastChange: 2019-09-17 22:43:04
 # =============================================================================
 
 # Inspired by:
@@ -52,25 +52,34 @@ usage="""USAGE:
 \n\t$0 [help] [independent function name]
 
 \n\nNOTICE:
-\n\tPlease execute the leadMaster first to setup certificate; And then execute the followerMaster.
+\n\tReplace the master{1..3}IP and master{1..3}Name to your real situation
+\n\tleadMaster should be executed first to setup certificate; And then execute the followerMaster.
 \n\tMake sure all servers can be visit passwordless by ssh for common user and root.
+\n
+\nExample:
+\n\tSetup HA Cluster
+\n\t\t$0 leadMaster     # on master-1
+\n\t\t$0 followerMaster # on master-2 and master-3
+\n
+\n\tShow current information:
+\n\t\t$0 showInfo
 
 \n\nINDEPENDENT FUNCTION NAME:
 """
 
-info="""Server Information
-\ncurrent network interface: \t${interface}
-\ncurrent IP address: \t\t${ipAddr}
-
-\nIP \t\t\t Hostname
-\n${master1Ip} \t~~>\t ${master1Name}
-\n${master2Ip} \t~~>\t ${master2Name}
-\n${master3Ip} \t~~>\t ${master3Name}
+info="""CURRENT SERVER INFORMATION:
+\n\tcurrent network interface: \t${interface}
+\n\tcurrent IP address: \t\t${ipAddr}
 \n
-\nvirtualIpAddr: \t\t${virtualIpAddr}
-\nleadIP: \t\t${leadIP}
-\nleadHost: \t\t${leadHost}
-\netcdInitialCluster: \t${etcdInitialCluster}
+\n\tIP \t\t\t Hostname
+\n\t${master1Ip} \t~~>\t ${master1Name}
+\n\t${master2Ip} \t~~>\t ${master2Name}
+\n\t${master3Ip} \t~~>\t ${master3Name}
+\n\t
+\n\tvirtualIpAddr: \t\t${virtualIpAddr}
+\n\tleadIP: \t\t${leadIP}
+\n\tleadHost: \t\t${leadHost}
+\n\tetcdInitialCluster: \t${etcdInitialCluster}
 \n
 """
 
@@ -594,7 +603,7 @@ function pkgInstallation() {
   etcdInstallation
 }
 
-function setupLeadMaster() {
+function leadMaster() {
   sudo mkdir -p "${etcdPath}"
   pkgInstallation
   certCA
@@ -607,7 +616,7 @@ function setupLeadMaster() {
   cniSetup
 }
 
-function setupFollowerMaster() {
+function followerMaster() {
   sudo mkdir -p "${etcdPath}"
   pkgInstallation
   timeSync
@@ -626,6 +635,8 @@ else
   # if no parameters, then run all of default installation and configuration
   if [ $# -eq 0 ]; then
     showInfo
+    echo '-----------------------'
+    help
   # execute specified the functions
   else
     for func do
