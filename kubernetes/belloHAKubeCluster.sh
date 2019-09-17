@@ -4,7 +4,7 @@
 #   FileName: belloHAKubeCluster.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2019-09-02 22:48:57
-# LastChange: 2019-09-17 15:24:16
+# LastChange: 2019-09-17 22:10:41
 # =============================================================================
 
 # Inspired by:
@@ -56,6 +56,71 @@ function reportError(){
 
 function timeSync() {
   sudo date --set="$(ssh ${leadIP} 'date ')"
+}
+
+function dockerInstallation() {
+  sudo yum remove -y docker \
+                     docker-client \
+                     docker-client-latest \
+                     docker-common \
+                     docker-latest \
+                     docker-latest-logrotate \
+                     docker-logrotate \
+                     docker-selinux \
+                     docker-engine-selinux \
+                     docker-engine
+  sudo yum install -y yum-utils \
+                      device-mapper-persistent-data \
+                      lvm2 \
+                      bash-completion*
+  sudo yum-config-manager \
+       --add-repo \
+       https://download.docker.com/linux/centos/docker-ce.repo
+  sudo yum-config-manager --disable docker-ce-edge
+  sudo yum-config-manager --disable docker-ce-test
+  sudo yum makecache
+
+  sudo yum list docker-ce --showduplicates | sort -r | grep 18\.09
+  sudo yum install -y \
+           docker-ce-18.09.9-3.el7.x86_64 \
+           docker-ce-cli-18.09.9-3.el7.x86_64 \
+           containerd.io
+
+  sudo systemctl enable --now docker
+  sudo systemctl status docker
+}
+
+function k8sInstallation() {
+  setenforce 0
+  sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+
+  modprobe br_netfilter
+  sudo bash -c 'cat > /etc/sysctl.d/k8s.conf' << EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+  sysctl --system
+
+  sudo bash -c 'cat > /etc/yum.repos.d/kubernetes.repo' << EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+
+  sudo yum makecache
+  sudo yum list kubeadm --showduplicates | sort -r | grep 1\.15\.3
+  sudo yum install -y \
+           kubeadm-1.15.3-0.x86_64 \
+           kubectl-1.15.3-0.x86_64 \
+           kubelet-1.15.3-0.x86_64 \
+           --disableexcludes=kubernetes
+
+  sudo systemctl enable --now kubelet
+  sudo systemctl status kubelet
 }
 
 function cfsslInstallation() {
@@ -162,6 +227,7 @@ function certServerNPeer() {
        -config=ca-config.json \
        -profile=server config.json \
        | sudo /usr/local/bin/cfssljson -bare server
+
   sudo /usr/local/bin/cfssl gencert \
        -ca=ca.pem \
        -ca-key=ca-key.pem \
@@ -181,6 +247,96 @@ function syncCert() {
 }
 
 function etcdService() {
+
+  sudo bash -c 'cat >/etc/systemd/system/etcd.service' <<EOF
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Etcd Server
+Documentation=https://github.com/Marslo/mytools
+Conflicts=etcd.service
+Conflicts=etcd2.service
+
+[Service]
+Type=notify
+WorkingDirectory=/var/lib/etcd/
+Restart=always
+RestartSec=5s
+EnvironmentFile=-/etc/etcd/etcd.conf
+
+ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) /usr/local/bin/etcd"
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  sudo bash -c 'cat > /etc/etcd/etcd.conf' <<EOF
+ETCD_NAME=${peerName}
+ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
+#ETCD_WAL_DIR=""
+#ETCD_SNAPSHOT_COUNT="10000"
+#ETCD_HEARTBEAT_INTERVAL="100"
+#ETCD_ELECTION_TIMEOUT="1000"
+ETCD_LISTEN_PEER_URLS="https://0.0.0.0:2380"
+ETCD_LISTEN_CLIENT_URLS="https://0.0.0.0:2379"
+#ETCD_MAX_SNAPSHOTS="5"
+#ETCD_MAX_WALS="5"
+#ETCD_CORS=""
+#
+#[cluster]
+ETCD_INITIAL_ADVERTISE_PEER_URLS="https://${ipAddr}:2380"
+# if you use different ETCD_NAME (e.g. test), set ETCD_INITIAL_CLUSTER value for this name, i.e. "test=http://
+..."
+ETCD_INITIAL_CLUSTER="${etcdInitialCluster}"
+ETCD_INITIAL_CLUSTER_STATE="new"
+ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
+ETCD_ADVERTISE_CLIENT_URLS="https://${ipAddr}:2379"
+#ETCD_DISCOVERY=""
+#ETCD_DISCOVERY_SRV=""
+#ETCD_DISCOVERY_FALLBACK="proxy"
+#ETCD_DISCOVERY_PROXY=""
+#ETCD_STRICT_RECONFIG_CHECK="false"
+#ETCD_AUTO_COMPACTION_RETENTION="0"
+#
+#[proxy]
+#ETCD_PROXY="off"
+#ETCD_PROXY_FAILURE_WAIT="5000"
+#ETCD_PROXY_REFRESH_INTERVAL="30000"
+#ETCD_PROXY_DIAL_TIMEOUT="1000"
+#ETCD_PROXY_WRITE_TIMEOUT="5000"
+#ETCD_PROXY_READ_TIMEOUT="0"
+#
+#[security]
+ETCD_CERT_FILE="${etcdPath}/server.pem"
+ETCD_KEY_FILE="${etcdPath}/server-key.pem"
+ETCD_CLIENT_CERT_AUTH="true"
+ETCD_TRUSTED_CA_FILE="${etcdPath}/ca.pem"
+ETCD_AUTO_TLS="true"
+ETCD_PEER_CERT_FILE="${etcdPath}/peer.pem"
+ETCD_PEER_KEY_FILE="${etcdPath}/peer-key.pem"
+#ETCD_PEER_CLIENT_CERT_AUTH="false"
+ETCD_PEER_TRUSTED_CA_FILE="${etcdPath}/ca.pem"
+ETCD_PEER_AUTO_TLS="true"
+#
+#[logging]
+#ETCD_DEBUG="false"
+# examples for -log-package-levels etcdserver=WARNING,security=DEBUG
+#ETCD_LOG_PACKAGE_LEVELS=""
+#[profiling]
+#ETCD_ENABLE_PPROF="false"
+#ETCD_METRICS="basic"
+EOF
+
+  sudo systemctl daemon-reload
+  sudo systemctl enable --now etcd
+  sudo systemctl start etcd.service
+}
+
+function etcdObsoletService() {
   touch /etc/etcd.env
   echo "peerName=${peerName}" >> /etc/etcd.env
   echo "ipAddr=${ipAddr}" >> /etc/etcd.env
@@ -223,6 +379,7 @@ WantedBy=multi-user.target
 EOF
 
   sudo systemctl daemon-reload
+  sudo systemctl enable --now etcd
   sudo systemctl start etcd.service
 }
 
@@ -324,6 +481,7 @@ EOF
 }
 
 function initMaster() {
+  sudo modprobe br_netfilter
   sudo sysctl net.bridge.bridge-nf-call-iptables=1
   sudo sysctl net.bridge.bridge-nf-call-ip6tables=1
   sudo swapoff -a
@@ -392,8 +550,16 @@ function teardown() {
   sudo yum makecache
 }
 
+function pkgInstallation() {
+  dockerInstallation
+  k8sInstallation
+  cfsslInstallation
+  etcdInstallation
+}
+
 function setupLeadMaster() {
   sudo mkdir -p "${etcdPath}"
+  pkgInstallation
   certCA
   certClient
   certServerNPeer
@@ -406,6 +572,7 @@ function setupLeadMaster() {
 
 function setupFollowerMaster() {
   sudo mkdir -p "${etcdPath}"
+  pkgInstallation
   timeSync
   syncCert
   certServerNPeer
@@ -414,5 +581,4 @@ function setupFollowerMaster() {
   kubeadmConfig
   syncPKI
   initMaster
-  cniSetup
 }
