@@ -81,6 +81,11 @@ info="""CURRENT SERVER INFORMATION:
 \n\tleadHost: \t\t${leadHost}
 \n\tetcdInitialCluster: \t${etcdInitialCluster}
 \n
+\nTools:
+\n\tKubernetes version: \t${k8sVer}
+\n\tetcd vesion: \t\t${etcdVer}
+\n\tKeep alived version: \t${keepaliveVer}
+\n
 """
 
 function help() # show list of functions
