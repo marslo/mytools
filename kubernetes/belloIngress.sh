@@ -19,10 +19,10 @@ usage="""USAGE:
 \n\t$0 [help] [function name]
 
 \n\nNOTICE:
-\n\tNA
+\n\tSepcified nodename for Ingress Ngxin.
 \n
 \nExample:
-\n\tNA
+\n\t$0 initIngressNginx
 \n
 \n\nINDEPENDENT FUNCTION NAME:
 """
