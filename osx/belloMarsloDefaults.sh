@@ -155,13 +155,18 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 # Set default view as Column View
 defaults write com.apple.finder FXPreferredViewStyle -string 'clmv'
 # Set the $HOME as default Finder
-defaults write com.apple.finder NewWindowTarget -string "PfLo" && defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}"
+defaults write com.apple.finder NewWindowTarget -string "PfLo" && \
+  defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}"
+# search scop to current folder
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 # Show path
 defaults write com.apple.finder ShowPathbar -bool true
-# Show scrollbar
-defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+# Show scrollbar 'Always', 'Automatic', 'WhenScrolling'
+defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
 # Allow quitting Finder via ⌘ + Q
 defaults write com.apple.finder QuitMenuItem -bool true
+# status bar
+defaults write com.apple.finder ShowStatusBar -bool true
 # Set column view
 /usr/libexec/PlistBuddy -c 'Set :StandardViewOptions:ColumnViewOptions:FontSize 16' ~/Library/Preferences/com.apple.finder.plist
 /usr/libexec/PlistBuddy -c 'Set :StandardViewOptions:ColumnViewOptions:ColumnWidth 280' ~/Library/Preferences/com.apple.finder.plist

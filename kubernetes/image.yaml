@@ -1,8 +1,8 @@
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
 kubernetesVersion: v1.15.3
-controlPlaneEndpoint: "10.69.78.15:6443"
-imageRepository: ssdfw-repo.marvell.com/docker-k8s-remote
+controlPlaneEndpoint: "<virtual-ip>:6443"
+imageRepository: my.artifactory.com/docker-k8s-remote
 etcd:
   external:
     endpoints:
