@@ -30,11 +30,11 @@ usage="""USAGE:
 function help() # show list of functions
 {
   echo -e ${usage}
-  # ${GREP} '^function' $0 | sed -re "s:^function([^(.]*).*$:\t\1:g"
-  declare -F -p | sed -re "s:^.*-f(.*)$:\t\1:g"
+  grep -E '^function' $0 | sed -re "s:^function([^(.]*).*$:\t\1:g"
+  # declare -F -p | sed -re "s:^.*-f(.*)$:\t\1:g"
 }
 
-function nsconf() {
+nsconf() {
   cat > ns.yaml <<EOF
 ---
 apiVersion: v1
@@ -46,7 +46,7 @@ metadata:
 EOF
 }
 
-function configmap() {
+configmap() {
   cat > udp-services-configmap.yaml <<EOF
 ---
 kind: ConfigMap
@@ -67,7 +67,7 @@ EOF
 
 }
 
-function defaultbackend() {
+defaultbackend() {
   cat > default-backend.yaml <<EOF
 ---
 apiVersion: extensions/v1beta1
@@ -129,7 +129,7 @@ EOF
 
 }
 
-function rbac() {
+rbac() {
   curl -O ${curlproxy} https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/rbac.yaml
   curl -fsSL curl -fsSL https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/with-rbac.yaml \
     | sed -re '/^.*replicas.*$/d' \
