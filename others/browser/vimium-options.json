@@ -37,7 +37,7 @@
   "filterLinkHints": false,
   "waitForEnterForFilteredHints": true,
   "hideHud": true,
-  "keyMappings": "# Insert your preferred key mappings here.\nmap h previousTab\nmap l nextTab\nmap u restoreTab\nmap gt scrollLeft\nmap gT scrollRight\nmap H scrollToLeft\nmap L scrollToRight\nmap y copyCurrentUrl\nmap G scrollToBottom\nmap O Vomnibar.activateEditUrl\nmap T Vomnibar.activateEditUrlInNewTab\nmap o Vomnibar.activate\nmap t Vomnibar.activateInNewTabt\nmap / enterFindMode\nmap b Vomnibar.activateBookmarksInNewTab\nmap B Vomnibar.activateBookmarks",
+  "keyMappings": "# Insert your preferred key mappings here.\nmap h previousTab\nmap l nextTab\nmap u restoreTab\nmap gt scrollLeft\nmap gT scrollRight\nmap H scrollToLeft\nmap L scrollToRight\nmap y copyCurrentUrl\nmap G scrollToBottom\nmap O Vomnibar.activateEditUrl\nmap T Vomnibar.activateEditUrlInNewTab\nmap o Vomnibar.activate\nmap t Vomnibar.activateInNewTabt\nmap / enterFindMode\nmap b Vomnibar.activateBookmarksInNewTab\nmap B Vomnibar.activateBookmarks\nmap P goBack\nmap N goForward\nmap q Vomnibar.activateTabSelection",
   "linkHintCharacters": "sadfjklewcmpgh",
   "linkHintNumbers": "asdfqwer",
   "newTabUrl": "about:newtab",
