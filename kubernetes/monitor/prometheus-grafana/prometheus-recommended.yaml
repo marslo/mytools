@@ -271,7 +271,7 @@ metadata:
   namespace: kubernetes-dashboard
 spec:
   rules:
-    - host: test-prometheus.marvell.com
+    - host: test-prometheus.marslo.com
       http:
         paths:
           - backend:

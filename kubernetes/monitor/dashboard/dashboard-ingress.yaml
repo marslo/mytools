@@ -13,7 +13,7 @@ spec:
     - serverdnsname
     secretName: kubernetes-dashboard-certs
   rules:
-  - host: test-dashboard.marvell.com
+  - host: test-dashboard.marslo.com
     http:
       paths:
       - path: /

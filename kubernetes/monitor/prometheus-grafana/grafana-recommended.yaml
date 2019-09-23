@@ -75,7 +75,7 @@ metadata:
    namespace: kubernetes-dashboard
 spec:
    rules:
-   - host: test-grafana.marvell.com
+   - host: test-grafana.marslo.com
      http:
        paths:
        - path: /
