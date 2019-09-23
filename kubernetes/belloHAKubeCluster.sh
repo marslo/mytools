@@ -1,5 +1,5 @@
 #!/bin/bash
-# shellcheck disable=SC2224,SC1117,SC2009,SC1078,SC1079
+# shellcheck disable=SC1078,SC1079,SC2164
 # =============================================================================
 #   FileName: belloHAKubeCluster.sh
 #     Author: marslo.jiao@gmail.com
@@ -45,7 +45,7 @@ keepaliveDownloadUrl="${keepaliveRtUrl}"
 
 # interface=$(ip route get 13.250.177.223 | sed -rn 's|.*dev\s+(\S+)\s+src.*$|\1|p') # get the route to github
 interface=$(netstat -nr | grep -E 'UG|UGSc' | grep -E '^0.0.0|default' | grep -E '[0-9.]{7,15}' | awk -F' ' '{print $NF}')
-ipAddr=$(ip a s ${interface} | sed -rn 's|.*inet ([0-9\.]{7,15})/[0-9]{2} brd.*$|\1|p')
+ipAddr=$(ip a s "${interface}" | sed -rn 's|.*inet ([0-9\.]{7,15})/[0-9]{2} brd.*$|\1|p')
 peerName=$(hostname)
 
 usage="""USAGE:
@@ -90,13 +90,13 @@ info="""CURRENT SERVER INFORMATION:
 
 function help() # show list of functions
 {
-  echo -e ${usage}
+  echo -e "${usage}"
   # ${GREP} '^function' $0 | sed -re "s:^function([^(.]*).*$:\t\1:g"
   declare -F -p | sed -re "s:^.*-f(.*)$:\t\1:g"
 }
 
 function showInfo() {
-  echo -e ${info}
+  echo -e "${info}"
 }
 
 function reportError(){
@@ -107,6 +107,23 @@ function reportError(){
 
 function timeSync() {
   sudo date --set="$(ssh ${leadIP} 'date ')"
+}
+
+function helmInstallation() {
+  curl -fsSL \
+       https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz \
+       | sudo tar -xzv --strip-components=1 -C /usr/local/bin/
+  while read -r _i; do
+    sudo chmod +x "/usr/local/bin/${_i}"
+  done < <(echo helm tiller)
+  helm init
+  helm init --client-only
+
+  kubectl create serviceaccount -n kube-system tiller
+  kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+  kubectl patch deploy -n kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+
+  helm repo add jetstack https://charts.jetstack.io
 }
 
 function dockerInstallation() {
@@ -120,6 +137,7 @@ function dockerInstallation() {
                      docker-selinux \
                      docker-engine-selinux \
                      docker-engine
+  sudo yum -y groupinstall 'Development Tools'
   sudo yum install -y yum-utils \
                       device-mapper-persistent-data \
                       lvm2 \
@@ -540,16 +558,16 @@ function initMaster() {
   setenforce 0
   sudo bash -c "sed 's/^SELINUX=enforcing$/SELINUX=permissive/' -i /etc/selinux/config"
   sudo kubeadm init --config kubeadm-conf.yaml --ignore-preflight-errors=all
-  mkdir -p $HOME/.kube
-  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  sudo chown "$(id -u)":"$(id -g)" $HOME/.kube/config
+  mkdir -p "$HOME/.kube"
+  sudo cp -i /etc/kubernetes/admin.conf "$HOME/.kube/config"
+  sudo chown "$(id -u)":"$(id -g)" "$HOME/.kube/config"
 }
 
 function syncPKI() {
 for pkg in '*.key' '*.crt' '*.pub'; do
   sudo rsync -avzrlpgoDP \
              --rsync-path='sudo rsync' \
-             root@${leadIP}:/etc/kubernetes/pki/${pkg} \
+             root@${leadIP}:"/etc/kubernetes/pki/${pkg}" \
              /etc/kubernetes/pki/
 done
   sudo rm -rf /etc/kubernetes/pki/apiserver*
@@ -606,6 +624,7 @@ function pkgInstallation() {
   k8sInstallation
   cfsslInstallation
   etcdInstallation
+  helmInstallation
 }
 
 function leadMaster() {

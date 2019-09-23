@@ -90,9 +90,6 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: default-backend
-        # Any image is permissible as long as:
-        # 1. It serves a 404 page at /
-        # 2. It serves 200 on a /healthz endpoint
         image: k8s.gcr.io/defaultbackend:1.4
         livenessProbe:
           httpGet:
