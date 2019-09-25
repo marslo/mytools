@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cert-nginx
+  namespace: marslo-test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: cert-nginx
+    spec:
+      containers:
+      - name: cert-nginx
+        image: nginx
+        ports:
+        - containerPort: 443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cert-nginx
+  namespace: marslo-test
+  labels:
+    app: cert-nginx
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    name: https
+  selector:
+    run: cert-nginx
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cert-nginx
+  namespace: marslo-test
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: marslo-dashboard.marvell.com
+    http:
+      paths:
+      - backend:
+          serviceName: cert-nginx
+          servicePort: 443
+        path: /
+  tls:
+   - secretName: marslo-dashboard-tls
+     hosts:
+       - marslo-dashboard.marvell.com

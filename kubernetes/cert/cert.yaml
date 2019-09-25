@@ -1,0 +1,18 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: marslo-dashboard
+  namespace: marslo-test
+spec:
+  secretName: marslo-dashboard-tls
+  issuerRef:
+    name: marslo-cert
+    kind: ClusterIssuer
+  dnsNames:
+  - marslo-dashboard.marvell.com
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - marslo-dashboard.marvell.com

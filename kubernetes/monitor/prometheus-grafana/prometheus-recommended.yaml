@@ -263,17 +263,3 @@ spec:
     nodePort: 30003
   selector:
     app: prometheus
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: prometheus
-  namespace: kubernetes-dashboard
-spec:
-  rules:
-    - host: test-prometheus.marslo.com
-      http:
-        paths:
-          - backend:
-              serviceName: prometheus
-              servicePort: 9090

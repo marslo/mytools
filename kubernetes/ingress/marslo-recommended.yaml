@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: marslo-deployment
+  namespace: marslo-test
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: marslo-app
+    spec:
+      containers:
+        - image: nginx
+          name: marslo-container
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: marslo-svc
+  namespace: marslo-test
+spec:
+  ports:
+     -  port: 80
+        protocol: TCP
+        targetPort: 80
+  selector:
+    app: marslo-app
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: marslo-ing
+  namespace: marslo-test
+spec:
+  rules:
+    - host: marslo-test.marslo.com
+      http:
+        paths:
+          - backend:
+              serviceName: marslo-svc
+              servicePort: 80
+            path: /
+  tls:
+    - hosts:
+        - marslo-test.marslo.com
+      secretName: marslo-certs

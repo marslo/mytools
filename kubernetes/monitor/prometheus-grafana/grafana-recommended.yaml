@@ -67,19 +67,3 @@ spec:
   selector:
     app: grafana
     component: core
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-   name: grafana
-   namespace: kubernetes-dashboard
-spec:
-   rules:
-   - host: test-grafana.marslo.com
-     http:
-       paths:
-       - path: /
-         backend:
-          serviceName: grafana
-          servicePort: 3000
----
