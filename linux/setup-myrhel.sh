@@ -1,8 +1,8 @@
 echo "source /home/marslo/.marslo/.marslorc" >> ~/.bashrc
 rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
 
-mkdir ${HOME}/.ssh
-chmod 700 ${HOME}/.ssh
+mkdir "${HOME}/.ssh"
+chmod 700 "${HOME}/.ssh"
 echo 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEA463JBUU7YqdFDilIcgcxub5jB4x16E0V6CVQ9Kk+nvrNWrHL5s7XAwQIQM++0MxfbYlLl3mko59kk6kXLpYNEK4xMLGO1PBa7SAQfr7cvA40WAU7o3NzY/LG8iqLfk4ZKQioFxrnFHB9R1xcaoiI3YbGvpRGsZsMFR0DxIdyWoFLqp9n+pSstqRoDaBuhjiQoUz/UN0OG7YcaxBgu++zstboIzMBe0i73BQFNEzu4EQlDinRIcHe4HN/t1kDpxg7V7ZuLzvU8yhVu4sGCmBsXbgKPyoS2mubgXCb8NVBLnTM4tNUnQZ/fN1+rQ0KnqGMbGuhQRyZl/ZenahaGwJH6w== Marslo@Appliance' >> ~/.ssh/authorized_keys
 /usr/sbin/restorecon .ssh/ .ssh/authorized_keys
 
@@ -55,8 +55,8 @@ sudo make install
 wget https://github.com/git/git/archive/master.zip
 unzip master.zip
 cd git-*
-make prefix=${HOME}/.marslo/myprograms/git all doc info
-sudo make prefix=${HOME}/.marslo/myprograms/git install install-doc install-html install-info
+make prefix="${HOME}/.marslo/myprograms/git" all doc info
+sudo make prefix="${HOME}/.marslo/myprograms/git" install install-doc install-html install-info
 
 # Download repos from github
 mkdir -p ~/.marslo/Marslo/Tools/Git
@@ -84,7 +84,13 @@ wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tar.xz
 tar xf Python-2.7.12.tar.xz
 cd Python-2.7*
 make clean distclean
-./configure --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib" --enable-unicode=ucs4 --with-cxx-main=g++ --with--ensurepip=install
+./configure \
+  --prefix=/usr/local \
+  --enable-shared \
+  LDFLAGS="-Wl,-rpath /usr/local/lib" \
+  --enable-unicode=ucs4 \
+  --with-cxx-main=g++ \
+  --with--ensurepip=install
 make
 sudo make altinstall install
 sudo ln -sf /usr/local/bin/python2.7 /usr/local/bin/python

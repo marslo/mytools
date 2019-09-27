@@ -13,13 +13,10 @@ if [ ! -d "${CURRENTHOME}" ]; then
   exit 1;
 fi
 
-pushd $PWD
-cd ${CURRENTHOME}
+pushd "$PWD"
+cd "${CURRENTHOME}"
 
-sudo usermod -a -G sudo ${CURRENTUSER}
-sudo usermod -a -G adm ${CURRENTUSER}
-sudo usermod -a -G root ${CURRENTUSER}
-sudo usermod -a -G docker ${CURRENTUSER}
+sudo usermod -a -G sudo,adm,root,docker "${CURRENTUSER}"
 
 sudo bash -c "sed -i \"/^appadmin/d\" /etc/sudoers"
 sudo bash -c "echo \"${CURRENTUSER} ALL=(ALL:ALL) NOPASSWD:ALL\" >> /etc/sudoers"
@@ -29,10 +26,10 @@ sudo bash -c "sed -i 's/PrintMotd.*/PrintMotd no/' /etc/ssh/sshd_config"
 sudo bash -c "sed -i 's/UsePAM.*/UsePAM yes/' /etc/ssh/sshd_config"
 sudo bash -c "echo \"Banner /etc/ssh/server.banner\" >> /etc/ssh/sshd_config"
 
-rsync -avzrlpgoD --delete --exclude=.vim/view --exclude=.vim/vimsrc --exclude=.vim/cache --exclude=.vim/.netrwhist --exclude=.ssh/known_hosts -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ' $SYNCSER:~/.vim $APPHOME/
-rsync -avzrlpgoD --delete --exclude=.marslo/Tools $SYNCSER:~/.marslo $APPHOME/
-rsync -avzrlpgoD $SYNCSER:~/.tmux.conf $APPHOME/.tmux.conf
-rsync -avzrlpgoD $SYNCSER:~/.vimrc $APPHOME/.vimrc
+rsync -avzrlpgoD --delete --exclude=.vim/view --exclude=.vim/vimsrc --exclude=.vim/cache --exclude=.vim/.netrwhist --exclude=.ssh/known_hosts -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ' "${SYNCSER}":~/.vim "${APPHOME}"/
+rsync -avzrlpgoD --delete --exclude=.marslo/Tools "${SYNCSER}":~/.vim "${APPHOME}"/
+rsync -avzrlpgoD "${SYNCSER}":~/.tmux.conf "${APPHOME}"/.tmux.conf
+rsync -avzrlpgoD "${SYNCSER}":~/.vimrc "${APPHOME}"/.vimrc
 # rsync -avzrlpgoD --exclude=.ssh/known_hosts appadmin@161.91.26.175:~/.ssh .
 
 cat > ${CURRENTHOME}/.inputrc << 'EOF'
@@ -43,7 +40,7 @@ set show-all-if-unmodified on
 set mark-symlinked-directories on
 set print-completions-horizontally on
 EOF
-chown ${CURRENTUSER}:${CURRENTUSER} ${CURRENTHOME}/.inputrc
+chown "${CURRENTUSER}":"${CURRENTUSER}" "${CURRENTHOME}/.inputrc"
 
 # rsync -avzrlpgoD $SYNCSER:~/.inputrc $APPHOME/.inputrc
 # mkdir -p $MARSLOHOME/Tools
@@ -67,8 +64,8 @@ ln -sf ${CURRENTHOME}/.vimrc /root/.vimrc
 ln -sf ${CURRENTHOME}/.inputrc /root/.inputrc
 ln -sf ${CURRENTHOME}/.tmux.conf /root/.tmux.conf
 ln -sf ${CURRENTHOME}/.vim/bundle /root/.vim/bundle
-chown -R ${CURRENTUSER}:${CURRENTUSER} ${CURRENTHOME}/.vim/cache
-chown -R ${CURRENTUSER}:${CURRENTUSER} ${CURRENTHOME}/.vim_mru_files
+chown -R "${CURRENTUSER}":"${CURRENTUSER}" "${CURRENTHOME}/.vim/cache"
+chown -R "${CURRENTUSER}":"${CURRENTUSER}" "${CURRENTHOME}/.vim_mru_files"
 
 # Network configuration
 sudo cp /etc/rc.local{,.org}
@@ -232,11 +229,11 @@ sudo apt-key fingerprint 0EBFCD88
 
 sudo curl -fsSL get.docker.com -o get-docker.sh
 sudo sh -x get-docker.sh
-sudo chown ${CURRENTUSER}:${CURRENTUSER} get-docker.sh
+sudo chown "${CURRENTUSER}":"${CURRENTUSER}" get-docker.sh
 
 # for artifactory
 curl -L https://jfrog.bintray.com/run/art-compose/5.7.2/art-compose > art-compose
 chmod +x art-compose
-sudo chown ${CURRENTUSER}:${CURRENTUSER} art-compose
+sudo chown "${CURRENTUSER}":"${CURRENTUSER}" art-compose
 
 dconf load /org/gnome/terminal/ <ubuntu1710_terminal_font18_backup.bak
