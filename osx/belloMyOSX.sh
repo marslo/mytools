@@ -1,5 +1,5 @@
 #!/bin/bash
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034,SC2164,SC2230
 # =============================================================================
 #   FileName: belloMyOSX.sh
 #     Author: marslo.jiao@gmail.com
@@ -67,7 +67,7 @@ function basicEnvSetup(){
 
   [ ! -d "$HOME/.vim/cache" ] && mkdir -p "$HOME/.vim/cache"
 
-  cat >> $HOME/.marslo/.bello_mac << EOF
+  cat >> "$HOME/.marslo/.bello_mac" << EOF
 
 # Setup by script
 [ -f /usr/local/bin/screenfetch ] && /usr/local/bin/screenfetch
@@ -115,12 +115,12 @@ cat << 'EOF' > ~/Library/LaunchAgents/i.marslo.mocjackd.plist
 EOF
 
 [ ! -d /usr/local/bin/ ] && mkdir -p /usr/local/bin/
-[ ! -d $HOME/.marslo/bin ] && mkdir -p $HOME/.marslo/bin
+[ ! -d "$HOME/.marslo/bin" ] && mkdir -p "$HOME/.marslo/bin"
 
-ln -sf $PWD/addRoute.sh $HOME/.marslo/bin/addd
-ln -sf $PWD/removeRoute.sh $HOME/.marslo/bin/remr
-ln -sf $HOME/.marslo/bin/addr /usr/local/bin/addr
-ln -sf $HOME/.marslo/bin/remr /usr/local/bin/remr
+ln -sf "$PWD/addRoute.sh" "$HOME/.marslo/bin/addd"
+ln -sf "$PWD/removeRoute.sh" "$HOME/.marslo/bin/remr"
+ln -sf "$HOME/.marslo/bin/addr" "/usr/local/bin/addr"
+ln -sf "$HOME/.marslo/bin/remr" "/usr/local/bin/remr"
 
 # sudo cp ./addRoute.sh /usr/local/bin/addr
 # sudo cp ./removeRoute.sh /usr/local/bin/remr
@@ -427,10 +427,10 @@ function installHomebrew(){
 }
 
 function setupBrewApps(){
-  which -a brew
+  command -v brew
   whereis brew
   # git -C "$(brew --repo homebrew/core)" fetch --unshallow
-  systemlist="coreutils bash"
+  systemlist="coreutils bash proctools pstree vnstat ncdu ipcalc htop ack lsof"
   regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv inetutils hadolint"
   regularheadlist="shellcheck bats jq gradle-completion git-flow"
   gnulist="gnu-sed gnu-tar gnu-which grep ed findutils gnu-indent"
@@ -438,22 +438,22 @@ function setupBrewApps(){
   # "growl-fork android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
 
   for systempkg in ${systemlist}; do
-    brew install ${systempkg}
+    brew install "${systempkg}"
   done
   which -a bash
   /usr/local/bin/bash --version
 
   for regularpkg in ${regularlist}; do
-    brew install ${regularpkg}
+    brew install "${regularpkg}"
   done
 
   for regularheadpkg in ${regularheadlist}; do
-    brew install ${regularheadpkg} --HEAD
+    brew install "${regularheadpkg}" --HEAD
   done
 
   for gnupkg in ${gnulist}; do
     # brew install ${gnupkg} --with-default-names
-    brew install ${gnupkg}
+    brew install "${gnupkg}"
   done
 
   brew install wdiff --with-gettext
@@ -461,7 +461,7 @@ function setupBrewApps(){
   # brew install vim --override-system-vi
 
   for caskpkg in ${casklist}; do
-    brew cask install ${caskpkg}
+    brew cask install "${caskpkg}"
   done
 
   # convert single: magick convert [-monitor] <name>.HEIC <new-name>.png; bulk convert: magick mogrify [-monitor] -format png *.HEIC
@@ -497,7 +497,7 @@ function setupGvim() {
   # setup mavim in /Applications
   VIMVER=$(/bin/ls -A1 /usr/local/Cellar/macvim/ | head -1)
   mkdir -p /Applications/gVim.app/Contents
-  ln -sf /usr/local/Cellar/macvim/${VIMVER}/MacVim.app/Contents/* /Applications/gVim.app/Contents/
+  ln -sf "/usr/local/Cellar/macvim/${VIMVER}/MacVim.app/Contents/*" /Applications/gVim.app/Contents/
   mv /Applications/gVim.app/Contents/Info.plist{,.lnk}
   mv /Applications/gVim.app/Contents/PkgInfo{,.lnk}
   cp /Applications/gVim.app/Contents/Info.plist{.lnk,}
@@ -510,14 +510,14 @@ function npmInstall() {
   git clone https://github.com/tj/n ~/mywork/tools/git/repo_tools/n
   cd ~/mywork/tools/git/repo_tools/n
   make install
-  which -a n
+  command -v n
   popd
 }
 
 function npmSetup() {
   [ -f ~/.npmrc ] && mv ~/.npmrc{,.bak.${TIMESTAMP}}
 
-  cat > $HOME/.npmrc << EOF
+  cat > "$HOME/.npmrc" << EOF
   registry=${ARTIFACTORYURL}/api/npm/npm-snapshot/
   @appium=${ARTIFACTORYURL}/api/npm/npm-snapshot
   @appium-chromedriver=${ARTIFACTORYURL}/api/npm/npm-snapshot

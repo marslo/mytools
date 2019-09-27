@@ -1,11 +1,11 @@
 #i!/bin/bash
-# shellcheck disable=SC1078,SC1079
+# shellcheck disable=SC1078,SC1079,SC2164,SC2154
 
 # =============================================================================
-#   FileName: belloCentOS.sh
+#   FileName: belloMyrtCentos.sh
 #     Author: marslo.jiao@gmail.com
 #    Created: 2018-11-08 17:58:12
-# LastChange: 2019-09-05 11:41:44
+# LastChange: 2019-09-27 18:41:15
 # =============================================================================
 
 TIMESTAMPE=$(date +"%Y%m%d%H%M%S")
@@ -28,7 +28,7 @@ usage="""This script for setup the basic environment in CentOS.
 """
 
 function help() {
-  echo -e ${usage}
+  echo -e "${usage}"
 }
 
 function reportError() {
@@ -55,14 +55,16 @@ function setupEnv() {
   sudo timedatectl set-timezone America/Los_Angeles
   sudo timedatectl set-local-rtc 1
   sudo hwclock --systohc --localtime
+  setenforce 0
+  sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
   sudo cp "/etc/bashrc{,.org.${TIMESTAMPE}}"
   sudo cp "${SSHDFILE}{,.org.${TIMESTAMPE}}"
-  [ ! -f $HOME/.bash_profile ] && sudo cp /root/.bash_profile $HOME
-  [ ! -f $HOME/.bashrc ] && sudo cp /root/.bashrc $HOME
+  [ ! -f "$HOME/.bash_profile" ] && sudo cp /root/.bash_profile "$HOME"
+  [ ! -f "$HOME/.bashrc" ] && sudo cp /root/.bashrc "$HOME"
 
   sudo chown -R "$(whoami)":root /usr/local
-  sudo chown -R "$(whoami)":"$(whoami)" /opt $HOME/.bashrc $HOME/.bash_profile
+  sudo chown -R "$(whoami)":"$(whoami)" /opt "$HOME/.bashrc" "$HOME/.bash_profile"
   sudo usermode -a -G root,adm,wheel "$(whoami)"
 
   sudo swapoff -a
@@ -149,7 +151,9 @@ function setupSSH() {
   restorecon -Rf ~/.ssh
 }
 
-function installApp() {
+function setRtRepo() {
+  sudo yum-config-manager --disable base centosplus updates extras epel
+
   sudo bash -c "cat > /etc/yum.repos.d/wandisco-git.repo" << EOF
 [wandisco-git]
 name=Wandisco GIT Repository
@@ -248,68 +252,118 @@ gpgcheck=1
 gpgkey=https://${rtUser}:${rtPasswd}@${rtName}/artifactory/rpm-docker-remote/gpg
 EOF
 
-  # sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-  # sudo yum install -y epel-release
+  yes | sudo yum repolist
+  sudo yum clean all
+  sudo yum makecache
+}
 
-  sudo yum-config-manager --disable base centosplus updates extras epel
+function setupRegularRepo() {
+  preInstall="yum-utils \
+              device-mapper-persistent-data \
+              lvm2 \
+  "
+  yum install -y "${preInstall}"
+  sudo yum install -y epel-release
+  sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
   sudo yum-config-manager --disable docker-ce-edge docker-ce-test docker-ce-nightly
+  sudo yum-config-manager --enable docker-ce-nightly
 
   sudo rpm --import http://opensource.wandisco.com/RPM-GPG-KEY-WANdisco
-  sudo yum -y check-update
-  sudo yum install -y yum-utils device-mapper-persistent-data lvm2 
-
-  sudo yum -y check-update
   yes | sudo yum repolist
-  sudo yum install -y dos2unix \
-                      figlet \
-                      shellcheck \
-                      tree \
-                      iftop \
-                      htop \
-                      dstat \
-                      sysstat \
-                      traceroute \
-                      ctags \
-                      tig \
-                      screen \
-                      inxi \
-                      hdparm \
-                      cmake \
-                      cmake3 \
-                      cmake3-doc \
-                      openssl-devel \
-                      clang-devel \
-                      clang \
-                      clang-analyzer \
-                      ntp \
-                      ntpdate \
-                      ntp-doc \
-                      tmux \
-                      yum-plugin-versionlock \
-                      ImageMagick \
-                      gcc \
-                      libcap-devel \
-                      mlocate \
-                      usbutils \
-                      bash-completion \
-                      bash-completion-extras \
-                      nmap-ncat
+
+  cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+}
+
+function installApp() {
+
+
+  sudo yum makecache
+  sudo yum -y check-update
+
+  dockerRemoveList="docker \
+                    docker-client \
+                    docker-client-latest \
+                    docker-common \
+                    docker-latest \
+                    docker-latest-logrotate \
+                    docker-logrotate \
+                    docker-engine \
+
+  "
+
+  systemList="proctools \
+              pstree \
+              vnstat \
+              ncdu \
+              ipcalc \
+              htop \
+              ack \
+              lsof \
+              dstat \
+  "
+
+  regularList="dos2unix \
+               figlet \
+               shellcheck \
+               tree \
+               iftop \
+               sysstat \
+               traceroute \
+               ctags \
+               tig \
+               screen \
+               inxi \
+               hdparm \
+               cmake \
+               cmake3 \
+               cmake3-doc \
+               openssl-devel \
+               clang-devel \
+               clang \
+               clang-analyzer \
+               ntp \
+               ntpdate \
+               ntp-doc \
+               tmux \
+               yum-plugin-versionlock \
+               ImageMagick \
+               gcc \
+               libcap-devel \
+               mlocate \
+               usbutils \
+               bash-completion \
+               bash-completion-extras \
+               nmap-ncat \
+     "
+
+  dockerList="docker-ce-18.09.9-3.el7.x86_64 \
+              docker-ce-cli-18.09.9-3.el7.x86_64 \
+              containerd.io
+  "
+  # dockerList="docker-ce-19.03.1-3.el7 docker-ce-cli-19.03.1-3.el7 containerd.io"
+  # kubernetesList="kubelet kubeadm kubectl --disableexcludes=kubernetes"
+
+  sudo yum install -y "${systemList}"
+  sudo yum -y check-update
+  sudo yum -y groupinstall 'Development Tools'
+
+  sudo yum install -y "${regularList}"
 
   sudo yum -y check-update
-  sudo yum remove -y docker \
-                     docker-client \
-                     docker-client-latest \
-                     docker-common \
-                     docker-latest \
-                     docker-latest-logrotate \
-                     docker-logrotate \
-                     docker-engine
+  sudo yum remove -y "${dockerRemoveList}"
+
   sudo yum --showduplicates search docker-ce | grep 18\.09
-  sudo yum install -y docker-ce-18.09.9-3.el7.x86_64 \
-                      docker-ce-cli-18.09.9-3.el7.x86_64 \
-                      containerd.io
-  # sudo yum install -y docker-ce-19.03.1-3.el7 docker-ce-cli-19.03.1-3.el7 containerd.io
+  sudo yum install -y "${dockerList}"
   # sudo yum downgrade -y docker-ce-18.06.1.ce-3.el7.x86_64
+
   sudo yum versionlock docker-ce*
   yum versionlock list
 
@@ -319,6 +373,7 @@ EOF
   sudo bash -c 'cat >> /etc/yum.conf' << EOF
 clean_requirements_on_remove=1
 exclude=docker-ce*
+exclude=kube*
 EOF
 
   sudo systemctl stop ntpd

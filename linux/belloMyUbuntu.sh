@@ -4,7 +4,7 @@
 #    FileName: belloMyUbuntu.sh
 #      Author: marslo.jiao@gmail.com
 #     Created: 2018-05-25 23:37:30
-#  LastChange: 2018-09-13 17:58:01
+#  LastChange: 2019-09-27 22:08:29
 # =============================================================================
 # USAGE:
 #     please repace the ARTIFACTORYHOST to your own situation
@@ -506,36 +506,270 @@ function aptInstall() {
   sudo apt install -y apt-transport-https ca-certificates software-properties-common
   sudo ubuntu-drivers autoinstall
 
-  # for mac mini wifi adapter
+
+
+  # macmini wifi adapter (Broadcom Wireless Drivers)
+  wirelessList="bcmwl-kernel-source \
+                broadcom-sta-common \
+                broadcom-sta-source \
+                b43-fwcutter \
+                firmware-b43-installer \
+                firmware-b43-installer \
+  "
+
+  # graphics card
+  graphicsList="libnvidia-cfg1-390            \
+                libnvidia-common-390          \
+                libnvidia-compute-390         \
+                libnvidia-decode-390          \
+                libnvidia-encode-390          \
+                libnvidia-fbc1-390            \
+                libnvidia-gl-390              \
+                libnvidia-ifr1-390            \
+                nvidia-compute-utils-390      \
+                nvidia-dkms-390               \
+                nvidia-driver-390             \
+                nvidia-kernel-common-390      \
+                nvidia-kernel-source-390      \
+                nvidia-prime                  \
+                nvidia-settings               \
+                nvidia-utils-390              \
+                xserver-xorg-video-nvidia-390 \
+  "
+
+  # development environment
+  devList="autoconf              \
+           automake              \
+           binutils              \
+           binutils-doc          \
+           bison                 \
+           build-essential       \
+           cmake                 \
+           cpp                   \
+           cpp-5                 \
+           cpp-doc               \
+           debian-keyring        \
+           dlocate               \
+           flex                  \
+           g++                   \
+           g++-5                 \
+           g++-5-multilib        \
+           g++-7-multilib        \
+           g++-multilib          \
+           gcc                   \
+           gcc-5                 \
+           gcc-5-doc             \
+           gcc-5-locales         \
+           gcc-5-multilib        \
+           gcc-7-doc             \
+           gcc-7-locales         \
+           gcc-7-multilib        \
+           gcc-doc               \
+           gcc-multilib          \
+           gdb                   \
+           glibc-doc             \
+           libappindicator1      \
+           libasan2              \
+           libasan2-dbg          \
+           libasan4-dbg          \
+           libatomic1            \
+           libatomic1-dbg        \
+           libbz2-dev            \
+           libc-dev-bin          \
+           libc6-dev             \
+           libcc1-0              \
+           libcilkrts5           \
+           libcilkrts5-dbg       \
+           libexpat-dev          \
+           libexpat1-dev         \
+           libfakeroot           \
+           libgcc1-dbg           \
+           libgnome2-bin         \
+           libgomp1-dbg          \
+           libindicator7         \
+           libisl15              \
+           libitm1               \
+           libitm1-dbg           \
+           liblsan0              \
+           liblsan0-dbg          \
+           liblxc1               \
+           libmpc3               \
+           libmpx0               \
+           libmpx0-dbg           \
+           libmpx2-dbg           \
+           libncurses-dev        \
+           libncurses5-dev       \
+           libncursesw5-dev      \
+           libpython-all-dev     \
+           libpython2.7          \
+           libquadmath0          \
+           libquadmath0-dbg      \
+           libsensors4           \
+           libssl-dev            \
+           libstdc++-5-dev       \
+           libstdc++-5-doc       \
+           libstdc++-7-doc       \
+           libstdc++6-5-dbg      \
+           libstdc++6-7-dbg      \
+           libtool               \
+           libtsan0              \
+           libtsan0-dbg          \
+           libubsan0             \
+           libubsan0-dbg         \
+           libvdpau-va-gl1       \
+           linux-libc-dev        \
+           lxc-common            \
+           make                  \
+           make-doc              \
+           menu                  \
+           plymouth-x11          \
+           python-docutils       \
+           python-setuptools-doc \
+           vim-gtk3              \
+           zlib1g-dev            \
+  "
+
+  systemList="acka                \
+              auditd              \
+              auditdinotify-tools \
+              dstat               \
+              htop                \
+              ifstat              \
+              iftop               \
+              ifuse               \
+              inotify-tools       \
+              iotop               \
+              ipcalc              \
+              ncdu                \
+              nmap                \
+              ntp                 \
+              proctools           \
+              pstree              \
+              sysstat             \
+              vnstat              \
+  "
+
+  regularList="apt-file                \
+               bash-completion*        \
+               binutils                \
+               bison                   \
+               ctags                   \
+               dconf-editor            \
+               debian-keyring          \
+               dos2unix                \
+               dpkg-dev                \
+               exfat-fuse              \
+               exfat-utils             \
+               fakeroot                \
+               figlet                  \
+               flex                    \
+               git                     \
+               gnome-tweak-tool        \
+               gnome-tweaks            \
+               guake                   \
+               inxi                    \
+               iptables-persistent     \
+               jq                      \
+               landscape-common        \
+               lxcfs                   \
+               m2crypto                \
+               m4                      \
+               mailutils               \
+               manpages-dev            \
+               nautilus-admin          \
+               ncurses-doc             \
+               netfilter-persistent    \
+               policycoreutils         \
+               polipo                  \
+               python-pip              \
+               resolvconf              \
+               ruby                    \
+               screen                  \
+               screenfetch             \
+               shadowsocks-qt5         \
+               shellcheck              \
+               texinfo                 \
+               tig                     \
+               tmux                    \
+               traceroute              \
+               tree                    \
+               update-motd             \
+               update-notifier-common  \
+               xscreensaver            \
+               xscreensaver*           \
+               xscreensaver-data-extra \
+               xscreensaver-gl-extra   \
+  "
+
+  otherList="gir1.2-gtop-2.0 \
+             gir1.2-networkmanager-1.0  \
+             gir1.2-clutter-1.0 \
+             chrome-gnome-shell
+  "
+
+  # android sdk
+  sdkList="glibc-doc:i386 locales:i386 libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386"
+
+  # chinese font
+  chineseList="firefox-locale-zh-hans           \
+               fonts-arphic-ukai                \
+               fonts-arphic-uming               \
+               fonts-noto-cjk-extra             \
+               gnome-user-docs-zh-hans          \
+               hunspell-en-au                   \
+               hunspell-en-ca                   \
+               hunspell-en-gb                   \
+               hunspell-en-za                   \
+               hyhpen-en-gb                     \
+               hyphen-en-ca                     \
+               ibus-libpinyin                   \
+               ibus-table-wubi                  \
+               language-pack-gnome-zh-hans      \
+               language-pack-gnome-zh-hans-base \
+               language-pack-zh-hans            \
+               language-pack-zh-hans-base       \
+               libpinyin-data                   \
+               libpinyin13                      \
+               libreoffice-help-en-gb           \
+               libreoffice-help-zh-cn           \
+               libreoffice-l10n-en-gb           \
+               libreoffice-l10n-en-za           \
+               libreoffice-l10n-zh-cn           \
+               mythes-en-au                     \
+               thunderbird-locale-en-gb         \
+  "
+
+  launchyList="launchy            \
+               launchy-plugins    \
+               launchy-skins      \
+               libmng2            \
+               libqt4-dbus        \
+               libqt4-declarative \
+               libqt4-network     \
+               libqt4-script      \
+               libqt4-sql         \
+               libqt4-sql-mysql   \
+               libqt4-xmlpatterns \
+               libqtgui4          \
+               qt-at-spi          \
+  "
+
+  sudo dpkg --add-architecture i386
+  sudo apt install -y ubuntu-restricted-extras
+
   if sudo dmidecode -s system-product-name | grep -i macmini; then
-    sudo apt install -y bcmwl-kernel-source broadcom-sta-common broadcom-sta-source b43-fwcutter firmware-b43-installer firmware-b43-installer
+    sudo apt install -y "${wirelessList}"
   fi
 
-  sudo apt install -y menu debian-keyring g++-multilib g++-7-multilib gcc-7-doc libstdc++6-7-dbg gcc-multilib autoconf automake libtool flex bison gcc-doc gcc-7-multilib gcc-7-locales libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan4-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx2-dbg libquadmath0-dbg glibc-doc libstdc++-7-doc make-doc libvdpau-va-gl1 libappindicator1 libindicator7
-  # for graphics card
-  sudo apt install -y libnvidia-cfg1-390 libnvidia-common-390 libnvidia-compute-390 libnvidia-decode-390 libnvidia-encode-390 libnvidia-fbc1-390 libnvidia-gl-390 libnvidia-ifr1-390 nvidia-compute-utils-390 nvidia-dkms-390 nvidia-driver-390 nvidia-kernel-common-390 nvidia-kernel-source-390 nvidia-prime nvidia-settings nvidia-utils-390 xserver-xorg-video-nvidia-390
+  sudo apt install -y "${devList}"
+  sudo apt install -y "${graphicsList}"
+  sudo apt install -y "${regularList}"
+  sudo apt install -y "${otherList}"
+  sudo apt install -y "${sdkList}"
+  sudo apt install -y "${chineseList}"
 
-  sudo apt install -y ubuntu-restricted-extras
-  sudo apt install -y bash-completion tree dos2unix iptables-persistent mailutils policycoreutils build-essential gcc g++ make cmake liblxc1 lxc-common lxcfs landscape-common update-motd update-notifier-common apt-file netfilter-persistent ncurses-doc binutils cpp cpp-5 dpkg-dev fakeroot g++-5 gcc gcc-5 libasan2 libatomic1 libc-dev-bin libc6-dev libcc1-0 libcilkrts5 libexpat1-dev libfakeroot libisl15 libitm1 liblsan0 libmpc3 libmpx0 libquadmath0 libstdc++-5-dev libtsan0 libubsan0 linux-libc-dev manpages-dev libssl-dev jq htop dstat ifstat libncurses5-dev libncursesw5-dev libpython-all-dev python-pip binutils-doc cpp-doc gcc-5-locales debian-keyring g++-multilib g++-5-multilib gcc-5-doc libstdc++6-5-dbg gcc-multilib autoconf automake libtool flex bison gdb gcc-doc gcc-5-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan2-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libmpx0-dbg libquadmath0-dbg libstdc++-5-doc python-setuptools-doc libpython2.7 dlocate python-docutils git m4 ruby texinfo libbz2-dev libexpat-dev libncurses-dev zlib1g-dev iftop libsensors4 sysstat traceroute vim-gtk3 figlet screenfetch dconf-editor m2crypto ctags ntp nautilus-admin libgnome2-bin tmux screen gnome-tweaks gnome-tweak-tool nmap git vim-gtk3 xscreensaver xscreensaver-gl-extra xscreensaver-data-extra xscreensaver* tig guake shellcheck dconf-editor exfat-fuse exfat-utils inxi plymouth-x11 resolvconf polipo ifuse
-  sudo apt install -y sysstat
-  sudo apt install -y gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 chrome-gnome-shell
-  sudo apt install -y glibc-doc:i386 locales:i386
-  # for android sdk
-  sudo dpkg --add-architecture i386
-  sudo apt install -y libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386
-
-  # for io status
-  sudo apt install -y inotify-tools iotop auditd
-
-  sudo apt install -y shadowsocks-qt5
   sudo apt install -y docker-ce="$(apt-cache madison docker-ce | /bin/grep 17.03 | head -1 | awk '{print $3}')"
   sudo apt-mark hold docker-ce
-
-  # install chinese
-  sudo apt install -y fonts-arphic-uming language-pack-gnome-zh-hans-base language-pack-zh-hans-base language-pack-zh-hans language-pack-gnome-zh-hans firefox-locale-zh-hans fonts-arphic-ukai fonts-noto-cjk-extra gnome-user-docs-zh-hans hunspell-en-au hunspell-en-ca hunspell-en-gb hunspell-en-za hyphen-en-ca hyhpen-en-gb libpinyin-data libpinyin13 ibus-libpinyin ibus-table-wubi libreoffice-l10n-en-gb libreoffice-help-en-gb libreoffice-l10n-zh-cn libreoffice-help-zh-cn libreoffice-l10n-en-za mythes-en-au thunderbird-locale-en-gb
-
-  # for launchy
-  # sudo apt install -y launchy launchy-plugins launchy-skins libmng2 libqt4-dbus libqt4-declarative libqt4-network libqt4-script libqt4-sql libqt4-sql-mysql libqt4-xmlpatterns libqtgui4 qt-at-spi
 
   sudo apt remove -y ttf-mscorefonts-installer
   wget http://ftp.de.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.6_all.deb
@@ -756,7 +990,7 @@ function systemDconf() {
 function marslorized() {
   sudo vim /etc/bash.bashrc +retab! +wq
   echo "source /home/marslo/.marslo/.marslorc" >> ~/.bashrc
-  cat >> $HOME/.bashrc << EOF
+  cat >> "$HOME/.bashrc" << EOF
   if command -v kubectl >/dev/null 2>&1; then
     source <(kubectl completion bash)
   fi
@@ -766,8 +1000,8 @@ EOF
   # sed -i /usr/share/applications/google-chrome-unstable.desktop
 
   # auto startup for gnome-session-properity
-  [ ! -d $HOME/.config/autostart ] && mkdir -p $HOME/.config/autostart
-cat > $HOME/.config/autostart/guake.desktop << EOF
+  [ ! -d "$HOME/.config/autostart" ] && mkdir -p "$HOME/.config/autostart"
+  cat > "$HOME/.config/autostart/guake.desktop" << EOF
 [Desktop Entry]
 Type=Application
 Exec=/usr/bin/guake
@@ -780,7 +1014,7 @@ Comment[en_US]=Guake Terminal
 Comment=Guake Terminal
 EOF
 
-cat > $HOME/.config/autostart/gnome-terminal.desktop << EOF
+  cat > "$HOME/.config/autostart/gnome-terminal.desktop" << EOF
 [Desktop Entry]
 Type=Application
 Exec=/usr/bin/gnome-terminal
@@ -795,15 +1029,15 @@ EOF
 
   # Git Repos
   [ ! -d "$HOME/.marslo" ] && mkdir -p "$HOME/.marslo"
-  [ ! -d "${GITHOME}/marslo" ] && mkdir -p ${GITHOME}/marslo
-  [ ! -d "${GITHOME}/tools" ] && mkdir -p ${GITHOME}/tools
+  [ ! -d "${GITHOME}/marslo" ] && mkdir -p "${GITHOME}/marslo"
+  [ ! -d "${GITHOME}/tools" ] && mkdir -p "${GITHOME}/tools"
   [ ! -d "$HOME/.local/share/gnome-shell/extensions" ] && mkdir -p "$HOME/.local/share/gnome-shell/extensions"
 
   for i in mytools myvim mylinux myblog; do
-    git clone https://github.com/Marslo/${i}.git ${GITHOME}/marslo/${i}
+    git clone "https://github.com/Marslo/${i}.git" "${GITHOME}/marslo/${i}"
   done
 
-  if git clone https://github.com/paradoxxxzero/gnome-shell-system-monitor-applet.git ${GITHOME}/tools/gnome-shell-system-monitor-applet; then
+  if git clone https://github.com/paradoxxxzero/gnome-shell-system-monitor-applet.git "${GITHOME}/tools/gnome-shell-system-monitor-applet"; then
     ln -sf "${GITHOME}/tools/gnome-shell-system-monitor-applet/system-monitor@paradoxxx.zero.gmail.com" "$HOME/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"
     gnome-shell-extension-tool --enable-extension=system-monitor@paradoxxx.zero.gmail.com
   fi
@@ -811,7 +1045,7 @@ EOF
   vim +GetVundle +qa!
   vim +BundleInstall +qa!
 
-  git clone git@github.com:vim/vim.git ${GITHOME}/tools/vim
+  git clone git@github.com:vim/vim.git "${GITHOME}/tools/vim"
   sudo updatedb
 }
 
