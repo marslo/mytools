@@ -430,7 +430,7 @@ function setupBrewApps(){
   command -v brew
   whereis brew
   # git -C "$(brew --repo homebrew/core)" fetch --unshallow
-  systemlist="coreutils bash proctools pstree vnstat ncdu ipcalc htop ack lsof"
+  systemlist="imagemagick coreutils bash proctools pstree vnstat ncdu ipcalc htop ack lsof"
   regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv inetutils hadolint"
   regularheadlist="shellcheck bats jq gradle-completion git-flow"
   gnulist="gnu-sed gnu-tar gnu-which grep ed findutils gnu-indent"
