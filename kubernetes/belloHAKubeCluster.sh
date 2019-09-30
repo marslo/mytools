@@ -24,8 +24,8 @@ leadHost="${master1Name}"
 
 k8sVer='v1.15.3'
 rtUrl='artifactory.my.com/artifactory'
-# etcdPath='/etc/kubernetes/pki'
-etcdPath='/etc/etcd/ssl'
+# etcdSSLPath='/etc/kubernetes/pki'
+etcdSSLPath='/etc/etcd/ssl'
 
 # cfsslofficialUrl='https://pkg.cfssl.org/R1.2'
 cfsslRtUrl="https://${rtUrl}/devops-local/k8s/R1.2/"
@@ -37,7 +37,6 @@ etcdVer='v3.3.15'
 etcdRtDownload="https://${rtUrl}/devops-local/k8s"
 etcdDownloadUrl="${etcdRtDownload}"
 etcdInitialCluster="${master1Name}=https://${master1Ip}:2380,${master2Name}=https://${master2Ip}:2380,${master3Name}=https://${master3Ip}:2380"
-
 keepaliveVer='2.0.18'
 # keepaliveUrl='https://www.keepalived.org/software'
 keepaliveRtUrl="https://${rtUrl}/devops-local/k8s/software"
@@ -204,7 +203,7 @@ function etcdInstallation() {
 }
 
 function certCA() {
-  sudo bash -c "cat > ${etcdPath}/ca-config.json" << EOF
+  sudo bash -c "cat > ${etcdSSLPath}/ca-config.json" << EOF
 {
   "signing": {
     "default": {
@@ -242,7 +241,7 @@ function certCA() {
 }
 EOF
 
-  sudo bash -c "cat > ${etcdPath}/ca-csr.json" << EOF
+  sudo bash -c "cat > ${etcdSSLPath}/ca-csr.json" << EOF
 {
   "CN": "etcd",
   "key": {
@@ -253,7 +252,7 @@ EOF
 EOF
 
   pushd .
-  cd ${etcdPath}
+  cd ${etcdSSLPath}
   sudo /usr/local/bin/cfssl gencert \
        -initca ca-csr.json \
        | sudo /usr/local/bin/cfssljson -bare ca -
@@ -261,7 +260,7 @@ EOF
 }
 
 function certClient() {
-  sudo bash -c "cat > ${etcdPath}/client.json" << EOF
+  sudo bash -c "cat > ${etcdSSLPath}/client.json" << EOF
 {
   "CN": "client",
   "key": {
@@ -272,7 +271,7 @@ function certClient() {
 EOF
 
   pushd .
-  cd ${etcdPath}/
+  cd ${etcdSSLPath}/
   sudo /usr/local/bin/cfssl gencert \
        -ca=ca.pem \
        -ca-key=ca-key.pem \
@@ -283,13 +282,13 @@ EOF
 }
 
 function certServerNPeer() {
-  sudo bash -c "/usr/local/bin/cfssl print-defaults csr > ${etcdPath}/config.json"
-  sudo sed -i '0,/CN/{s/example\.net/'"${peerName}"'/}' ${etcdPath}/config.json
-  sudo sed -i 's/www\.example\.net/'"${ipAddr}"'/' ${etcdPath}/config.json
-  sudo sed -i 's/example\.net/'"${peerName}"'/' ${etcdPath}/config.json
+  sudo bash -c "/usr/local/bin/cfssl print-defaults csr > ${etcdSSLPath}/config.json"
+  sudo sed -i '0,/CN/{s/example\.net/'"${peerName}"'/}' ${etcdSSLPath}/config.json
+  sudo sed -i 's/www\.example\.net/'"${ipAddr}"'/' ${etcdSSLPath}/config.json
+  sudo sed -i 's/example\.net/'"${peerName}"'/' ${etcdSSLPath}/config.json
 
   pushd .
-  cd ${etcdPath}/
+  cd ${etcdSSLPath}/
   sudo /usr/local/bin/cfssl gencert \
        -ca=ca.pem \
        -ca-key=ca-key.pem \
@@ -310,8 +309,8 @@ function syncCert() {
   for pkg in ca-config.json  ca-key.pem  ca.pem  client-key.pem  client.pem; do
     sudo rsync -avzrlpgoDP \
                --rsync-path='sudo rsync' \
-               root@${leadHost}:${etcdPath}/${pkg} \
-               ${etcdPath}/
+               root@${leadHost}:${etcdSSLPath}/${pkg} \
+               ${etcdSSLPath}/
   done
 }
 
@@ -380,15 +379,15 @@ ETCD_ADVERTISE_CLIENT_URLS="https://${ipAddr}:2379"
 #ETCD_PROXY_READ_TIMEOUT="0"
 #
 #[security]
-ETCD_CERT_FILE="${etcdPath}/server.pem"
-ETCD_KEY_FILE="${etcdPath}/server-key.pem"
+ETCD_CERT_FILE="${etcdSSLPath}/server.pem"
+ETCD_KEY_FILE="${etcdSSLPath}/server-key.pem"
 ETCD_CLIENT_CERT_AUTH="true"
-ETCD_TRUSTED_CA_FILE="${etcdPath}/ca.pem"
+ETCD_TRUSTED_CA_FILE="${etcdSSLPath}/ca.pem"
 ETCD_AUTO_TLS="true"
-ETCD_PEER_CERT_FILE="${etcdPath}/peer.pem"
-ETCD_PEER_KEY_FILE="${etcdPath}/peer-key.pem"
+ETCD_PEER_CERT_FILE="${etcdSSLPath}/peer.pem"
+ETCD_PEER_KEY_FILE="${etcdSSLPath}/peer-key.pem"
 #ETCD_PEER_CLIENT_CERT_AUTH="false"
-ETCD_PEER_TRUSTED_CA_FILE="${etcdPath}/ca.pem"
+ETCD_PEER_TRUSTED_CA_FILE="${etcdSSLPath}/ca.pem"
 ETCD_PEER_AUTO_TLS="true"
 #
 #[logging]
@@ -431,14 +430,14 @@ ExecStart=/usr/local/bin/etcd --name ${peerName} \\
     --advertise-client-urls https://${ipAddr}:2379 \\
     --listen-peer-urls https://${ipAddr}:2380 \\
     --initial-advertise-peer-urls https://${ipAddr}:2380 \\
-    --cert-file=${etcdPath}/server.pem \\
-    --key-file=${etcdPath}/server-key.pem \\
+    --cert-file=${etcdSSLPath}/server.pem \\
+    --key-file=${etcdSSLPath}/server-key.pem \\
     --client-cert-auth \\
-    --trusted-ca-file=${etcdPath}/ca.pem \\
-    --peer-cert-file=${etcdPath}/peer.pem \\
-    --peer-key-file=${etcdPath}/peer-key.pem \\
+    --trusted-ca-file=${etcdSSLPath}/ca.pem \\
+    --peer-cert-file=${etcdSSLPath}/peer.pem \\
+    --peer-key-file=${etcdSSLPath}/peer-key.pem \\
     --peer-client-cert-auth \\
-    --peer-trusted-ca-file=${etcdPath}/ca.pem \\
+    --peer-trusted-ca-file=${etcdSSLPath}/ca.pem \\
     --initial-cluster ${etcdInitialCluster} \\
     --initial-cluster-token my-etcd-token \\
     --initial-cluster-state new
@@ -523,9 +522,9 @@ etcd:
       - https://${master1Ip}:2379
       - https://${master2Ip}:2379
       - https://${master3Ip}:2379
-    caFile: ${etcdPath}/ca.pem
-    certFile: ${etcdPath}/client.pem
-    keyFile: ${etcdPath}/client-key.pem
+    caFile: ${etcdSSLPath}/ca.pem
+    certFile: ${etcdSSLPath}/client.pem
+    keyFile: ${etcdSSLPath}/client-key.pem
 networking:
   dnsDomain: cluster.local
   podSubnet: 10.244.0.0/16
@@ -540,9 +539,9 @@ apiServer:
     - ${master3Ip}
     - ${master3Name}
   extraArgs:
-    etcd-cafile: ${etcdPath}/ca.pem
-    etcd-certfile: ${etcdPath}/client.pem
-    etcd-keyfile: ${etcdPath}/client-key.pem
+    etcd-cafile: ${etcdSSLPath}/ca.pem
+    etcd-certfile: ${etcdSSLPath}/client.pem
+    etcd-keyfile: ${etcdSSLPath}/client-key.pem
   timeoutForControlPlane: 4m0s
 imageRepository: k8s.gcr.io
 clusterName: "dc5tst-cluster"
@@ -628,7 +627,7 @@ function pkgInstallation() {
 }
 
 function leadMaster() {
-  sudo mkdir -p "${etcdPath}"
+  sudo mkdir -p "${etcdSSLPath}"
   pkgInstallation
   certCA
   certClient
@@ -641,7 +640,7 @@ function leadMaster() {
 }
 
 function followerMaster() {
-  sudo mkdir -p "${etcdPath}"
+  sudo mkdir -p "${etcdSSLPath}"
   pkgInstallation
   timeSync
   syncCert
