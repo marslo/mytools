@@ -1,0 +1,123 @@
+/* i really want this to be global */
+
+/*
+ * match url:
+ * ^((?!job.*configure|.*Monitor/$|.*detail.*pipeline|.*api|.*replay|marslo.github.*|127.0.0.1|loli.net).)*$
+*/
+
+@-moz-document regexp("^((?!job.*configure|.*Monitor/$|.*detail.*pipeline|.*api|.*replay|marslo\.github.*|127\.0\.0\.1).)*$")
+{
+/*
+      kbd, pre, code: HTML tag. E.g.: <kbd></kbd>, <pre></pre>
+      pre *, code *, div.line-numbers, div.code : HTML TAG with Class. E.g.: <div class="code"></div>; <div class="line-numbers"></div>
+      .line, .line-number, .monospaced: Specified Class Name.
+  */
+  span.vsts-build-log,
+/* TFS Log Content */
+div.ace_layer *
+  {
+    /* Jenkins Pipeline Script Textarea*/
+    font-family: "Menlo", "Ubuntu", "Ubuntu Mono", "Consolas", "Monaco" !important;
+  }
+
+/*
+  .editor,                Github Codeblock
+  div.ace_content         Gitlab Diff content ; Jenkins Script Box
+  .solarized-dark,        http://www.myregexp.com
+  .js-file-line *,        http://thisdavej.com
+  .changeset-message,     Jenkins Console Editor
+  .node-log-frame,        Jenkins Change list
+  #terminal *             Jenkins Stage View
+  shellcheck
+  */
+/* Stylish Editor area*/
+  textarea,
+kbd,
+pre,
+pre *,
+code,
+code *,
+div.code *,
+table.code,
+tr.line_holder *,
+.editor,
+div.ace_content,
+.solarized-dark,
+.EnlighterJS *,
+.js-file-line *,
+.markdown-body *,
+.markdown-body pre *,
+.blob-code,
+.blob-code-inner,
+.blob-num,
+.changeset-message,
+.node-log-frame,
+#terminal *
+  {
+    font-family: "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "monofur" !important;
+    font-size: 14px !important;
+  }
+
+
+/*
+  .editor,
+  div.ace_content * {
+      font-family: "Ubuntu Mono" !important;
+    font-size: 16px !important
+  }
+  */
+  input,
+select,
+a.jstree-anchor,
+/* Artifactory Tree List */
+div.line-numbers *,
+.line-numbers,
+.js-line-number,
+/* Github Codeblock */
+.line,
+.line-number,
+.CodeMirror-line,
+.gr-diff,
+/* Gerrit Review diff */
+pre.console-output,
+/* Jenkins Console Output finished */
+.console-output *,
+/* Jenkins Console Output */
+.blockInner,
+/* Json Viewer */
+.jsonpOpener,
+/* Json Viewer */
+td.wysiwyg-macro-body *,
+.timestamp
+  {
+    font-family: "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "Consolas", "Monaco" !important;
+    /*     background-color: red; */
+    font-size: 14px !important;
+  }
+
+
+
+
+
+/* 	"fa":       														Gitlab
+      "octicon":  														Atom & Github
+      "win-icon": 														Microsoft
+      "icon-dropdown", "navbar-icon", "icon-home" and "icon-":         	Sonar
+      "ace_":																Jenkins
+      "ico":           													Sourceforge
+      "pc" and "DPvwYc" and "Da":											Gmail
+      "ms-Icon":															MS OneDrive
+      "sort-caret":														Blackduck Hub
+      "drop", "bowtie-", "view-":											TFS
+      "pl-":																Github
+  */
+/*
+  Mac default fonts: , "LucidaGrande", "Kailasa", "Thonburi", "GeezaPro", "KohinoorBangla-Regular"
+  */
+  *:not(code):not(h1):not(h2):not(pre):not(kbd):not(icon):not(input):not(button):not(i):not([class*="icon"]):not([class*="fa"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ace_"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]):not([class*="drop"]):not([class*="bowtie-"]):not([class*="view-"]):not([class*="pl-"]):not([class*="avatar-"]):not([class*='wysiwyg-macro-*'])
+  {
+    font-family: "Titillium", "Gisha", "Candara", ".AppleSystemFallback-Regular";
+    /*font-size: 16px*/
+    font-size: 100%;
+  }
+}
