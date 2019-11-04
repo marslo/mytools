@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: memory-cpu-quota
+spec:
+  hard:
+    requests.cpu: "10"
+    requests.memory: 10Gi
+    limits.cpu: "48"
+    limits.memory: 48Gi
+
+# details: https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/quota-memory-cpu-namespace/
