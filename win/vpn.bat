@@ -10,8 +10,9 @@ rem  ===========================================================================
 @SETLOCAL ENABLEDELAYEDEXPANSION
 
 set pwd=<MyPassword>
-set user=<MyLoginName>
-set exe="c:\Program Files (x86)\Common Files\Juniper Networks\Integration\pulselauncher.exe" 
+set user=marslo
+set exe="c:\Program Files (x86)\Common Files\Pulse Secure\Integration\pulselauncher.exe"
+c:\Program Files (x86)\Common Files\Pulse Secure\Integration\pulselauncher.exe
 
 set cn=vpn-cn.<DomainName>
 set emea=vpn-emea.<DomainName>
