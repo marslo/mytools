@@ -1,3 +1,13 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [pick colors](#pick-colors)
+- [get color hex (for `it2setcolor`https://raw.githubusercontent.com/jonathaneunice/iterm2-tab-set/master/csscolors.js))](#get-color-hex-for-it2setcolorhttpsrawgithubusercontentcomjonathaneuniceiterm2-tab-setmastercsscolorsjs)
+- [show color in iterm2](#show-color-in-iterm2)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ### pick colors
 > using `tabset --list`
 ```bash
@@ -9,6 +19,7 @@ $ while read i; do
 
 $ tabset --list
 ```
+
 ![tabset list](../screenshot/iterm2/tabset-list-1.png)
 
 ### add favor color to a file (`~/.marslo/.colors`)
@@ -16,7 +27,7 @@ $ tabset --list
 $ echo "<color-name>" >> ~/.marslo/.colors
 ```
 
-### get color hex (for `it2setcolor`)
+### get color hex (for [`it2setcolor`](https://github.com/gnachman/iterm2-website/blob/master/source/utilities/it2setcolor)https://raw.githubusercontent.com/jonathaneunice/iterm2-tab-set/master/csscolors.js))
 > download original csscolor.js if necessory: `$ curl -fsSL -O https://raw.githubusercontent.com/jonathaneunice/iterm2-tab-set/master/csscolors.js`
 
 ```bash
@@ -51,7 +62,7 @@ result:
   khaki :	240, 230, 140 :	f0e68c
   ```
 
-### show color in iterm2
+### [show color in iterm2](https://raw.githubusercontent.com/marslo/mylinux/master/confs/home/.marslo/.marslorc)
 ```bash
 $ cat << 'EOF' > ~/.profile
 
