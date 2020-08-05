@@ -704,7 +704,8 @@ function aptInstall() {
   otherList="gir1.2-gtop-2.0 \
              gir1.2-networkmanager-1.0  \
              gir1.2-clutter-1.0 \
-             chrome-gnome-shell
+             chrome-gnome-shell \
+             screenkey
   "
 
   # android sdk
