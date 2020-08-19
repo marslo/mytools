@@ -538,6 +538,10 @@ EOF
 
   npm i -g npm@latest --verbose
   npm i -g gnomon --verbose
+  npm i -g doctoc --verbose
+  npm i -g gitbook-cli --verbose
+  npm i -g gitbook-summary --verbose
+  npm i -g fast-cli
 }
 
 
