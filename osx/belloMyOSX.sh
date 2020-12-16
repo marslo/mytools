@@ -430,30 +430,30 @@ function setupBrewApps(){
   command -v brew
   whereis brew
   # git -C "$(brew --repo homebrew/core)" fetch --unshallow
-  systemlist="imagemagick coreutils bash proctools pstree vnstat ncdu ipcalc htop ack lsof"
+  systemlist="imagemagick coreutils bash proctools pstree vnstat ncdu ipcalc htop ack lsof trash"
   regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv inetutils hadolint"
   regularheadlist="shellcheck bats jq gradle-completion git-flow"
   gnulist="gnu-sed gnu-tar gnu-which grep ed findutils gnu-indent"
   casklist="dash iterm2-beta google-chrome-dev vlc licecap jietu tickeys macdown xscreensaver firefox-developer-edition macvim balenaetcher keycastr"
   # "growl-fork android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
 
-  for systempkg in ${systemlist}; do
-    brew install "${systempkg}"
+  for formulae in ${systemlist}; do
+    brew install "${formulae}"
   done
   which -a bash
   /usr/local/bin/bash --version
 
-  for regularpkg in ${regularlist}; do
-    brew install "${regularpkg}"
+  for formulae in ${regularlist}; do
+    brew install "${formulae}"
   done
 
-  for regularheadpkg in ${regularheadlist}; do
-    brew install "${regularheadpkg}" --HEAD
+  for formulae in ${regularheadlist}; do
+    brew install "${formulae}" --HEAD
   done
 
-  for gnupkg in ${gnulist}; do
-    # brew install ${gnupkg} --with-default-names
-    brew install "${gnupkg}"
+  for formulae in ${gnulist}; do
+    # brew install ${formulae} --with-default-names
+    brew install "${formulae}"
   done
 
   brew install wdiff --with-gettext
@@ -515,7 +515,7 @@ function npmInstall() {
 }
 
 function npmSetup() {
-  [ -f ~/.npmrc ] && mv ~/.npmrc{,.bak.${TIMESTAMP}}
+  [ -f ~/.npmrc ] && mv ~/.npmrc{,.bak."${TIMESTAMP}"}
 
   cat > "$HOME/.npmrc" << EOF
   registry=${ARTIFACTORYURL}/api/npm/npm-snapshot/
