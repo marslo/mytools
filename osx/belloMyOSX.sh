@@ -541,7 +541,8 @@ EOF
   npm i -g doctoc --verbose
   npm i -g gitbook-cli --verbose
   npm i -g gitbook-summary --verbose
-  npm i -g fast-cli
+  npm i -g fast-cli --verbose
+  npm i -g iterm2-tab-set --verbose
 }
 
 
