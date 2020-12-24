@@ -393,6 +393,7 @@ function setupDockDefaults(){
 function setupXcode(){
   sudo xcodebuild -license accept
   xcode-select --install
+  /usr/bin/sudo /usr/bin/xcode-select --switch /Library/Developer/CommandLineTools
   # for pkgs
   for pkg in /Applications/Xcode.app/Contents/Resources/Packages/*.pkg; do
     sudo installer -pkg "$pkg" -target /;
