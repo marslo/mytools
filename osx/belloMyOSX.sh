@@ -419,6 +419,7 @@ function installHomebrew(){
     brew tap homebrew/dupes -v
     brew tap buo/cask-upgrade
     brew tap macvim-dev/macvim
+    brew tap adoptopenjdk/openjdk
     # brew tap homebrew/python -v
     brew update -v
     # setupBrewApps
@@ -438,27 +439,18 @@ function setupBrewApps(){
   casklist="dash iterm2-beta google-chrome-dev vlc licecap jietu tickeys macdown xscreensaver firefox-developer-edition macvim balenaetcher keycastr"
   # "growl-fork android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
 
-  for formulae in ${systemlist}; do
-    brew install "${formulae}"
-  done
+  brew install ${systemlist}
   which -a bash
   /usr/local/bin/bash --version
 
-  for formulae in ${regularlist}; do
-    brew install "${formulae}"
-  done
-
-  for formulae in ${regularheadlist}; do
-    brew install "${formulae}" --HEAD
-  done
-
-  for formulae in ${gnulist}; do
-    # brew install ${formulae} --with-default-names
-    brew install "${formulae}"
-  done
+  brew install ${regularlist}
+  brew install ${regularheadlist} --HEAD
+  brew install ${gnulist}
+  # brew install ${gnulist} --with-default-names
 
   brew install wdiff --with-gettext
   brew install less --with-pcre
+  brew install homebrew/cask-versions/adoptopenjdk8
   # brew install vim --override-system-vi
 
   for caskpkg in ${casklist}; do

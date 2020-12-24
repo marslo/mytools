@@ -31,6 +31,8 @@ sudo systemsetup -setcomputersleep Off
 ############
 ## System ##
 ############
+# disable the startup sounds: %01: mute. %00: enable.
+sudo nvram StartupMute=%01
 # Setup login window text
 sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "Awesome Marslo !!"
 # Set language
@@ -136,6 +138,7 @@ defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
 ############
 ## Finder ##
 ############
+killall Finder
 # Disable warning when changing a file extension
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 # Disable warning when move file from icloud driver
@@ -157,7 +160,7 @@ defaults write com.apple.finder FXPreferredViewStyle -string 'clmv'
 # Set the $HOME as default Finder
 defaults write com.apple.finder NewWindowTarget -string "PfLo" && \
   defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}"
-# search scop to current folder
+# search scope to current folder
 defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 # Show path
 defaults write com.apple.finder ShowPathbar -bool true
@@ -188,7 +191,6 @@ defaults write com.apple.finder ShowStatusBar -bool true
 
 killall Finder
 killall cfprefsd
-
 
 ##########
 ## Dock ##
