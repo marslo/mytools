@@ -152,21 +152,21 @@ cat > ~/Library/LaunchAgents/i.marslo.updatedb.plist << EOF
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>Label</key>
-	<string>i.marslo.updatedb</string>
-	<key>ProgramArguments</key>
-	<array>
-		<string>sudo</string>
-		<string>updatedb</string>
-	</array>
-	<key>RunAtLoad</key>
-	<true/>
-	<key>StandardErrorPath</key>
-	<string>/Users/marslo/.marslo/log/i.marslo.updatedb.log</string>
-	<key>StandardOutPath</key>
-	<string>/Users/marslo/.marslo/log/i.marslo.updatedb.error.log</string>
-	<key>StartInterval</key>
-	<integer>300</integer>
+  <key>Label</key>
+  <string>i.marslo.updatedb</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>sudo</string>
+    <string>updatedb</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardErrorPath</key>
+  <string>/Users/marslo/.marslo/log/i.marslo.updatedb.log</string>
+  <key>StandardOutPath</key>
+  <string>/Users/marslo/.marslo/log/i.marslo.updatedb.error.log</string>
+  <key>StartInterval</key>
+  <integer>300</integer>
   <key>KeepAlive</key>
   <true/>
 </dict>
@@ -433,10 +433,11 @@ function setupBrewApps(){
   whereis brew
   # git -C "$(brew --repo homebrew/core)" fetch --unshallow
   systemlist="imagemagick coreutils bash proctools pstree vnstat ncdu ipcalc htop ack lsof trash"
-  regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas htop watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv inetutils hadolint"
+  regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv inetutils hadolint diff-so-fancy"
   regularheadlist="shellcheck bats jq gradle-completion git-flow"
   gnulist="gnu-sed gnu-tar gnu-which grep ed findutils gnu-indent"
-  casklist="dash iterm2-beta google-chrome-dev vlc licecap jietu tickeys macdown xscreensaver firefox-developer-edition macvim balenaetcher keycastr"
+  casklist="dash iterm2-beta google-chrome-dev vlc licecap snipaste tickeys macdown macvim keycastr"
+  # casklist="dash iterm2-beta google-chrome-dev vlc licecap jietu tickeys macdown xscreensaver firefox-developer-edition macvim balenaetcher keycastr"
   # "growl-fork android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
 
   brew install ${systemlist}
@@ -452,10 +453,7 @@ function setupBrewApps(){
   brew install less --with-pcre
   brew install homebrew/cask-versions/adoptopenjdk8
   # brew install vim --override-system-vi
-
-  for caskpkg in ${casklist}; do
-    brew cask install "${caskpkg}"
-  done
+  brew install --cask ${casklist}
 
   # convert single: magick convert [-monitor] <name>.HEIC <new-name>.png; bulk convert: magick mogrify [-monitor] -format png *.HEIC
   brew install imagemagick --with-libheif
@@ -480,6 +478,9 @@ function setupBrewApps(){
     chsh -s /usr/local/bin/bash
     sudo chsh -s /usr/local/bin/bash
   fi
+  ln -sf \
+     $(brew --cellar git)/$(brew list --versions git | awk -F' ' '{print $NF}')/share/git-core/contrib/diff-highligh \
+     /usr/local/bin/diff-highlight
 }
 
 function setupGvim() {
