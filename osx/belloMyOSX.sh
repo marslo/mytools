@@ -408,6 +408,13 @@ function setupXcode(){
 ## Homebrew ##
 ##############
 function installHomebrew(){
+  /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
+  brew tap macvim-dev/macvim
+  brew update -v
+  brew config
+}
+
+function installOriginalHomebrew(){
   sudo chown -R "$(whoami)":admin /usr/local
   ls -altrh /usr/
   ls -lO /usr/
@@ -433,10 +440,10 @@ function setupBrewApps(){
   whereis brew
   # git -C "$(brew --repo homebrew/core)" fetch --unshallow
   systemlist="imagemagick coreutils bash proctools pstree vnstat ncdu ipcalc htop ack lsof trash"
-  regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv inetutils hadolint diff-so-fancy"
+  regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv inetutils hadolint diff-so-fancy visual-studio-code"
   regularheadlist="shellcheck bats jq gradle-completion git-flow"
   gnulist="gnu-sed gnu-tar gnu-which grep ed findutils gnu-indent"
-  casklist="dash iterm2-beta google-chrome-dev vlc licecap snipaste tickeys macdown macvim keycastr"
+  casklist="dash iterm2-beta google-chrome-dev vlc licecap snipaste tickeys macdown macvim keycastr Captin"
   # casklist="dash iterm2-beta google-chrome-dev vlc licecap jietu tickeys macdown xscreensaver firefox-developer-edition macvim balenaetcher keycastr"
   # "growl-fork android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
 
@@ -537,6 +544,7 @@ EOF
   npm i -g gitbook-summary --verbose
   npm i -g fast-cli --verbose
   npm i -g iterm2-tab-set --verbose
+  npm i -g npm-completion -verbose
 }
 
 
