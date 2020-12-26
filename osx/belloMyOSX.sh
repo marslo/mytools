@@ -461,6 +461,8 @@ function setupBrewApps(){
   brew install homebrew/cask-versions/adoptopenjdk8
   # brew install vim --override-system-vi
   brew install --cask ${casklist}
+  brew install homebrew/cask-versions/iterm2-beta
+  brew install visual-studio-code
 
   # convert single: magick convert [-monitor] <name>.HEIC <new-name>.png; bulk convert: magick mogrify [-monitor] -format png *.HEIC
   brew install imagemagick --with-libheif
@@ -488,6 +490,9 @@ function setupBrewApps(){
   ln -sf \
      $(brew --cellar git)/$(brew list --versions git | awk -F' ' '{print $NF}')/share/git-core/contrib/diff-highligh \
      /usr/local/bin/diff-highlight
+  ln -sf \
+    '/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code' \
+    /usr/local/bin/code
 }
 
 function setupGvim() {
