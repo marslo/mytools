@@ -60,6 +60,12 @@ function basicEnvSetup(){
   sysctl user.cs_path
   sudo sysctl -w user.cs_path=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
   sudo launchctl config user path /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+  # disable the Guest user
+  dscl . delete /Users/Guest
+  sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool NO
+  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool NO
+
   # sudo shutdown -r now
 
   launchctl getenv PATH
