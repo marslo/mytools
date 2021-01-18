@@ -445,18 +445,105 @@ function setupBrewApps(){
   command -v brew
   whereis brew
   # git -C "$(brew --repo homebrew/core)" fetch --unshallow
-  systemlist="imagemagick coreutils bash proctools pstree vnstat ncdu ipcalc htop ack lsof trash"
-  regularlist="wget tmux corkscrew tig ifstat binutils diffutils gawk gnutls gzip less file-formula stow telnet iproute2mac ctags jshon colordiff tree vifm p7zip git mas watch jfrog-cli-go youtube-dl etcd mas figlet screenfetch glances bash-completion@2 dos2unix nmap rename renameutils pipenv inetutils hadolint diff-so-fancy visual-studio-code"
-  regularheadlist="shellcheck bats jq gradle-completion git-flow"
-  gnulist="gnu-sed gnu-tar gnu-which grep ed findutils gnu-indent"
-  casklist="dash iterm2-beta google-chrome-dev vlc licecap snipaste tickeys macdown macvim keycastr Captin"
-  # casklist="dash iterm2-beta google-chrome-dev vlc licecap jietu tickeys macdown xscreensaver firefox-developer-edition macvim balenaetcher keycastr"
-  # "growl-fork android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
+  systemlist= """
+    ack          \
+    bash         \
+    corkscrew    \
+    file-formula \
+    glances      \
+    gzip         \
+    htop         \
+    ifstat       \
+    imagemagick  \
+    ipcalc       \
+    iproute2mac  \
+    less         \
+    lsof         \
+    ncdu         \
+    nmap         \
+    p7zip        \
+    proctools    \
+    pstree       \
+    rename       \
+    telnet       \
+    trash        \
+    tree         \
+    vnstat       \
+    watch        \
+    wget         \
+    carlocab/personal/unrar \
+    homebrew/cask-versions/adoptopenjdk8
+  """
+
+  utillist="""
+    binutils  \
+    coreutils \
+    inetutils \
+    renameutils
+  """
+
+  # regularlist="etcd pipenv"
+  regularlist="""
+    bash-completion@2  \
+    colordiff          \
+    ctags              \
+    diff-so-fancy      \
+    diffutils          \
+    dos2unix           \
+    figlet             \
+    git                \
+    jfrog-cli-go       \
+    jshon              \
+    hadolint           \
+    mas                \
+    screenfetch        \
+    stow               \
+    tig                \
+    tmux               \
+    vifm               \
+    visual-studio-code \
+    youtube-dl
+  """
+
+  regularheadlist= """
+    bats              \
+    git-flow          \
+    gradle-completion \
+    jq                \
+    shellcheck
+  """
+
+  gnulist= """
+    ed         \
+    findutils  \
+    gawk       \
+    gnu-indent \
+    gnu-sed    \
+    gnu-tar    \
+    gnu-which  \
+    gnutls     \
+    grep
+  """
+
+  casklist= """
+    Captin            \
+    dash              \
+    google-chrome-dev \
+    keycastr          \
+    licecap           \
+    macdown           \
+    macvim            \
+    snipaste          \
+    tickeys           \
+    vlc               \
+  """
+  # casklist="growl-fork balenaetcher firefox-developer-edition xscreensaver tickeys jietu android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
 
   brew install ${systemlist}
   which -a bash
   /usr/local/bin/bash --version
 
+  brew install ${utillist}
   brew install ${regularlist}
   brew install ${regularheadlist} --HEAD
   brew install ${gnulist}
@@ -464,11 +551,9 @@ function setupBrewApps(){
 
   brew install wdiff --with-gettext
   brew install less --with-pcre
-  brew install homebrew/cask-versions/adoptopenjdk8
   # brew install vim --override-system-vi
   brew install --cask ${casklist}
   brew install homebrew/cask-versions/iterm2-beta
-  brew install visual-studio-code
 
   # convert single: magick convert [-monitor] <name>.HEIC <new-name>.png; bulk convert: magick mogrify [-monitor] -format png *.HEIC
   brew install imagemagick --with-libheif
