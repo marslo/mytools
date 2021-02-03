@@ -536,6 +536,7 @@ function setupBrewApps(){
     snipaste          \
     tickeys           \
     vlc               \
+    karabiner-elements
   """
   # casklist="growl-fork balenaetcher firefox-developer-edition xscreensaver tickeys jietu android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
 
