@@ -449,6 +449,7 @@ function setupBrewApps(){
     ack          \
     bash         \
     corkscrew    \
+    curl-openssl \
     file-formula \
     glances      \
     gzip         \
@@ -458,6 +459,7 @@ function setupBrewApps(){
     ipcalc       \
     iproute2mac  \
     less         \
+    libressl     \
     lsof         \
     ncdu         \
     nmap         \
