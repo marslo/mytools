@@ -530,17 +530,18 @@ function setupBrewApps(){
   """
 
   casklist= """
-    Captin            \
-    dash              \
-    google-chrome-dev \
-    keycastr          \
-    licecap           \
-    macdown           \
-    macvim            \
-    snipaste          \
-    tickeys           \
-    vlc               \
-    karabiner-elements
+    Captin             \
+    dash               \
+    google-chrome-dev  \
+    keycastr           \
+    licecap            \
+    macdown            \
+    macvim             \
+    snipaste           \
+    tickeys            \
+    vlc                \
+    karabiner-elements \
+    vitorgalvao/tiny-scripts/cask-repair
   """
   # casklist="growl-fork balenaetcher firefox-developer-edition xscreensaver tickeys jietu android-sdk background-music omnigraffle xca manico snip little-snitch imageoptim"
 
