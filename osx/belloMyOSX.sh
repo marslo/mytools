@@ -433,6 +433,7 @@ function installOriginalHomebrew(){
     brew tap buo/cask-upgrade
     brew tap macvim-dev/macvim
     brew tap adoptopenjdk/openjdk
+    brew tap homebrew/cask-versions   # for firefox or firefox-developer-edition
     # brew tap homebrew/python -v
     brew update -v
     # setupBrewApps
@@ -486,24 +487,25 @@ function setupBrewApps(){
 
   # regularlist="etcd pipenv"
   regularlist="""
-    bash-completion@2  \
-    colordiff          \
-    ctags              \
-    diff-so-fancy      \
-    diffutils          \
-    dos2unix           \
-    figlet             \
-    git                \
-    jfrog-cli-go       \
-    jshon              \
-    hadolint           \
-    mas                \
-    screenfetch        \
-    stow               \
-    tig                \
-    tmux               \
-    vifm               \
-    visual-studio-code \
+    bash-completion@2    \
+    brew-cask-completion \
+    colordiff            \
+    ctags                \
+    diff-so-fancy        \
+    diffutils            \
+    dos2unix             \
+    figlet               \
+    git                  \
+    jfrog-cli-go         \
+    jshon                \
+    hadolint             \
+    mas                  \
+    screenfetch          \
+    stow                 \
+    tig                  \
+    tmux                 \
+    vifm                 \
+    visual-studio-code   \
     youtube-dl
   """
 
