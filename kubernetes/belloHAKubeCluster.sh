@@ -110,8 +110,8 @@ function timeSync() {
 
 function helmInstallation() {
   curl -fsSL \
-       https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz \
-       | sudo tar -xzv --strip-components=1 -C /usr/local/bin/
+       https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz |
+       sudo tar -xzv --strip-components=1 -C /usr/local/bin/
   while read -r _i; do
     sudo chmod +x "/usr/local/bin/${_i}"
   done < <(echo helm tiller)
@@ -198,8 +198,8 @@ function cfsslInstallation() {
 }
 
 function etcdInstallation() {
-  curl -sSL ${etcdDownloadUrl}/${etcdVer}/etcd-${etcdVer}-linux-amd64.tar.gz \
-      | sudo tar -xzv --strip-components=1 -C /usr/local/bin/
+  curl -sSL ${etcdDownloadUrl}/${etcdVer}/etcd-${etcdVer}-linux-amd64.tar.gz |
+       sudo tar -xzv --strip-components=1 -C /usr/local/bin/
 }
 
 function certCA() {
@@ -254,8 +254,8 @@ EOF
   pushd .
   cd ${etcdSSLPath}
   sudo /usr/local/bin/cfssl gencert \
-       -initca ca-csr.json \
-       | sudo /usr/local/bin/cfssljson -bare ca -
+       -initca ca-csr.json |
+       sudo /usr/local/bin/cfssljson -bare ca -
   popd
 }
 
@@ -276,8 +276,8 @@ EOF
        -ca=ca.pem \
        -ca-key=ca-key.pem \
        -config=ca-config.json \
-       -profile=client client.json \
-       | sudo /usr/local/bin/cfssljson -bare client
+       -profile=client client.json |
+       sudo /usr/local/bin/cfssljson -bare client
   popd
 }
 
@@ -293,15 +293,15 @@ function certServerNPeer() {
        -ca=ca.pem \
        -ca-key=ca-key.pem \
        -config=ca-config.json \
-       -profile=server config.json \
-       | sudo /usr/local/bin/cfssljson -bare server
+       -profile=server config.json |
+       sudo /usr/local/bin/cfssljson -bare server
 
   sudo /usr/local/bin/cfssl gencert \
        -ca=ca.pem \
        -ca-key=ca-key.pem \
        -config=ca-config.json \
-       -profile=peer config.json \
-       | sudo /usr/local/bin/cfssljson -bare peer
+       -profile=peer config.json |
+       sudo /usr/local/bin/cfssljson -bare peer
   popd
 }
 
@@ -455,8 +455,8 @@ keepaliveSetup() {
   mkdir -p ~/temp
   sudo mkdir -p /etc/keepalived/
 
-  curl -fsSL ${keepaliveDownloadUrl}/keepalived-${keepaliveVer}.tar.gz \
-       | tar xzf - -C ~/temp
+  curl -fsSL ${keepaliveDownloadUrl}/keepalived-${keepaliveVer}.tar.gz |
+       tar xzf - -C ~/temp
   pushd .
   cd ~/temp/keepalived-${keepaliveVer}
   ./configure && make
@@ -494,7 +494,7 @@ vrrp_instance VI_1 {
 }
 EOF
 
-  sudo bash -c 'cat > /etc/keepalived/check_apiserver.sh' <<EOF
+  sudo bash -c 'cat > /etc/keepalived/check_apiserver.sh' << EOF
 #!/bin/sh
 errorExit() {
   echo "*** \$*" 1>&2
@@ -502,7 +502,7 @@ errorExit() {
 }
 curl --silent --max-time 2 --insecure https://localhost:6443/ -o /dev/null || errorExit "Error GET https://localhost:6443/"
 if ip addr | grep -q ${virtualIpAddr}; then
-    curl --silent --max-time 2 --insecure https://${virtualIpAddr}:6443/ -o /dev/null || errorExit "Error GET https://${virtualIpAddr}:6443/"
+  curl --silent --max-time 2 --insecure https://${virtualIpAddr}:6443/ -o /dev/null || errorExit "Error GET https://${virtualIpAddr}:6443/"
 fi
 EOF
 

@@ -463,6 +463,7 @@ function setupBrewApps(){
     libressl     \
     lsof         \
     ncdu         \
+    connect      \
     nmap         \
     p7zip        \
     proctools    \
