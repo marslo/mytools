@@ -52,13 +52,13 @@ usage="""USAGE:
 
 \n\nNOTICE:
 \n\tReplace the master{1..3}IP and master{1..3}Name to your real situation
-\n\tleadMaster should be executed first to setup certificate; And then execute the followerMaster.
+\n\tleadMaster should be executed first to setup certificate; And then execute the peerMasters.
 \n\tMake sure all servers can be visit passwordless by ssh for common user and root.
 \n
 \nExample:
 \n\tSetup HA Cluster
-\n\t\t$0 leadMaster     # on master-1
-\n\t\t$0 followerMaster # on master-2 and master-3
+\n\t\t$0 primaryMaster     # on master-1
+\n\t\t$0 peerMasters       # on master-2 and master-3
 \n
 \n\tShow current information:
 \n\t\t$0 showInfo
@@ -626,7 +626,7 @@ function pkgInstallation() {
   helmInstallation
 }
 
-function leadMaster() {
+function primaryMaster() {
   sudo mkdir -p "${etcdSSLPath}"
   pkgInstallation
   certCA
@@ -639,7 +639,7 @@ function leadMaster() {
   cniSetup
 }
 
-function followerMaster() {
+function peerMasters() {
   sudo mkdir -p "${etcdSSLPath}"
   pkgInstallation
   timeSync
