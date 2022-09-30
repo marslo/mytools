@@ -1,0 +1,243 @@
+/* ==UserStyle==
+@name           marslo ( candara )
+@namespace      https://marslo.github.io/
+@version        1.0.0
+@description    my stylish on candara font. https://userstyles.world/style/5265/marslo-candara
+@author         marslo.jiao@gmail.com
+==/UserStyle== */
+
+@-moz-document regexp("https?://(.*jenkins(?:-staging)?(?:-dev)?\\.[^\\.]+\\.com|0.0.0.0).*") {
+
+  /**
+   * regexp("^.*\\-jenkins\\.[^\\.]+\\.com.*$")
+   * regexp("^.*jenkins(?:-staging)?\.[^\.]+\.com.*$")
+   * regexp("https?://(.*jenkins(?:-staging)?\.[^\.]+\.com|0.0.0.0).*")
+   * regexp("https?://(.*jenkins(?:-staging)?(?:-dev)?\.[^\.]+\.com|0.0.0.0).*")
+  **/
+
+  *:not(h1):not(h2):not(h3):not(h4):not(button):not(select):not(option):not(option):not(kbd):not(icon):not(i) ,
+  *:not(code):not(pre):not(textarea):not(input) ,
+  *:not([class*="icon"]):not([class*="fa-"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ace_"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]):not([class*="drop"]):not([class*="bowtie-"]):not([class*="view-"]):not([class*="pl-"]):not([class*=".fa-clone"]):not([class*="avatar-"]):not([class*='wysiwyg-macro-*']):not([class*="-line"]):not([class*="CodeMirror-"]):not([class*='setting-']):not([class="cm-"]) ,
+  *:not(div.ace_editor):not(div.ace_*):not(canvas.graph-cursor-pointer) ,
+  *:not(code *):not(textarea *):not(pre code):not(pre code *):not(li code *)
+  *:not(textarea) > * ,
+  *:not(pre) > code ,
+  *:not(pre) > code * ,
+  *:not(li) > code ,
+  *:not(li) > code * {
+    font-family: "Candara", "Gisha", "Titillium";
+    /* font-size: 16px */
+    font-size: 100% ;
+  }
+
+  /**
+   * .systemmessage *, a, body, h1, h2, h3, h4, h5 {
+   *   font-family: "Titillium", "Gisha", "Candara" !important;
+   *   font-size: 100% !important;
+   *   background-color: red !important;
+   * }
+   * :not(div.ace_editor) ,
+   * div#main-panel * ,
+  **/
+
+  /**
+   * .pane-content                             build history
+   * h1.page-headline, div.cbwf-stage-view *, h2.permalinks-header, ul.permalinks-list *       job page
+  **/
+  h1, h2, h3, h4, h5, h1 *, h2 *, h3 *, h4 *, h5 *,
+  button, div.tab *,
+  div#view-message *, div#side-pannel *,
+  span.task-link-text, table.middle-align *,
+  #breadcrumbs li a , #breadcrumbs li a:link ,
+  dev.pane.desc *, .pane-content a, div.pane-frame *,
+  h1.page-headline, div.cbwf-stage-view *, h2.permalinks-header, ul.permalinks-list *,
+  table.fileList *, td a, td *,
+  label.attach-previous.setting-checkbox {
+    font-family: "Candara", "Gisha", "Titillium" !important;
+  }
+
+  /**
+   * setting-* ; div.setting-main *                    configuration
+   * textarea.jenkins-input                            snippet output
+  **/
+  ::marker, :root, div.ace_editor *,
+  kbd, option, canvas *,
+  pre, pre *, pre code, pre code *, pre code ul li *, pre span, pre span *,
+  code, code *,
+  input, input *,
+  select, select *,
+  script, script *,
+  textarea, textarea *,
+  #main-panel>pre, #main-panel>pre *, pre#main-panel, pre#main-panel *, div#main-panel>pre, div#main-panel>pre *, div#main-panel>pre code, div#main-panel>pre code *,
+  #view-message>pre, #view-message>pre *, div#view-message>pre, div#view-message>pre *,
+  #side-pannel>pre, #side-pannel>pre *, div#side-pannel>pre, div#side-pannel>pre *,
+  .code, .code *, div.code *, table.code, table.code *, table.pre, table.pre *,
+  select.setting-input, select.setting-input *, select.setting-input.validated,
+  input.combobox2.setting-input, input.setting-input,
+  textarea.jenkins-input, textarea.setting-input,
+  pre.console-output *, .console-output, .console-output *, #terminal, #terminal *,
+  .lineNum, div.CodeMirror-lines *, tr.line_holder *, .code-line, span[class*=cm-],
+  div.setting-main, div.setting-main *, .setting-main > textarea, td.setting-main, div.help *,
+  caption.caption,
+  div.ace_editor, div.ace_content, table.diffLineTable * {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "monofur" !important;
+    font-size: 14px !important;
+    line-height : 1.5em !important;
+  }
+
+  /* buttons in system configuration */
+  .yui-button button, button, .url-button {
+    display: inline-block !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Metrics plugin: Timings table */
+  table.bigtable.pane th {
+    /* background-color: #999 !important; */
+    border: 1px solid !important;
+    border-right-color: #4d4c4c !important;
+    border-bottom-color: #4d4c4c!important;
+    color: #ddd !important;
+  }
+}
+
+@-moz-document regexp("^((?!.*\\-jenkins\\.[^\\.]+\\.com|.*Monitor/$|.*sabacloud.com|.*detail.*pipeline|.*api|marslo.github.*|shields.io|127.0.0.1|0.0.0.0|localhost).)*$") {
+/**
+   * match url:
+   * ^((?!job.*configure|.*Monitor/$|.*detail.*pipeline|.*api|.*replay).)*$
+   * ^((?!.*Monitor/$|.*detail.*pipeline|.*api|marslo.github.*|shields.io|githubusercontent.com|127.0.0.1|localhost).)*$
+   * ^((?!.*\-jenkins\.[^\.]+\.com|.*Monitor/$|.*detail.*pipeline|.*api|marslo.github.*|shields.io|127.0.0.1|localhost).)*$
+  **/
+
+
+  /**
+   *    "fa":                                   Gitlab
+   *    "octicon":                              Atom & Github
+   *    "win-icon":                             Microsoft
+   *    "icon-dropdown", "navbar-icon", "icon-home" and "icon-":          Sonar
+   *    "ace_":                                 Jenkins
+   *    "ico":                                  Sourceforge
+   *    "pc" and "DPvwYc" and "Da":             Gmail
+   *    "ms-Icon":                              MS OneDrive
+   *    "sort-caret":                           Blackduck Hub
+   *    "drop", "bowtie-", "view-":                 TFS
+   *    "pl-":                                  Github
+   *    "gr-":                                  Gerrit
+  **/
+
+  /**
+   *  Mac default fonts: , "LucidaGrande", "Kailasa", "Thonburi", "GeezaPro", "KohinoorBangla-Regular"
+  **/
+  *:not(code):not(pre):not(kbd):not(icon):not(input):not(button):not(i) ,
+  *:not([class*="icon"]):not([class*="fa-"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ace_"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]):not([class*="drop"]):not([class*="bowtie-"]):not([class*="view-"]):not([class*="pl-"]):not([class*=".fa-clone"]):not([class*="avatar-"]):not([class*='wysiwyg-macro-*']):not([class*="-line"]):not([class*="CodeMirror-"]):not([class*="gr-"]) {
+    font-family: "Candara", "Titillium", "Gisha";
+    /*font-size: 16px*/
+    font-size: 100%;
+  }
+
+  /**
+   *   kbd, pre, code: HTML tag. E.g.: <kbd></kbd>, <pre></pre>
+   *   pre *, code *, div.line-numbers, div.code : HTML TAG with Class. E.g.: <div class="code"></div>; <div class="line-numbers"></div>
+   *   .line, .line-number, .monospaced: Specified Class Name.
+  **/
+  span.vsts-build-log,
+  div.ace_layer * {        /* TFS Log Content */
+    /* Jenkins Pipeline Script Textarea*/
+    font-family: "Monaco", "Menlo", "Ubuntu", "Ubuntu Mono", "Consolas", "Monaco" !important;
+  }
+
+  /**
+   * .editor,                             Github Codeblock
+   * div.ace_content                      Gitlab Diff content ; Jenkins Script Box
+   * .solarized-dark,                     http://www.myregexp.com
+   * .js-file-line *,                     http://thisdavej.com
+   * .changeset-message,                  Jenkins Console Editor
+   * .node-log-frame,                     Jenkins Change list
+   * #terminal *                          Jenkins Stage View
+   * shellcheck
+   * .lines-content *                     LeetCode-cn
+  **/
+
+  /* stylish editor area*/
+  textarea, kbd,
+  code, code *,
+  pre, pre code *, pre span, pre.span *,
+  code, code *, .code-line, div.code *, table.code,
+  input, input *,
+  .editor, div.ace_content, .blob-code-addition *, .blob-code-inner *,
+  .solarized-dark,
+  .EnlighterJS *, .js-file-line *,
+  .markdown-body *, .markdown-body pre *,
+  .blob-code, .blob-code-inner, .blob-num,
+  .changeset-message,
+  .node-log-frame,
+  .lines-content *, .CodeMirror-lines *, tr.line_holder *,
+  #terminal * {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "monofur" !important;
+    font-size: 14px !important;
+  }
+
+  /**
+   * Gerrit
+   * .gr-change-metadata, .gr-related-changes-list, .gr-change-list-item, .gr-comment-list
+   * td.u-red, td.u-green
+   *
+   * td[class *= 'gr-'] {
+   *   font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "monofur" !important;
+   * }
+   *
+  **/
+  gr-linked-text *, gr-formatted-text *, gr-commit-info *, gr-date-formatter *, gr-diff *,
+  a.gr-change-view, a.gr-diff-view, a.gr-related-changes-list,
+  td.gr-diff, td.u-monospace,
+  span.value {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "monofur" !important;
+    font-size: 14px !important;
+  }
+  span.title, .gr-message, .gr-file-list, span.gr-main-header,
+  span.gr-account-label, span.gr-account-dropdown,
+  th.gr-change-list, a.gr-change-list-item, a.gr-repo-list {
+    font-family: "Candara", "Titillium", "Gisha" !important;
+    font-size: 1.15rem !important;
+  }
+  paper-button.gr-button, label.gr-editable-label {
+    font-family: "Candara", "Titillium", "Gisha" !important;
+    font-size: 1.25rem !important;
+  }
+  gr-endpoint-decorator.gr-main-header *, .bigTitle {
+    color: #e2e2e2;
+    font-size: 1.75rem !important;
+    text-decoration: none;
+  }
+
+  /**
+   * .editor,
+   * div.ace_content * {
+   *     font-family: "Ubuntu Mono" !important;
+   *   font-size: 16px !important
+   * }
+  **/
+
+  :root, td ol,
+  /* ol li, */
+  input, select,
+  a.jstree-anchor,
+  /* Artifactory Tree List */
+  div.line-numbers *, .line-numbers, .js-line-number,
+  /* Github Codeblock */
+  .line, .line-number, .CodeMirror-line, .gr-diff,
+  /* confluence */
+  pre.span *, pre * , #confluenceTd , .blockInner,
+  /* Json Viewer */
+  .jsonpOpener,
+  /* Json Viewer */
+  td.wysiwyg-macro-body *, .timestamp,
+  /* Gerrit */
+  div.page_path *, div.page_body *,
+  pre.console-output,
+  li.blockList h4 {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "Consolas", "Monaco" !important;
+    /*     background-color: red; */
+    font-size: 14px !important;
+  }
+}
