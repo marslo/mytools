@@ -1,0 +1,521 @@
+/* ==UserStyle==
+@name           marslo ( ubuntu )
+@namespace      marslo.github.io
+@version        1.0.3
+@description    my userstyle by using ubuntu font. https://userstyles.world/style/5264/marslo-ubuntu
+@author         marslo.jiao@gmail.com
+==/UserStyle== */
+
+@-moz-document regexp("https?://(.*jenkins(?:-staging)?(?:-dev)?\.[^\.]+.com|0.0.0.0).*") {
+
+  /**
+   * regexp("^.*\\-jenkins\\.[^\\.]+\\.com.*$")
+   * regexp("^.*jenkins(?:-staging)?\.[^\.]+\.com.*$")
+   * regexp("https?://(.*jenkins(?:-staging)?\.[^\.]+\.com|0.0.0.0).*")
+   * regexp("https?://(.*jenkins(?:-staging)?(?:-dev)?\.[^\.]+\.com|0.0.0.0).*")
+   * regexp("https?://(.*jenkins(?:-staging)?(?:-dev)?\\.[^\\.]+\\.com|0.0.0.0).*")
+  **/
+
+  *:not(pre):not(code):not(textarea):not(button):not(select):not(option):not(kbd):not(icon):not(input):not(i):not(cursor):not(::before):not(::after):not([role=presentation]):not(pre code):not(pre code *):not(li code):not(li code *):not(code *):not(textarea *):not(* code):not(* pre *):not(* code *):not(div.ace_editor):not([class*="ace_"]):not([class*="ace_"] *):not(canvas.graph-cursor-pointer):not([class*="icon"]):not([class*="fa-"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]):not([class*="drop"]):not([class*="bowtie-"]):not([class*="view-"]):not([class*="pl-"]):not([class*=".fa-clone"]):not([class*=".fa-check"]):not([class*="avatar-"]):not([class*='wysiwyg-macro-*']):not([class*="-line"]):not([class*="CodeMirror-"]):not([class*="cm-"]):not([class*="setting-"]):not([class*="gr-"]):not([class*="s-code-"]):not([class*="code"]):not([class*="w3-"]):not([class*="language-"]):not([class*="hljs"]):not([class*="post-"]):not([class*="code"]):not([clas*="line"]):not([class*="js-post"]):not([class*="editor"]):not([class="setting-main"]):not([class*="resizable"]) {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+
+  /**
+   * .systemmessage *, a, body, h1, h2, h3, h4, h5 {
+   *   font-family: "Ubuntu", "Titillium", "Gisha", "Candara" !important;
+   *   font-size: 100% !important;
+   *   background-color: red !important;
+   * }
+   * :not(div.ace_editor) ,
+   * div#main-panel * ,
+  **/
+
+  /**
+   * .pane-content                                     build history
+   * h1.page-headline, div.cbwf-stage-view *,      ⌝
+   * h2.permalinks-header, ul.permalinks-list *    ⌟   job page
+   * div.pane-frame *,                                 impact the ace_
+  **/
+  button, div.tab *, [class*="footer"],
+  div#view-message *, div#side-pannel *,
+  span.task-link-text, table.middle-align *,
+  #breadcrumbs li a , #breadcrumbs li a:link ,
+  dev.pane.desc *, .pane-content a,
+  h1.page-headline, div.cbwf-stage-view *, h2.permalinks-header, ul.permalinks-list *,
+  table.fileList *, td a, td *,
+  label.attach-previous.setting-checkbox, [class*="jenkins-checkbox"] *,
+  div.textarea-preview-container {
+    font-family: "Ubuntu", "Gisha", "Titillium" !important;
+  }
+
+  /**
+   * setting-* ; div.setting-main *                    configuration
+   * textarea.jenkins-input                            snippet output
+   * "ace_"                                            Jenkins Pipeline Script Textarea
+   * div.setting-main *
+   * div.pretty-print                                  config.xml
+   *
+  **/
+  [class*="ace_"], [class*="ace_"] *,
+  div.setting-main, .setting-main > textarea, td.setting-main,
+  textarea.ace_text-input, .ace_active-line,
+  cursor, div.pretty-print {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "monofur" !important;
+    font-size: 16px !important;
+  }
+
+  /**.ace-tomorrow {
+    background-color: black ;
+  }**/
+
+  /**
+   * #main-panel>pre, #main-panel>pre *, pre#main-panel, pre#main-panel *, div#main-panel>pre, div#main-panel>pre *, div#main-panel>pre code, div#main-panel>pre code *,
+	 * :root,
+  **/
+  ::marker,
+  kbd, option, option *, canvas, canvas *,
+  pre, pre *, pre code, pre code *, pre code ul li *, pre span, pre span *,
+  code, code *,
+  input, input *,
+  select, select *,
+  script, script *,
+  textarea, textarea *,
+  #main-panel>pre, #main-panel>pre *, pre#main-panel, pre#main-panel *, div#main-panel>pre, div#main-panel>pre *, div#main-panel>pre code, div#main-panel>pre code *,
+  #view-message>pre, #view-message>pre *, div#view-message>pre, div#view-message>pre *,
+  #side-pannel>pre, #side-pannel>pre *, div#side-pannel>pre, div#side-pannel>pre *,
+  .code, .code *, .CodeMirror, .CodeMirror *, div.code *, table.code, table.code *, table.pre, table.pre *, .CodeMirror-lines *,
+  select.setting-input, select.setting-input *, select.setting-input.validated,
+  input.combobox2.setting-input, input.setting-input,
+  textarea.jenkins-input, textarea.setting-input,
+  pre.console-output *, .console-output, .console-output *, #terminal, #terminal *,
+  .lineNum, div.CodeMirror-lines *, tr.line_holder *, .code-line, span[class*=cm-],
+  div.help *, caption.caption table.diffLineTable * {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "monofur" !important;
+    font-size: 16px !important;
+    line-height : 1.5em !important;
+  }
+
+  /* buttons in system configuration */
+  .yui-button button, button, .url-button {
+    display: inline-block !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Metrics plugin: Timings table */
+  table.bigtable.pane th {
+    /* background-color: #999 !important; */
+    border: 1px solid !important;
+    border-right-color: #4d4c4c !important;
+    border-bottom-color: #4d4c4c!important;
+    color: #ddd !important;
+  }
+
+  ::before, ::after {
+    font-family: 'FontAwesome' !important;
+  }
+
+  span.jenkins-icon-adjacent {
+    font-family: "Ubuntu", "Gisha", "Titillium" !important;
+    font-size: 100% !important;
+  }
+
+  /**
+   * bluetooth
+  **/
+  .result-item-label, .TruncatingLabel, [class*="RunDetailsHeader"] *, [class*="JTable"], .activity-actions-container, .Header-pageTabs, .development-footer {
+    font-size: 16px !important;
+  }
+
+  select {
+    outline: 0 !important;
+  }
+} /** @-moz-document regexp : for jenkins hosts **/
+
+
+@-moz-document regexp("^((?!.*\\-jenkins(-staging)?(-dev)?\\.[^\\.]+\\.com|.*Monitor/$|.*sabacloud.com|.*detail.*pipeline|shields.io|127.0.0.1|0.0.0.0|localhost|fonts.*).)*$") {
+
+  /**
+   * regexp("^((?!.*\\-jenkins(-dev)?(-staging)?\\.[^\\.]+\\.com|.*Monitor/$|.*sabacloud.com|.*detail.*pipeline|.*api|marslo.github.*|shields.io|127.0.0.1|0.0.0.0|localhost).)*$")
+   * regexp("^((?!.*\-jenkins(-staging)?(-dev)?\.[^\.]+\.com|.*Monitor/$|.*sabacloud.com|.*detail.*pipeline|.*api|shields.io|127.0.0.1|0.0.0.0|localhost).)*$")
+   * regexp("^((?!.*\\-jenkins(-staging)?(-dev)?\\.[^\\.]+\\.com|.*Monitor/$|.*sabacloud.com|.*detail.*pipeline|.*api|shields.io|127.0.0.1|0.0.0.0|localhost|fonts.*).)*$")
+  **/
+
+  /**
+   * kbd, pre, code:                             html tag
+   *                                             e.g.: <kbd></kbd>, <pre></pre>
+   * pre *, code *, div.line-numbers, div.code   html tag with class.
+   *                                             e.g.: <div class="code"></div>
+   *                                                   <div class="line-numbers"></div>
+   * .line, .line-number, .monospaced:           specific class name
+   * #name, #number                              specific id name
+   * :is(), :not(), :where(), :any()             Pseudo-classes https://developer.mozilla.org/en-US/docs/Web/CSS
+  **/
+
+  *:not(pre):not(code):not(textarea):not(button):not(select):not(option):not(cursor):not(kbd):not(icon):not(input):not(i):not(hl):not(nav):not(::before):not(::after):not(button *):not(pre code):not(pre code *):not(li code):not(li code *):not(code *):not(textarea *):not(* code):not(* pre *):not(* code *):not(div.ace_editor):not(div[class*="ace_"]):not(div[class*="ace_"] *):not(canvas.graph-cursor-pointer):not([class*="icon"]):not([class*="fa-"]):not([class*="octicon"]):not([class*="win-icon"]):not([class*="icon-"]):not([class*="ace_"]):not([class*="ico"]):not([class*="pc"]):not([class*="DPvwYc"]):not([class*="para"]):not([class*="ms-Icon"]):not([class*="sort-caret"]):not([class*="Da"]):not([class*="drop"]):not([class*="bowtie-"]):not([class*="view-"]):not([class*="pl-"]):not([class*="fa-"]):not([class*="avatar-"]):not([class*='wysiwyg-macro-*']):not([class*="-line"]):not([class*="CodeMirror-"]):not([class*="cm-"]):not([class*="setting-"]):not([class*="gr-"]):not([class*="s-code-"]):not([class*="code"]):not([class*="w3-"]):not([class*="language-"]):not([class*="hljs"]):not([class*="post-"]):not([class*="code"]):not([class*="line"]):not([class*="js-post"]):not([role=presentation]):not([class*="btn"]):not([class*="w3-button"]) ,
+.gr-app, div[class*="timeline"],
+  div#book-search-input > input, span.algolia-autocomplete > input, .sidebar {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+
+  /****************************************************************************************
+   * TFS Log Content
+  ****************************************************************************************/
+  span.vsts-build-log {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu Mono", "monofur" !important;
+  }
+
+  /****************************************************************************************
+   * https://help.obsidian.md/
+   * https://readme.com/
+  ****************************************************************************************/
+  div[class*="callout-"], div[class*="callout-"] :is(p, a), .callout-title-inner,
+  span[class*="SearchTabs"], i.icon-search~h6, div[class*="style_CardRow"] p, nav[class*="style_Navbar"] button, a[class*="style_Navbar"], a[class="style_Button"], a[class*="style_Menu"], button[class*="style_Tabs"], [class*="style_Button"]
+  div[class*="style_FancyCard-content"] *, div[class*="style_CTAList"] * {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+
+
+  /****************************************************************************************
+   * code block:
+   *   .editor,                             Github Codeblock
+   *   div.ace_content                      Gitlab Diff content ; Jenkins Script Box
+   *   .solarized-dark,                     http://www.myregexp.com
+   *   .js-file-line *,                     http://thisdavej.com
+   *   .changeset-message,                  Jenkins Console Editor
+   *   .node-log-frame,                     Jenkins Change list
+   *   #terminal *                          Jenkins Stage View
+   *   shellcheck
+   *   .lines-content *                     LeetCode-cn
+   *   markdown-body *,
+   *   [class*="line-"] *, #content,
+   *   pre span, pre span *                 handled by pre *
+  ****************************************************************************************/
+  kbd, textarea, textarea > *,
+  code, code *, * code *, .code-line,
+  pre, pre *, pre.code *,
+  input, input *,
+  .editor, div.ace_content,
+  .blob-code-addition *, .blob-code-inner *,
+  .solarized-dark,
+  .EnlighterJS *, .js-file-line *,
+   .markdown-body :is(pre, pre *), .highlight :is(pre, code),
+  .blob-code, .blob-code-inner, .blob-num,
+  .changeset-message, .node-log-frame,
+  .lines-content *,  tr.line_holder *, #terminal *,
+  div[class*="hljs-"] *, div[class*=".comment"] code, [class*="code"] *,
+  [class*="highlight"] *, [class*="linenumber"] *, [class*="markdown"] code, [class*="blob"] code, [class*="terminal"] * {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu Mono", "monofur" !important;
+    font-size: 14px !important;
+  }
+
+
+  /****************************************************************************************
+   * stylish/stylus editor
+   * https://userstyles.world/
+  ****************************************************************************************/
+  .CodeMirror-line, *.CodeMirror-lines *, *.CodeMirror *, .CodeMirror *,
+  span.target, details.sections-list li, h2.style-name *,
+  div[class*="CodeMirror-"] *, pre[class*="s-code-"] *, div[class*="cm-"] * {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu Mono", "monofur" !important;
+    font-size: 14px !important;
+  }
+  details[class*="ignore-pref-if-compact"] h2 {
+    font-size: 2em !important;
+  }
+  div[id*="basic-info-name"] > input, div[class*="buttons"] > button, h2.style-name *, div.manage-settings *, div[class*="select-"] select,
+  div.settings-column :is(a, button, span),
+  div.options-column > div.option,
+   input[type*="search"], span[id*="share"], div[class*="share"] * {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+
+
+  /****************************************************************************************
+   * https://bootsnipp.com/
+   * ace_
+  ****************************************************************************************/
+  [class*="ace_"], [class*="ace_"]~div, [class*="ace_"]~div, [class*="ace_"]+div, [class*="ace_"] *,
+  div#playground-container * {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu Mono", "monofur" !important;
+    font-size: 14px !important;
+  }
+
+
+  /****************************************************************************************
+   * Gerrit
+   * .gr-change-metadata, .gr-related-changes-list, .gr-change-list-item, .gr-comment-list
+   * td.u-red, td.u-green
+   *
+   * td[class *= 'gr-'] {
+   *   font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "monofur" !important;
+   * }
+   * [class*="style"] *, [class*="style"], [rel="noopener"], div[class*="gr-"] *, .style-scope *
+   *
+  ****************************************************************************************/
+  gr-linked-text *, gr-formatted-text *, gr-commit-info *, gr-date-formatter *, gr-diff *,
+  a.gr-change-view, a.gr-diff-view, a.gr-related-changes-list,
+  td.gr-diff, div.stats > span, div.total-stats > span,
+  [class*="monospace"] *, .cell.number > a,
+  span.value, .branches.revision, div.page_path *, div.page_body *,
+  div.gr-editable-content a[rel*="noopener"] {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu Mono", "monofur" !important;
+    font-size: 14px !important;
+  }
+  .gr-app,.webLink, .gr-message, .gr-file-list, .gr-admin-view, .branches.name, .bigTitle,
+  span.gr-account-label, span.gr-account-dropdown,
+  th.gr-change-list, a.gr-change-list-item,
+  span.gr-main-header, gr-endpoint-decorator.gr-main-header *, a.gr-admin-view,
+  h1.gr-repo, label.gr-editable-label,
+  label.gr-editable-label, span.headerSubject, span.breadcrumbText,
+  paper-button, paper-button.gr-button,
+  span#automatedMessageToggleContainer, div.desktop :is(a, p), span.gr-change-metadata,
+  div.gr-change-status, span.title,
+  a.gr-dropdown, aper-item.gr-dropdown-list div, div.gr-dropdown-list div[class*="gr-dropdown-list"], div.gr-related-changes-list *,
+  span.gr-linked-text, div.hideOnOpen, [class*="gr-*-list"],
+  input[id*="b_signin"] {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+  span.title, .gr-message, .gr-file-list, span.gr-main-header, label.gr-editable-label,
+  span.gr-account-label, span.gr-account-dropdown,
+  th.gr-change-list, a.gr-change-list-item,
+  .gr-admin-view, .branches.name {
+    font-size: 1.15rem !important;
+  }
+  label.gr-editable-label, span.headerSubject, span.breadcrumbText, .linksTitle.gr-main-header, h3.gr-diff-view span {
+    font-size: 1.25rem !important;
+  }
+  gr-endpoint-decorator.gr-main-header *, .bigTitle, h1.gr-repo {
+    color: #e2e2e2;
+    font-size: 1.75rem !important;
+    text-decoration: none;
+  }
+
+
+  /****************************************************************************************
+   * google search
+  ****************************************************************************************/
+  div.sbtc, .gsfi, .lst {
+    font-family: "Monaco", "Menlo", "Ubuntu", "Ubuntu Mono", "Consolas", "Monaco";
+  }
+  .g, .std, a.k8XOCe *, a.fl, div.ZOyvub, div.m0uvVb *, div.P1usbc *,
+  .wrBvFf > a, .HiHjCd > a, cite.iUh30, cite.iUh30 > span, span.go,
+  table.CFNMfb *
+  {
+    font-family: "Ubuntu", "Titillium", "Gisha", "Candara";
+  }
+  .wrBvFf > a, .HiHjCd > a, cite.iUh30, cite.iUh30 > span, span.go {
+    font-size: 14px !important;
+  }
+  /* google transfer */
+  table.CFNMfb span.kgnlhe {
+    color: #5f6368 !important;
+  }
+  .FvchS {
+    position: relative;
+  }
+  .ita-kd-inputtools-div:hover .ita-kd-icon-button, .ita-kd-icon-button.ita-kd-selected.ita-kd-dropdown, .ita-kd-icon-button.ita-kd-selected.ita-kd-inputtool-icon, .ita-kd-dropdown-menu {
+    background: #e2e2e2 !important;
+  }
+  .Rj2Mlf:not(:disabled), .gwGW9e {
+    background: #efefef !important;
+  }
+  .ita-kd-menuitem {
+    color: #333 !important;
+  }
+
+
+  /****************************************************************************************
+   * .editor, * div.ace_content * {
+   *   font-family: "Ubuntu Mono" !important;
+   *   font-size: 16px !important
+   * }
+  ****************************************************************************************/
+  /* ol li, */
+  td ol, input, select,
+  a.jstree-anchor, pre.console-output,
+  div.line-numbers *, .line-numbers, .js-line-number, /* artifactory tree list */
+  .line, .line-number, .gr-diff,                      /* github Codeblock */
+  pre.span *, pre *, #confluenceTd, .blockInner,      /* confluence */
+  .jsonpOpener, td.wysiwyg-macro-body *, .timestamp,  /* Json Viewer */
+  li.blockList {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "Consolas", "Monaco" !important;
+    font-size: 14px !important;
+  }
+
+  /****************************************************************************************
+   * stackoverflow
+  ****************************************************************************************/
+  .fs-headline1 *, .question-header * {
+		font-size: 26px !important;
+	}
+  .fs-headline2 *, .s-post-summary--content-title {
+		font-size: 22px !important;
+	}
+  .modal-content * {
+		font-size: 16px !important;
+	}
+  .fs-title, .s-notice, .js-review-actions, .ws-nowrap, .s-sidebarwidget, .comments-list *, .js-post-body p, .js-post-body li, .js-add-link, .user-info *, .question-hyperlink,
+  div#question-mini-list a, .nav-links a, .modal-content a, li.js-freemium-cta *, .s-btn span,
+  div#question-mini-list [class*="-unit"],  span[class*="gwd-span-"], div[class*="-ad-"] *, div[id*="user-panel"] a, [role*="tooltip"], [type*="button"] {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+  .comment-body code, .mainEntity :is(code, pre),
+  div#question-mini-list [class*="-number"] {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "Consolas", "Monaco" !important;
+  }
+
+
+  /****************************************************************************************
+   * github markdown
+  ****************************************************************************************/
+  .markdown-title,
+  .markdown-section :is(p, h1, h2, h3, h4),
+  .markdown-body, .markdown-body :is(p, h1, h2, h3, h4),
+  div.list-style-none, .page-header, div[class*="style_CardRow"] h1,
+  [class*="text"], [class*="headline"], [class*="footer"] {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+
+
+  /****************************************************************************************
+   * github pager
+   * https://idratherbewriting.com/documentation-theme-jekyll/index.html
+  ****************************************************************************************/
+  .markdown-section * {
+    font-size: 14px !important;
+  }
+  .markdown-section a, .book-summary a, div[type*="text"], li li, ul li, ol li, #book-search-input>input,
+  textarea[id*="commento-textarea"], a.btn, div.tags>b, input[type=checkbox]+label, .commento-submit-button,
+  div[class*="language-liquid"]~table * {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+
+
+  /****************************************************************************************
+   * slack
+   * https://app.slack.com
+  ****************************************************************************************/
+  [class*="c-message"], span[class*="p-view_header_"],
+  [data-qa*="slack_"] *, [class*="c-menu_"] *, span[id*="context_bar_"] *, div[class*="c-base_list_entity"] *, [class*="c-basic_container__body"] button,
+  div[class*="message_input"] *, div[class*="p-draft_unfurls"] *,
+  [class*="p-notification_bar"] *, [data-qa*="context_bar_text_timezone"] * {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+  [class*=c-mrkdwn__code], [class*="c-mrkdwn__pre"], [class*="ql-editor"] :is(code, pre) {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "Consolas", "Monaco" !important;
+  }
+
+
+  /****************************************************************************************
+   * jira
+   * #create-issue-dialog input
+  ****************************************************************************************/
+  .js-issue-list *, span.aui-label, table.issue-table p, div.tabwrap.aui-tabs, .message-container, a.s-summary, div.tableHeader *, .aui-button, .mod-content *,
+  div.foot :is(a, div),
+  div.action-details,  div.action-details *,
+  div#attachmentmodule *, div.user-content-block *:not(code):not(pre>code *), input.aui-ss-field,
+  [class*="dashboard-item"] iframe *, [class*="applinks*messages"], h1[id*="summary-val"],
+  [class*="jira-activity"] [class*="activity"], div[class*="ghx-"],
+  [id*="details-module"] *, [class*="s-view-dd-"], [class*="aui-dropdown"] strong {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+    font-size: 16px !important;
+  }
+  div[class*="ghx-key"] > a, td.issuekey,
+  .user-content-block :is(code *, pre code),
+  .cke_editable :where(code, pre),
+  [class*="action-body"] :where(code, pre),
+	.mod-content :where(code, pre) {
+    font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu", "Ubuntu Mono", "Consolas", "Monaco" !important;
+    font-size: 14px !important;
+  }
+  h1[id*="summary-val"] {
+    font-size: 26px !important;
+  }
+  li.ghx-column > h2 {
+    font-size: 18px !important;
+    align-content: center !important;
+  }
+  .user-content-block *:not(pre)>code,
+	[class*="action-body"] *:not(pre)>code,
+	#create-issue-dialog *:not(pre)>code,
+	.cke_editable *:not(pre)>code,
+	.mod-content *:not(pre)>code {
+    color: #d63384 !important;
+    /* font-style: italic; */
+  }
+
+
+  /****************************************************************************************
+   * .lwptoc_item,                  stackoverflow
+   * .breadcrumb, .separator        github
+   * .book.font-size-2              https://psyteachr.github.io
+  ****************************************************************************************/
+  time, h2[class*="bottom"], .lwptoc_item, .breadcrumb, .separator,
+  .book.font-size-2 .book-body .page-inner section {
+    font-size: 14px !important;
+  }
+
+
+  /****************************************************************************************
+   * for content: "\f19d";
+   * i.fa-clone, i.fa-check                         github pager
+   * i.s-fa-external-link, i.s-fa-info-circle       jira
+   * i[class*="material-icons-"]                    google search
+  ****************************************************************************************/
+  ::before, ::after, button, button.btn, span.fa-angle-up * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    font-family: inherit;
+  }
+  span[class*="style_Navbar"], span[class*="avatar"], span[class*="icon-"], i[class*="-icon"] {
+    font-family: 'ReadMe-Icons' !important;
+  }
+  i :is(.fa-clone, .fa-check) {
+    font-family: "FontAwesome" !important;
+  }
+  i[class*="s-fa-"] {
+    font-family: "StructureFontAwesome" !important;
+  }
+  i[class*="material-icons-"] {
+    font-family: 'Material Icons Extended' !important;
+  }
+
+
+  /****************************************************************************************
+   * global settings
+   *   button#btnSubmit, div.k-widget.k-grid *      projecttracker
+   *   div.breadcrumbs *, ul.one-third *,         ⌍
+   *   [class*="grepper_answer_button"] *,        ⋮
+   *   [class*="answer_title"],                   ⋮
+   *   ul.code_language_large *, .a-center        ⌏ https://www.codegrepper.com/
+  ****************************************************************************************/
+  p, h1, h2, h3, h4, h5,
+  code h1, code h2, code h3, code h4, code h5,
+  pre h1, pre h2, pre h3, pre h4, pre h5,
+  button#btnSubmit, div.k-widget.k-grid *,
+  div.breadcrumbs *, ul.one-third *, [class*="grepper_answer_button"] *, [class*="answer_title"], ul.code_language_large *, .a-center {
+    font-family: "Ubuntu", "Titillium", "Gisha" !important;
+  }
+  h1, h1 > a, h1 > code, .page-header,
+  .markdown-body h1, .markdown-section h1, div[class*="headline"] *, [class*="header"] > h1 *,
+   div[class*="style_CardRow"] h1 {
+    font-size: 34px !important;
+    font-weight: 500 !important;
+  }
+  h2, h2 > a, h2 > span, h2#gitbook-cli > code,
+  .markdown-body h2, .markdown-section h2, .markdown-section h2 > mark, .markdown-section h2 > a {
+    font-size: 26px !important;
+    font-weight: 400 !important;
+  }
+  h3, h3 > code,
+  .markdown-body h3, .markdown-section h3, .markdown-section h3 > mark, .markdown-section h3 > a {
+    font-size: 24px !important;
+    font-weight: 400 !important;
+  }
+  h4, h4 > code,
+  .markdown-body h4, .markdown-section h4, .markdown-section h4 > mark, .markdown-section h4 > a {
+    font-size: 20px !important;
+    font-weight: 400 !important;
+  }
+
+}  /** @-moz-document regexp : for non jenkins hosts **/
