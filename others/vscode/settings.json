@@ -1,0 +1,147 @@
+// ~/Library/Application Support/Code/User/settings.json
+{
+    // windows, workbench
+    "window.zoomLevel": 1,
+    "window.title": "${activeEditorLong}${separator}${rootName}",
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.colorTheme": "Solarized Dark",
+    "workbench.editor.titleScrollbarSizing": "large",
+    "workbench.colorCustomizations": {
+        "editorCursor.foreground": "#ece8d6",
+        "terminalCursor.foreground": "#88982d"
+    },
+
+    // editor
+    "editor.suggestSelection": "first",
+    "editor.suggestFontSize": 16,
+    "editor.inlayHints.fontSize": 14,
+    "editor.fontSize": 18,
+    "editor.formatOnPaste": true,
+    "editor.fontLigatures": true,
+    "editor.fontFamily": "Monaco, 'Andale Mono', 'Ubuntu Mono', Menlo, 'Courier New', monospace",
+    "editor.tabSize": 2,
+    "editor.cursorBlinking": "smooth",
+    "editor.wordWrap": "on",
+    "editor.renderWhitespace": "trailing",
+    "editor.smartSelect.selectLeadingAndTrailingWhitespace": false,
+    "editor.cursorStyle": "line-thin",
+    "editor.find.autoFindInSelection": "multiline",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+
+    // terminal
+    "terminal.external.osxExec": "iTerm.app",
+    "terminal.integrated.cursorStyle": "underline",
+    "terminal.integrated.drawBoldTextInBrightColors": false,
+    "terminal.integrated.scrollback": 9999999,
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontFamily": "'Andale Mono'",
+    "terminal.integrated.bellDuration": 9999,
+    "terminal.integrated.defaultProfile.osx": "bash",
+    // "terminal.integrated.shell.osx": "/usr/local/bin/bash",
+
+    // vim
+    "vim.changeWordIncludesWhitespace": true,
+    "vim.cursorStylePerMode.insert": "line",
+    "vim.cursorStylePerMode.normal": "underline",
+    "vim.cursorStylePerMode.visual": "underline",
+    "vim.cursorStylePerMode.visualblock": "line",
+    "vim.cursorStylePerMode.visualline": "underline",
+    "vim.cursorStylePerMode.replace": "underline",
+    "vim.useSystemClipboard": true,
+    "vim.sneakUseIgnorecaseAndSmartcase": true,
+
+
+    // git
+    "gitlens.blame.ignoreWhitespace": true,
+    "gitblame.ignoreWhitespace": true,
+    "gitlens.advanced.messages": {
+        "suppressCommitHasNoPreviousCommitWarning": true
+    },
+
+    // others
+    "explorer.openEditors.visible": 8,
+    "search.smartCase": true,
+    "debug.console.fontSize": 14,
+    "debug.allowBreakpointsEverywhere": true,
+    "scm.alwaysShowActions": true,
+    "screencastMode.fontSize": 20,
+    "files.trimTrailingWhitespace": true,
+    "scm.inputFontSize": 16,
+
+    // jenkins, groovy
+    "groovyLint.lint.trigger": "user",
+    "groovyLint.basic.verbose": true,
+    "groovyLint.debug.enable": true,
+    "groovyLint.java.executable": "/System/Library/Frameworks/JavaVM.framework/Versions/A/Commands/java",
+    "jenkins.url": "https://ssdfw-devops-jenkins.marvell.com",
+    "jenkins-runner.hostConfigs": {
+        "ssdfw-devops-jenkins.marvell.com": {
+            "url": "https://ssdfw-devops-jenkins.marvell.com",
+            "user": "marslo",
+            "useCrumbIssuer": false,
+            "rejectUnauthorizedCert": false
+        },
+    },
+    "[groovy]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.detectIndentation": true
+    },
+    // python
+    "python.jediEnabled": false,
+    "python.languageServer": "Microsoft",
+    "python.defaultInterpreterPath": "/usr/local/opt/python/libexec/bin/python",
+    // coding
+    "code-runner.executorMap": {
+        "javascript": "node",
+        "java": "cd $dir && javac $fileName && java $fileNameWithoutExt",
+        "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+        "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+        "objective-c": "cd $dir && gcc -framework Cocoa $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+        "php": "php",
+        "python": "python -u",
+        "perl": "perl",
+        "perl6": "perl6",
+        "ruby": "ruby",
+        "go": "go run",
+        "lua": "lua",
+        "groovy": "/usr/local/opt/groovy/libexec/bin/groovy",
+        "powershell": "powershell -ExecutionPolicy ByPass -File",
+        "bat": "cmd /c",
+        "shellscript": "bash",
+        "fsharp": "fsi",
+        "csharp": "scriptcs",
+        "vbscript": "cscript //Nologo",
+        "typescript": "ts-node",
+        "coffeescript": "coffee",
+        "scala": "scala",
+        "swift": "swift",
+        "julia": "julia",
+        "crystal": "crystal",
+        "ocaml": "ocaml",
+        "r": "Rscript",
+        "applescript": "osascript",
+        "clojure": "lein exec",
+        "haxe": "haxe --cwd $dirWithoutTrailingSlash --run $fileNameWithoutExt",
+        "rust": "cd $dir && rustc $fileName && $dir$fileNameWithoutExt",
+        "racket": "racket",
+        "scheme": "csi -script",
+        "ahk": "autohotkey",
+        "autoit": "autoit3",
+        "dart": "dart",
+        "pascal": "cd $dir && fpc $fileName && $dir$fileNameWithoutExt",
+        "d": "cd $dir && dmd $fileName && $dir$fileNameWithoutExt",
+        "haskell": "runhaskell",
+        "nim": "nim compile --verbosity:0 --hints:off --run",
+        "lisp": "sbcl --script",
+        "kit": "kitc --run",
+        "v": "v run",
+        "sass": "sass --style expanded",
+        "scss": "scss --style expanded",
+        "less": "cd $dir && lessc $fileName $fileNameWithoutExt.css"
+    },
+    "[Log]": {
+        "editor.fontSize": 12,
+    },
+}
