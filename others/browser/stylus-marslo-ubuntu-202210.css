@@ -69,9 +69,12 @@
     font-weight: 550 !important;
   }
 
-	tr.app-summary>td>pre>code>ul>li * {
+	tr.app-summary>td>pre>code>ul>li *{
 		font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu Mono", "monofur" !important;
 		font-size: 13px !important;
+	}
+	div#main-panel a[name="skip2content"]+h1 {
+		font-size: 28px !important;
 	}
 
   /**
@@ -85,7 +88,8 @@
   [class*="ace_"], [class*="ace_"] *,
   div.setting-main, .setting-main > textarea, td.setting-main,
   textarea.ace_text-input, .ace_active-line,
-  cursor, div.pretty-print {
+  cursor, div.pretty-print,
+	errorList problem * {
     font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu Mono", "monofur" !important;
     font-size: 16px !important;
   }
@@ -102,7 +106,7 @@
   kbd, option, option *, canvas, canvas *,
   pre, pre *, pre code, pre code *, pre code ul li *, pre span, pre span *,
   code, code *,
-  input, input *,
+  input :where(code, pre),
   select, select *,
   script, script *,
   textarea, textarea *,
@@ -217,10 +221,11 @@
    *   [class*="line-"] *, #content,
    *   pre span, pre span *                 handled by pre *
   ****************************************************************************************/
-  kbd, textarea :where(code, pre),
+  kbd,
   code, code *, * code *, .code-line,
   pre, pre *, pre.code *,
-  input, input *,
+	textarea :where(code, pre),
+  input :where(code, pre),
   .editor, div.ace_content,
   .blob-code-addition *, .blob-code-inner *,
   .solarized-dark,
@@ -270,7 +275,7 @@
 
 
   /****************************************************************************************
-   * Gerrit
+		 * gerrit
    * .gr-change-metadata, .gr-related-changes-list, .gr-change-list-item, .gr-comment-list
    * td.u-red, td.u-green
    *
@@ -293,12 +298,15 @@
   span#automatedMessageToggleContainer, div.desktop :is(a, p), span.gr-change-metadata,
   div.gr-change-status, span.title,
   a.gr-dropdown, aper-item.gr-dropdown-list div, div.gr-dropdown-list div[class*="gr-dropdown-list"], div.gr-related-changes-list *,
+	table.object_header td,
   span.gr-linked-text *:not([class*="pre"]), div.hideOnOpen, [class*="gr-*-list"], blockquote[class*="gr-formatted-text"] *, input[id*="b_signin"] {
     font-family: "Ubuntu", "Titillium", "Gisha" !important;
   }
   gr-linked-text[class*="pre"] #output, gr-formatted-text :is([class*="pre"]), gr-commit-info *, gr-date-formatter *, gr-diff *,
   a.gr-change-view, a.gr-diff-view,
+	h3.gr-access-section,
   td.gr-diff, div.stats > span, div.total-stats > span,
+	div.commitMessage > #commitMessageEditor > div.gr-editable-content span#output,
   [class*="monospace"] *, .cell.number > a,
   span.value, .branches.revision, div.page_path *, div.page_body *,
   div.gr-editable-content a[rel*="noopener"] {
@@ -306,7 +314,8 @@
     font-size: 14px !important;
   }
   .style-scope.gr-account-dropdown,
-	gr-endpoint-decorator.gr-main-header * {
+	gr-endpoint-decorator.gr-main-header *,
+	h2.logo + div.page_header > a:not([href*="git"]) {
     font-family: Papyrus, fantasy !important;
     font-size: 18px !important;
     text-transform: none !important;
@@ -325,6 +334,9 @@
     font-size: 2.25rem !important;
     text-decoration: none;
   }
+	div.reviewed > label.gr-file-list > span.markReviewed {
+		font-size: 14px !important;
+	}
   /**
 	 * gerrit code block
 	**/
@@ -386,7 +398,9 @@
    * }
   ****************************************************************************************/
   /* ol li, */
-  td ol, input, select,
+  td ol,
+	input:not([name*="password"], [name*="username"], [class*="button"], [type*="submit"], [name*="summary"]),
+	select,
   a.jstree-anchor, pre.console-output,
   div.line-numbers *, .line-numbers, .js-line-number, /* artifactory tree list */
   .line, .line-number, .gr-diff,                      /* github Codeblock */
@@ -440,11 +454,15 @@
   .d-flex.flex-wrap.flex-justify-end [rel*="author"],
 	header.pagehead h1,
 	h1.wb-break-word.f3 > span.author > a, h3.text-normal a.author,       /* gist.github.com */
+	span.js-repo-root,
 	div.vcard-names-container h1 .vcard-fullname {
     font-family: Papyrus, fantasy !important;
   }
 	h3.text-normal a.author {
 		padding-top: 5px !important;
+	}
+	h2.breadcrumb, .separator {
+		font-size: 16px !important;
 	}
 
 
@@ -484,10 +502,13 @@
   .js-issue-list *, span.aui-label, table.issue-table p, div.tabwrap.aui-tabs, .message-container, a.s-summary, div.tableHeader *, .aui-button, .mod-content *, .gadget-container *,
   div.foot :is(a, div),
   div.action-details,  div.action-details *,
-  div.field-group input, .text.aui-ss-field, input.text.long-field, .textfield.long-field, .ajax_autocomplete input.long-field,
+  div.field-group input:where([class*="text"], [type*="password"], [name*="password"], [name*="username"]),
+	.text.aui-ss-field, input.text.long-field, .textfield.long-field, .ajax_autocomplete input.long-field,
   div.cke_contents textarea,
-  div#attachmentmodule *, div.user-content-block *:not(code):not(pre>code *), input.aui-ss-field,
-  [class*="dashboard-item"] iframe *, [class*="applinks*messages"], h1[id*="summary-val"],
+	h1#summary-val,
+  div#attachmentmodule *, input.aui-ss-field,
+	div.user-content-block *:not(code):not(pre>code *),
+  [class*="dashboard-item"] iframe *, [class*="applinks*messages"],
   [class*="jira-activity"] [class*="activity"], div[class*="ghx-"],
   [id*="details-module"] *, [class*="s-view-dd-"], [class*="aui-dropdown"] strong {
     font-family: "Ubuntu", "Titillium", "Gisha" !important;
@@ -501,7 +522,10 @@
     font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu Mono", "Consolas" !important;
     font-size: 14px !important;
   }
-  h1[id*="summary-val"], div.field-group input {
+	/* div.field-group input:not([type*="password"], [type*="submit"], [name*="user"], [id*="customfield_"])  */
+	div.aui-page-header-main > h1#summary-val,
+	div.aui-page-header-main > h1#summary-val form#summary-form input.long-field
+	{
     font-size: 26px !important;
   }
   li.ghx-column > h2 {
@@ -514,10 +538,22 @@
   .cke_editable *:not(pre)>code,
   .mod-content *:not(pre)>code {
     color: #d63384 !important;
+		font-family: "Comic Mono" !important;
+		font-size: 16px !important;
     /* font-style: italic; */
   }
-  body.cke_editable :where(p, a, code, pre), div.cke_contents textarea {   /* comments input box */
+  body.cke_editable :where(p, a, code, pre),
+	div.cke_contents textarea                            /* comments input box */
+	{
     font-size: 18px !important;
+  }
+	/*div.gadget-container > div.dashboard-item-header > h3,                      assigned to me */
+	/* .mod-content li.people-details span:where([id*="reporter"], [id*="assignee"]) > span[id*="issue_summary"]      assignee & reporter */
+	div.aui-page-header > div.aui-page-header-inner > div.aui-page-header-main > h1, /* system dashboard */
+	h1 > span.subnav-container > span#subnav-title > span.subnavigator-title,  /* sprint - xx */
+	div#search-header-view > div.header-section-primary > h1.search-title
+	{
+		font-family: Papyrus, fantasy !important;
   }
 
   /****************************************************************************************
@@ -533,7 +569,8 @@
   ****************************************************************************************/
   input#content-title,
   .wiki-content .contentLayout2,
-  span.aui-header-logo-text {
+  span.aui-header-logo-text,
+	#autocomplete-dropdown * {
     font-family: "Ubuntu", "Titillium", "Gisha" !important;
   }
   body.page-edit code, [class*="confluence"] code *,
@@ -543,10 +580,11 @@
   input#content-title {
     font-size: 1.25em !important;
   }
-  .aui-header-logo-text {
-    font-size: 10px !important;
+  h1#logo > a > span.aui-header-logo-text {
+    font-size: 24px !important;
     line-height: 1;
-    padding: 3px 0 10px 3px;
+    padding: 12px 0 0px 0px;
+		font-family: Papyrus, fantasy !important
   }
 
 
@@ -554,11 +592,10 @@
   /****************************************************************************************
    * others:
    * .lwptoc_item,                  stackoverflow
-   * .breadcrumb, .separator        github
    * .book.font-size-2              https://psyteachr.github.io
    * .MuiGrid-container             https://onecompiler.com/
   ****************************************************************************************/
-  time, h2[class*="bottom"], .lwptoc_item, .breadcrumb, .separator,
+  time, h2[class*="bottom"], .lwptoc_item,
   .book.font-size-2 .book-body .page-inner section,    /* https://psyteachr.github.io */
   .MuiGrid-container h2                                /* https://onecompiler.com/ */
   {
@@ -569,9 +606,14 @@
   }
   [data-target*="readme-toc.content"] *,
   .css-truncate a, .BorderGrid-cell,
+	ul.blockListLast > li.blockList,                     /* groovy doc */
   time-ago {
     font-family: "Ubuntu", "Titillium", "Gisha" !important;
   }
+	/* https://www.wikiwand.com/en/Web_colors */
+	.mw-parser-output .color-chart-x11-table td:nth-child(2) {
+		font-family: "Monaco", "Menlo", "Andale Mono", "Ubuntu Mono", "Consolas" !important;
+	}
 
 
   /****************************************************************************************
@@ -617,26 +659,38 @@
   div.breadcrumbs *, ul.one-third *, [class*="grepper_answer_button"] *, [class*="answer_title"], ul.code_language_large *, .a-center {
     font-family: "Ubuntu", "Titillium", "Gisha" !important;
   }
-  h1:not([class*="btn"]), h1 > a:not([class*="btn"]), h1 > code, .page-header, h1#gh-pages code,
-  .markdown-body h1, .markdown-section h1, div[class*="headline"] *:not([class*="btn"]), [class*="header"] > h1 *:not([class*="btn"]),
+  h1:not([class*="btn"]), h1 > a:not([class*="btn"]), h1 > code,
+	.page-header, h1#gh-pages code,
+  .markdown-body h1, .markdown-section h1,
+	div[class*="headline"] *:not([class*="btn"]),
+	[class*="header"] > h1 *:not([class*="btn"]):not([class*="logo"]),
    div[class*="style_CardRow"] h1 {
     font-size: 34px !important;
     font-weight: 500 !important;
   }
-	h1[class*="text-normal"],                          /* gist.github.com */
-  h2, h2 > a:not([class*="btn"]), h2 > span:not([class*="btn"]), h2#gitbook-cli > code, h2#gh-pages code,
+	h1:is([class*="text-normal"]):not([id*="summary-val"]),            /* gist.github.com */
+  h2:not([class*="style-name"]),
+	h2:not([class*="style-name"]) > :is(span:not([class*="btn"]):not([class*="separator"]):not([class*="js-path"], a:not([class*="btn"])),
+	strong:not([class*="final-path"])),
+	h2#gitbook-cli > code, h2#gh-pages code,
   .markdown-body h2:not([class*="btn"]),
-	.markdown-section h2:not([class*="btn"]), .markdown-section h2 > mark, .markdown-section h2 > a:not([class*="btn"]) {
+	.markdown-section h2:not([class*="btn"]),
+	.markdown-section h2 > mark,
+	.markdown-section h2 > a:not([class*="btn"]) {
     font-size: 26px !important;
     font-weight: 400 !important;
   }
-  h3:not([class*="btn"]), h3 > code, h3#gh-pages code,
+  h3:not([class*="btn"]):not([class*="ghx-name"]):not([class*="gr-access-section"]),
+	h3 > code,
+	h3#gh-pages code,
   .markdown-body h3, .markdown-section h3, .markdown-section h3 > mark, .markdown-section h3 > a {
     font-size: 24px !important;
     font-weight: 400 !important;
   }
 	.c-title.t.tts-title a,                                   /* baidu title */
-  h4:not([class*="btn"]), h4 > code, h4#gh-pages code,
+  h4:not([class*="btn"]),
+	h4 > code,
+	h4#gh-pages code,
   .markdown-body h4, .markdown-section h4, .markdown-section h4 > mark, .markdown-section h4 > a {
     font-size: 20px !important;
     font-weight: 400 !important;
