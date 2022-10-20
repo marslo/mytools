@@ -1,10 +1,10 @@
 // ~/Library/Application Support/Code/User/settings.json
 {
     // windows, workbench
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 1.4,
     "window.title": "${activeEditorLong}${separator}${rootName}",
     "workbench.editor.highlightModifiedTabs": true,
-    "workbench.colorTheme": "Solarized Dark",
+    "workbench.colorTheme": "Gruvbox Dark Medium",
     "workbench.editor.titleScrollbarSizing": "large",
     "workbench.colorCustomizations": {
         "editorCursor.foreground": "#ece8d6",
@@ -18,7 +18,7 @@
     "editor.fontSize": 18,
     "editor.formatOnPaste": true,
     "editor.fontLigatures": true,
-    "editor.fontFamily": "Monaco, 'Andale Mono', 'Ubuntu Mono', Menlo, 'Courier New', monospace",
+    "editor.fontFamily": "'Comic Mono', Monaco, 'Andale Mono', 'Ubuntu Mono', Menlo, 'Courier New', monospace",
     "editor.tabSize": 2,
     "editor.cursorBlinking": "smooth",
     "editor.wordWrap": "on",
@@ -144,4 +144,11 @@
     "[Log]": {
         "editor.fontSize": 12,
     },
+    "sync.gist": "11af55cde08c8ed3433266d77821ca5a",
+
+    // "editor.rulers": [
+    //     20,
+    //     40,
+    //     60
+    // ]
 }
