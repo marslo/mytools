@@ -1,8 +1,7 @@
 // ~/Library/Application Support/Code/User/settings.json
 {
-    // windows, workbench
-    "window.zoomLevel": 1.4,
     "window.title": "${activeEditorLong}${separator}${rootName}",
+    "window.zoomLevel": 1.4,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.colorTheme": "Gruvbox Dark Medium",
     "workbench.editor.titleScrollbarSizing": "large",
@@ -50,7 +49,6 @@
     "vim.useSystemClipboard": true,
     "vim.sneakUseIgnorecaseAndSmartcase": true,
 
-
     // git
     "gitlens.blame.ignoreWhitespace": true,
     "gitblame.ignoreWhitespace": true,
@@ -90,9 +88,10 @@
     },
     // python
     "python.jediEnabled": false,
-    "python.languageServer": "Microsoft",
+    "python.languageServer": "Default",
     "python.defaultInterpreterPath": "/usr/local/opt/python/libexec/bin/python",
-    // coding
+
+    // coding executor
     "code-runner.executorMap": {
         "javascript": "node",
         "java": "cd $dir && javac $fileName && java $fileNameWithoutExt",
@@ -141,10 +140,12 @@
         "scss": "scss --style expanded",
         "less": "cd $dir && lessc $fileName $fileNameWithoutExt.css"
     },
+
     "[Log]": {
         "editor.fontSize": 12,
     },
     "sync.gist": "11af55cde08c8ed3433266d77821ca5a",
+    "tabnine.experimentalAutoImports": true,
 
     // "editor.rulers": [
     //     20,
