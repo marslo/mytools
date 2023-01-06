@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1078,SC1079
+
+shopt -s extglob
+
+c() {
+  # shellcheck disable=SC1009,SC2015,SC2028
+  [ $# -eq 0 ] && echo "\033[0m" || echo "$1" | sed -E "s/(.)/‹\1›/g;s/([KRGYBMCW])/3\1/g;s/([krgybmcw])/4\1/g;s/S/22/;y/sufnKRGYBMCWkrgybmcw›/14570123456701234567m/;s/‹/\\\033[/g";
+}
+
+usage="""TO SEARCH IN LDAP
+\nSYNOPSIS:
+\n\t$(c sY)\$ ldapsearch <userId> [ field [ field [ field ] ] ] [ -h | help ]$(c)
+\nExample:
+\n\tget help
+\n\t\t$(c G)\$ ldapsearch help$(c)
+\n\tget all information for <userId>
+\n\t\t$(c G)\$ ldapsearch <userId>$(c)
+\n\tget only DN for <userId>
+\n\t\t$(c G)\$ ldapsearch <userId> dn$(c)
+\n\tget both DN and memberOf for <userId>
+\n\t\t$(c G)\$ ldapsearch <userId> dn memberOf$(c)
+"""
+
+function exitOnError() {
+  # shellcheck disable=SC2181
+  if [ $? -ne 0 ]; then
+    echo -e "$1.\nExiting."
+    exit 1
+  fi
+}
+
+function help() {
+  echo -e "${usage}"
+  exit 0
+}
+
+userId="$1"
+attributes=''
+# for mac
+SED='/usr/local/opt/gnu-sed/libexec/gnubin/sed'
+LDAPSEARCH='/usr/local/opt/openldap/bin/ldapsearch'
+sedOpt="${SED} -r '/^(#.*)$/d;/^\s*$/d'"
+
+if [[ $# -gt 1 ]]; then
+  attributes="$(echo "${@: -$(( $#-1 ))}" | cut -d' ' -f1-)"
+fi
+
+if [[ -n ${attributes} ]]; then
+  attr=${attributes//+( )/|}
+  sedOpt="${SED} -rn 's/^((${attr}):.*)$/\1/p'"
+fi
+
+if [ $# -eq 0 ] || [ "$1" = "help" ] || [ "$1" = '-h' ]; then
+  help
+else
+  command="""
+    ${LDAPSEARCH} -LLL \
+                  -o ldif-wrap=no \
+                  -x \
+                  -H ldaps://ldaps.domain.com:636 \
+                  -b 'dc=domain,dc=com' \
+                  -D <account> \
+                  -w <password> \
+                  CN=${userId} ${attributes} | ${sedOpt}
+  """
+  eval "${command}"
+fi

@@ -386,19 +386,21 @@ EOF
 }
 
 function setupCentOS() {
-    setupEnv
-    installApp
+    # setupEnv
+    # installApp
     setupSSHD
-    setupSSH
+    # setupSSH
 }
 
-if [ "$1" = "help" ]; then
-  help
-  exit 0
-else
-  for cmd in ${GREP} ${CURL} ${SED} ${WGET}; do
-    [ ! -f ${cmd} ] && reportError "Command ${cmd} cannot be found in system!"; exit 1
-  done
-  [ "SERVERNAME" == "${SERVERNAME}" ] && reportWarning "haven't been setup!"
-  setupCentOS
-fi
+setupCentOS
+
+# if [ "$1" = "help" ]; then
+  # help
+  # exit 0
+# else
+  # for cmd in ${GREP} ${CURL} ${SED} ${WGET}; do
+    # [ ! -f ${cmd} ] && reportError "Command ${cmd} cannot be found in system!"; exit 1
+  # done
+  # [ "SERVERNAME" == "${SERVERNAME}" ] && reportWarning "haven't been setup!"
+  # setupCentOS
+# fi

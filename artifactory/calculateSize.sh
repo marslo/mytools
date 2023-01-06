@@ -1,4 +1,5 @@
-#!/usr/bin/env bash # =============================================================================
+#!/usr/bin/env bash
+# =============================================================================
 #     FileName : calculateSize.sh
 #       Author : marslo.jiao@gmail.com
 #      Created : 2021-08-18 21:21:36
@@ -15,7 +16,7 @@ domain='my.artifactory.com'
 verbose='false'
 
 c() {
-  # shellcheck disable=SC1009,SC2015
+  # shellcheck disable=SC1009,SC2015,SC2028
   [ $# -eq 0 ] && echo "\033[0m" || echo "$1" | sed -E "s/(.)/‹\1›/g;s/([KRGYBMCW])/3\1/g;s/([krgybmcw])/4\1/g;s/S/22/;y/sufnKRGYBMCWkrgybmcw›/14570123456701234567m/;s/‹/\\\033[/g";
 }
 
@@ -42,7 +43,7 @@ toBytes() {
   unit=$2
   case ${unit} in
     [bB][yY][tT][eE][sS] ) b="${size}" ;;
-    [kK][bB] ) b=$( multiplication "${size}" "${rod}" ) ;;
+    [kK][bB] ) b=$( multiplication "${size}" "${rod}"   ) ;;
     [mM][bB] ) b=$( multiplication "${size}" "${rod}^2" ) ;;
     [gG][bB] ) b=$( multiplication "${size}" "${rod}^3" ) ;;
     [tT][bB] ) b=$( multiplication "${size}" "${rod}^4" ) ;;
@@ -70,11 +71,11 @@ humanForamt() {
   while read -r B; do
     [ $( roundUp ${B} ) -lt ${rod}  ] && echo ${B} bytes && break
     KB=$( division "${B}" "${rod}"  )
-    [ $( roundUp ${KB} ) -lt ${rod} ] && echo ${KB} KB && break
+    [ $( roundUp ${KB} ) -lt ${rod} ] && echo ${KB} KB   && break
     MB=$( division "${KB}" "${rod}" )
-    [ $( roundUp ${MB} ) -lt ${rod} ] && echo ${MB} MB && break
+    [ $( roundUp ${MB} ) -lt ${rod} ] && echo ${MB} MB   && break
     GB=$( division "${MB}" "${rod}" )
-    [ $( roundUp ${GB} ) -lt ${rod} ] && echo ${GB} GB && break
+    [ $( roundUp ${GB} ) -lt ${rod} ] && echo ${GB} GB   && break
     TB=$( division "${GB}" "${rod}" )
     echo "${TB} TB"
   done < <( echo "$1" )
