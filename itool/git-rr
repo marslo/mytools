@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+# credit belongs to https://raw.githubusercontent.com/ppo/bash-colors/master/bash-colors.sh
+c() {
+  # shellcheck disable=SC1009,SC2015
+  [ $# -eq 0 ] && echo "\033[0m" || echo "$1" | sed -E "s/(.)/‹\1›/g;s/([KRGYBMCW])/3\1/g;s/([krgybmcw])/4\1/g;s/S/22/;y/sufnKRGYBMCWkrgybmcw›/14570123456701234567m/;s/‹/\\\033[/g";
+}
+
+function needsArg() {
+  if [ -z "$OPTARG" ]; then
+    die "No arg for --$OPT option"
+  fi
+}
+
+function exitOnError() {
+  # shellcheck disable=SC2181
+  if [ $? -ne 0 ]; then
+    echo -e "$1.\nExiting."
+    exit 1
+  fi
+}
+
+function die() { echo -e "$(c R)ERROR$(c): $*" >&2; exit 2; }
+function showHelp() { echo -e "${usage}"; exit 0; }
+
+function isRepo() {
+  git rev-parse --git-dir >/dev/null 2>&1 || exitOnError 'not a git repo !'
+}
+
+function getRevision() {
+  revision=$(git rev-parse -q --verify "$1^{commit}") || exitOnError "$1 cannot be found in current repo."
+}
+
+command=''
+usage="""[$(c R)R$(c)]EVISION [$(c R)R$(c)]ESET: TO RESET THE GIT REVISION AUTHOR/AUTHOREMAIL/AUTHORDATES/COMMITTER/COMMITEMAIL/COMMITDATE
+\nSYNOPSIS:
+\n\t$(c sY)\$ git rr [ -v | --verbose | --debug ] [ -h | --help ]
+\t\t [ -a | --author <author> ]
+\t\t [ -e | --ae | --authorEmail <email@domain> ]
+\t\t [ -d | --ad | --authorDate <date> ]
+\t\t [ -c | --committer <committer> ]
+\t\t [ -E | --ce | --commitEmail <email@domain> ]
+\t\t [ -D | --cd | --commitDate <date> ]$(c)
+\nExample:
+\n\tget help
+\t\t$(c G)\$ git rr -h$(c) | $(c G)\$ git rr --help$(c)
+\n\tget verbose
+\t\t$(c G)\$ git rr -v$(c) | $(c G)\$ git rr --verbose$(c) | $(c G)\$ git cr --debug$(c)
+\n\tto reset author
+\t\t$(c G)\$ git rr --revision=<revision> --author=<username>$(c) | $(c G)\$ git rr -r <revision> --author=<username>$(c)
+\t\t\t\t   + long parameters   |
+\t\t\t\t\t\t       + the long parameters MUST use '=' to identify opt and args
+\n\tto reset author, authorEmail, authorDate, committer, commitEmail and commitDate
+\t\t$(c G)\$ git rr --revision=<revision>              \\
+\t\t\t --author=<username>                \\
+\t\t\t --authorEmail=<username@domain>    \\
+\t\t\t --authorDate=<date>                \\
+\t\t\t --commiter=<username>              \\
+\t\t\t --commitEmail=<username@domain>    \\
+\t\t\t --commitDate=<date>$(c)
+\t\tOR
+\t\t$(c G)\$ git rr -r <revision>                      \\
+\t\t\t -a <username>                      \\
+\t\t\t -e <username@domain>               \\
+\t\t\t -d <date>                          \\
+\t\t\t -c <username>                      \\
+\t\t\t -E <username@domain>               \\
+\t\t\t -D <date>$(c)
+"""
+
+# credit belongs to https://stackoverflow.com/a/28466267/519360
+while getopts hva:e:d:c:E:D:-: OPT; do
+  if [ "$OPT" = "-" ]; then
+    OPT="${OPTARG%%=*}"
+    OPTARG="${OPTARG#$OPT}"
+    OPTARG="${OPTARG#=}"
+  fi
+  case "$OPT" in
+    h | help             ) help=true                       ;;
+    v | verbose | debug  ) verbose=true                    ;;
+    a | author           ) needsArg; author="$OPTARG"      ;;
+    e | ae | authorEmail ) needsArg; authorEmail="$OPTARG" ;;
+    d | ad | authorDate  ) needsArg; authorDate="$OPTARG"  ;;
+    c | committer        ) needsArg; committer="$OPTARG"   ;;
+    E | ce | commitEmail ) needsArg; commitEmail="$OPTARG" ;;
+    D | cd | commitDate  ) needsArg; commitDate="$OPTARG"  ;;
+    ??*                  ) die "Illegal option --$OPT"     ;;
+    ?                    ) die "Illegal option -$OPT"      ;;
+  esac
+done
+shift $((OPTIND-1)) # remove parsed options and args from $@ list
+
+if [[ 'true' == "${verbose}" ]]; then
+  echo """
+    author      : '${author}'
+    authorEmail : '${authorEmail}'
+    authorDate  : '${authorDate}'
+    committer   : '${committer}'
+    commitEmail : '${commitEmail}'
+    commitDate  : '${commitDate}'
+  """
+fi
+
+[[ 'true' == "${help}" ]] && showHelp
+
+# https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables
+[[ -n "${author}"      ]] && command="GIT_AUTHOR_NAME='${author}' "
+[[ -n "${authorEmail}" ]] && command+="GIT_AUTHOR_EMAIL='${authorEmail}' "
+[[ -n "${authorDate}"  ]] && command+="GIT_AUTHOR_DATE='${authorDate}' "
+[[ -n "${committer}"   ]] && command+="GIT_COMMITTER_NAME='${committer}' "
+[[ -n "${commitEmail}" ]] && command+="GIT_COMMITTER_EMAIL='${commitEmail}' "
+[[ -n "${commitDate}"  ]] && command+="GIT_COMMITTER_DATE='${commitDate}' "
+
+command+="git commit --quiet --amend --allow-empty --no-edit --reset-author"
+[[ 'true' == "${verbose}" ]] && echo "${command}"
+
+eval "${command}"
+
+# vim: ft=bash ts=2 sts=2 sw=2 et
