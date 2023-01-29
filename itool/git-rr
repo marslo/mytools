@@ -1,119 +1,203 @@
 #!/usr/bin/env bash
 
+shopt -s extglob
+
 # credit belongs to https://raw.githubusercontent.com/ppo/bash-colors/master/bash-colors.sh
-c() {
-  # shellcheck disable=SC1009,SC2015
-  [ $# -eq 0 ] && echo "\033[0m" || echo "$1" | sed -E "s/(.)/‹\1›/g;s/([KRGYBMCW])/3\1/g;s/([krgybmcw])/4\1/g;s/S/22/;y/sufnKRGYBMCWkrgybmcw›/14570123456701234567m/;s/‹/\\\033[/g";
-}
-
-function needsArg() {
-  if [ -z "$OPTARG" ]; then
-    die "No arg for --$OPT option"
-  fi
-}
-
-function exitOnError() {
-  # shellcheck disable=SC2181
-  if [ $? -ne 0 ]; then
-    echo -e "$1.\nExiting."
-    exit 1
-  fi
-}
-
-function die() { echo -e "$(c R)ERROR$(c): $*" >&2; exit 2; }
+# shellcheck disable=SC2015,SC2059
+c() { [ $# == 0 ] && printf "\e[0m" || printf "$1" | sed 's/\(.\)/\1;/g;s/\([SDIUFNHT]\)/2\1/g;s/\([KRGYBMCW]\)/3\1/g;s/\([krgybmcw]\)/4\1/g;y/SDIUFNHTsdiufnhtKRGYBMCWkrgybmcw/12345789123457890123456701234567/;s/^\(.*\);$/\\e[\1m/g'; }
+function die() { echo -e "$(c R)ERROR$(c) : $*" >&2; exit 2; }
+function exitOnError() { if [ $? -ne 0 ]; then echo -e "$(c R)ERROR$(c) : $*" >&2; exit 1; fi; }
 function showHelp() { echo -e "${usage}"; exit 0; }
+function needsArg() { [[ -z "$OPTARG" ]] && die "no arg for --$OPT option"; }
+function isRepo() { git rev-parse --git-dir >/dev/null 2>&1 || exitOnError 'not a git repo !'; }
+function getRevision() { sha=$(git rev-parse -q --verify "$1^{commit}"); echo "${sha}"; }
+function trim() { IFS='' read -r str; echo "${str}" | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'; }
 
-function isRepo() {
-  git rev-parse --git-dir >/dev/null 2>&1 || exitOnError 'not a git repo !'
+function showParmas() {
+  [[ 6 -ne $# ]] && die "wrong parameters in showParams function"
+  local author=$1
+  local authorEmail=$2
+  local authorDate=$3
+  local committer=$4
+  local commitEmail=$5
+  local commitDate=$6
+
+  echo -e """
+       $(c M)author$(c) : '${author}'
+  $(c M)authorEmail$(c) : '${authorEmail}'
+   $(c M)authorDate$(c) : '${authorDate}'
+    $(c M)committer$(c) : '${committer}'
+  $(c M)commitEmail$(c) : '${commitEmail}'
+   $(c M)commitDate$(c) : '${commitDate}'
+       $(c M)params$(c) : $(c G)
+                 git rr -a '${author}' -e '${authorEmail}' -d '${authorDate}' -c '${committer}' -E '${commitEmail}' -D '${commitDate}'
+                 git rr --author=\"${author}\" --authorEmail=\"${authorEmail}\" --authorDate=\"${authorDate}\" --committer=\"${committer}\" --commitEmail=\"${commitEmail}\" --commitDate=\"${commitDate}\"$(c)
+  $(c M)environment$(c) : $(c C)
+                 export GIT_AUTHOR_NAME='${author}'
+                 export GIT_AUTHOR_EMAIL='${authorEmail}'
+                 export GIT_AUTHOR_DATE='${authorDate}'
+                 export GIT_COMMITTER_NAME='${committer}'
+                 export GIT_COMMITTER_EMAIL='${commitEmail}'
+                 export GIT_COMMITTER_DATE='${commitDate}'$(c)
+  """
 }
 
-function getRevision() {
-  revision=$(git rev-parse -q --verify "$1^{commit}") || exitOnError "$1 cannot be found in current repo."
+function getInfo() {
+  [[ 1 -ne $# ]] && die "must provide the revision number or refspec name for function getInfo"
+  local revision=$1
+  local command="git show -s ${revision} --pretty=tformat:'%an | %ae | %ad | %cn | %ce | %cd'"
+  echo -n "$(eval "${command}" || exitOnError 'failed to get revision information')"
 }
 
-command=''
-usage="""[$(c R)R$(c)]EVISION [$(c R)R$(c)]ESET: TO RESET THE GIT REVISION AUTHOR/AUTHOREMAIL/AUTHORDATES/COMMITTER/COMMITEMAIL/COMMITDATE
+function doSetEnv() {
+  [[ 6 -ne $# ]] && die "wrong parameters in showParams function"
+  local author=$1
+  local authorEmail=$2
+  local authorDate=$3
+  local committer=$4
+  local commitEmail=$5
+  local commitDate=$6
+
+  export GIT_AUTHOR_NAME="${author}"
+  export GIT_AUTHOR_EMAIL="${authorEmail}"
+  export GIT_AUTHOR_DATE="${authorDate}"
+  export GIT_COMMITTER_NAME="${committer}"
+  export GIT_COMMITTER_EMAIL="${commitEmail}"
+  export GIT_COMMITTER_DATE="${commitDate}"
+
+  echo -e """
+  .. environment variable has been set to ..
+  $(c C)
+    GIT_AUTHOR_NAME='${author}'
+    GIT_AUTHOR_EMAIL='${authorEmail}'
+    GIT_AUTHOR_DATE='${authorDate}'
+    GIT_COMMITTER_NAME='${committer}'
+    GIT_COMMITTER_EMAIL='${commitEmail}'
+    GIT_COMMITTER_DATE='${commitDate}'
+  $(c)
+
+  .. or you can manual export again ..
+    $(c C)\$ export GIT_AUTHOR_NAME='${author}'; export GIT_AUTHOR_EMAIL='${authorEmail}'; export GIT_AUTHOR_DATE='${authorDate}'; export GIT_COMMITTER_NAME='${committer}'; export GIT_COMMITTER_EMAIL='${commitEmail}'; export GIT_COMMITTER_DATE='${commitDate}'$(c)
+  """
+}
+
+function doUnSetEnv() {
+  GIT_COMMIT_ENV="GIT_AUTHOR_NAME GIT_AUTHOR_EMAIL GIT_AUTHOR_DATE GIT_COMMITTER_NAME GIT_COMMITTER_EMAIL GIT_COMMITTER_DATE";
+  for envvar in ${GIT_COMMIT_ENV}; do unset "${envvar}"; done;
+  echo -e """
+    .. unset successfully ..\n
+      $(echo "${GIT_COMMIT_ENV}" | trim | tr ' ' ',') has been removed.
+
+    .. or you can manually unset environment variable again ..\n
+      $(c C)\$ unset GIT_AUTHOR_NAME; unset GIT_AUTHOR_EMAIL; unset GIT_AUTHOR_DATE; unset GIT_COMMITTER_NAME; unset GIT_COMMITTER_EMAIL; unset GIT_COMMITTER_DATE$(c)
+  """;
+  exit 0
+}
+
+function doModify() {
+  [[ 6 -ne $# ]] && die "wrong parameters in doModify function"
+  local author=$1
+  local authorEmail=$2
+  local authorDate=$3
+  local committer=$4
+  local commitEmail=$5
+  local commitDate=$6
+  local cmd="""bash "${dir}/git-mi" --author=\"${author}\" --authorEmail=\"${authorEmail}\" --authorDate=\"${authorDate}\" --committer=\"${committer}\" --commitEmail=\"${commitEmail}\" --commitDate=\"${commitDate}\" """
+  eval "${cmd}" || exitOnError 'failed to modify revision informations'
+}
+
+
+help='false'
+verbose='false'
+cherryPick='false'
+setEnv='false'
+unSetEnv='false'
+sha=''
+usage="""
+\t $(c R)git-rr$(c) - $(c iR)r$(c)evision $(c iR)r$(c)eset: to reset the git revision author/authorEmail/authorDates/committer/commitEmail/commitDate
 \nSYNOPSIS:
-\n\t$(c sY)\$ git rr [ -v | --verbose | --debug ] [ -h | --help ]
-\t\t [ -a | --author <author> ]
-\t\t [ -e | --ae | --authorEmail <email@domain> ]
-\t\t [ -d | --ad | --authorDate <date> ]
-\t\t [ -c | --committer <committer> ]
-\t\t [ -E | --ce | --commitEmail <email@domain> ]
-\t\t [ -D | --cd | --commitDate <date> ]$(c)
-\nExample:
-\n\tget help
-\t\t$(c G)\$ git rr -h$(c) | $(c G)\$ git rr --help$(c)
+\n\t$(c sY)\$ git rr [ -v | --verbose | --debug ]
+\t\t [ -h | --help ]
+\t\t [ -s | --set ]
+\t\t [ -u | --unSet ]
+\t\t [ -c | --cp | --cherry-pick ]
+\t\t [ -r | --revision <sha1> ]$(c)
+\nEXAMPLE:
+\n\tshow help
+\t\t$(c G)\$ git rr $(c)| $(c G)\$ git rr -h$(c) | $(c G)\$ git rr --help$(c)
 \n\tget verbose
-\t\t$(c G)\$ git rr -v$(c) | $(c G)\$ git rr --verbose$(c) | $(c G)\$ git cr --debug$(c)
-\n\tto reset author
-\t\t$(c G)\$ git rr --revision=<revision> --author=<username>$(c) | $(c G)\$ git rr -r <revision> --author=<username>$(c)
-\t\t\t\t   + long parameters   |
-\t\t\t\t\t\t       + the long parameters MUST use '=' to identify opt and args
-\n\tto reset author, authorEmail, authorDate, committer, commitEmail and commitDate
-\t\t$(c G)\$ git rr --revision=<revision>              \\
-\t\t\t --author=<username>                \\
-\t\t\t --authorEmail=<username@domain>    \\
-\t\t\t --authorDate=<date>                \\
-\t\t\t --commiter=<username>              \\
-\t\t\t --commitEmail=<username@domain>    \\
-\t\t\t --commitDate=<date>$(c)
-\t\tOR
-\t\t$(c G)\$ git rr -r <revision>                      \\
-\t\t\t -a <username>                      \\
-\t\t\t -e <username@domain>               \\
-\t\t\t -d <date>                          \\
-\t\t\t -c <username>                      \\
-\t\t\t -E <username@domain>               \\
-\t\t\t -D <date>$(c)
+\t\t$(c G)\$ git rr -v$(c) | $(c G)\$ git rr --verbose$(c) | $(c G)\$ git rr --debug$(c)
+\n\tto cherry-pick and reset revision information
+\t\t$(c G)\$ git rr -c --revision=<revision>$(c) | $(c G)\$ git rr -c -r <revision>$(c)
+\t\t\t\t      + the long parameters MUST use '$(c R)=$(c)' to identify opt and args
+\n\tto reset revision information only
+\t\t$(c G)\$ git rr --revision=<revision>$(c) | $(c G)\$ git rr -r <revision>$(c)
+\t\t\t\t   + the long parameters MUST use '$(c R)=$(c)' to identify opt and args
+\n\tto reset revision information and setup the commit/push environment
+\t\t$(c G)\$ git rr --set --revision=<revision>$(c) | $(c G)\$ git rr -s -r <revision>$(c)
+\n\tto remove all git commit environment variables
+\t\t$(c G)\$ git rr -u$(c) | $(c G)git rr --unset$(c)
 """
 
-# credit belongs to https://stackoverflow.com/a/28466267/519360
-while getopts hva:e:d:c:E:D:-: OPT; do
-  if [ "$OPT" = "-" ]; then
-    OPT="${OPTARG%%=*}"
-    OPTARG="${OPTARG#$OPT}"
-    OPTARG="${OPTARG#=}"
-  fi
-  case "$OPT" in
-    h | help             ) help=true                       ;;
-    v | verbose | debug  ) verbose=true                    ;;
-    a | author           ) needsArg; author="$OPTARG"      ;;
-    e | ae | authorEmail ) needsArg; authorEmail="$OPTARG" ;;
-    d | ad | authorDate  ) needsArg; authorDate="$OPTARG"  ;;
-    c | committer        ) needsArg; committer="$OPTARG"   ;;
-    E | ce | commitEmail ) needsArg; commitEmail="$OPTARG" ;;
-    D | cd | commitDate  ) needsArg; commitDate="$OPTARG"  ;;
-    ??*                  ) die "Illegal option --$OPT"     ;;
-    ?                    ) die "Illegal option -$OPT"      ;;
-  esac
-done
-shift $((OPTIND-1)) # remove parsed options and args from $@ list
+# for non '-' params
+if [[ 0 -eq $# ]]; then
+  showHelp
+# simple usage: not starts with '-' && not contians '='
+elif [[ 1 -eq $# ]] && [[ '-' != "${1::1}" ]] && [[ "$1" =~ '=' ]]; then
+  sha="$1"
+# for '-'/'--' params
+else
+  # credit belongs to https://stackoverflow.com/a/28466267/519360
+  # shellcheck disable=SC2295
+  while getopts :hsvcr:-: OPT; do
+    if [ "$OPT" = "-" ]; then
+      OPT="${OPTARG%%=*}"
+      OPTARG="${OPTARG#$OPT}"
+      OPTARG="${OPTARG#=}"
+    fi
+    case "$OPT" in
+      h | help             ) help='true'                 ;;
+      v | verbose | debug  ) verbose='true'              ;;
+      c | cp | cherry-pick ) cherryPick='true'           ;;
+      s | set              ) setEnv='true'               ;;
+      u | unSet            ) unSetEnv='true'             ;;
+      r | revison          ) needsArg; sha="$OPTARG"     ;;
+      ??*                  ) die "Illegal option --$OPT" ;;
+      ?                    ) die "Illegal option --$OPT" ;;
+    esac
+  done
+  [[ 1 -eq $OPTIND ]] && showHelp
+  shift $((OPTIND-1))
+fi
 
-if [[ 'true' == "${verbose}" ]]; then
-  echo """
-    author      : '${author}'
-    authorEmail : '${authorEmail}'
-    authorDate  : '${authorDate}'
-    committer   : '${committer}'
-    commitEmail : '${commitEmail}'
-    commitDate  : '${commitDate}'
+[[ 'true' = "${help}"     ]] && showHelp
+[[ 'true' = "${unSetEnv}" ]] && doUnSetEnv
+
+isRepo
+dir=$(dirname "$0")
+revision=$(getRevision "${sha}")
+[[ -z "${revision}" ]] && die "ref '${sha}' cannot be found in current repo."
+shortRevision="${revision:0:10}"
+
+values=$(getInfo "${revision}")
+author=$(echo "${values}"       |  awk -F'|' '{print $1}' | trim)
+authorEmail=$(echo "${values}"  |  awk -F'|' '{print $2}' | trim)
+authorDate=$(echo "${values}"   |  awk -F'|' '{print $3}' | trim)
+committer=$(echo "${values}"    |  awk -F'|' '{print $4}' | trim)
+commitEmail=$(echo "${values}"  |  awk -F'|' '{print $5}' | trim)
+commitDate=$(echo "${values}"   |  awk -F'|' '{print $6}' | trim)
+
+[[ 'true' = "${verbose}"    ]] && showParmas "${author}" "${authorEmail}" "${authorDate}" "${committer}" "${commitEmail}" "${commitDate}"
+[[ 'true' = "${cherryPick}" ]] && git cherry-pick "${revision}"
+[[ 'true' = "${setEnv}"     ]] && doSetEnv "${author}" "${authorEmail}" "${authorDate}" "${committer}" "${commitEmail}" "${commitDate}"
+doModify "${author}" "${authorEmail}" "${authorDate}" "${committer}" "${commitEmail}" "${commitDate}"
+
+if [[ -n "${revision}" ]]; then
+  echo -e """
+    .. FINAL RESULT .. \n
+    $(c Y)${shortRevision}$(c) : ${values}
+    \t  $(c Y)HEAD$(c) : $(getInfo HEAD)
   """
 fi
 
-[[ 'true' == "${help}" ]] && showHelp
-
-# https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables
-[[ -n "${author}"      ]] && command="GIT_AUTHOR_NAME='${author}' "
-[[ -n "${authorEmail}" ]] && command+="GIT_AUTHOR_EMAIL='${authorEmail}' "
-[[ -n "${authorDate}"  ]] && command+="GIT_AUTHOR_DATE='${authorDate}' "
-[[ -n "${committer}"   ]] && command+="GIT_COMMITTER_NAME='${committer}' "
-[[ -n "${commitEmail}" ]] && command+="GIT_COMMITTER_EMAIL='${commitEmail}' "
-[[ -n "${commitDate}"  ]] && command+="GIT_COMMITTER_DATE='${commitDate}' "
-
-command+="git commit --quiet --amend --allow-empty --no-edit --reset-author"
-[[ 'true' == "${verbose}" ]] && echo "${command}"
-
-eval "${command}"
-
-# vim: ft=bash ts=2 sts=2 sw=2 et
+# vim: ft=sh ts=2 sts=2 sw=2 et

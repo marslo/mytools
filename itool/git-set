@@ -1,0 +1,199 @@
+#!/usr/bin/env bash
+
+shopt -s extglob
+
+# credit belongs to https://raw.githubusercontent.com/ppo/bash-colors/master/bash-colors.sh
+# shellcheck disable=SC2015,SC2059
+c() { [ $# == 0 ] && printf "\e[0m" || printf "$1" | sed 's/\(.\)/\1;/g;s/\([SDIUFNHT]\)/2\1/g;s/\([KRGYBMCW]\)/3\1/g;s/\([krgybmcw]\)/4\1/g;y/SDIUFNHTsdiufnhtKRGYBMCWkrgybmcw/12345789123457890123456701234567/;s/^\(.*\);$/\\e[\1m/g'; }
+function die() { echo -e "$(c R)ERROR$(c) : $*" >&2; exit 2; }
+function exitOnError() { if [ $? -ne 0 ]; then echo -e "$(c R)ERROR$(c) : $*" >&2; exit 1; fi; }
+function showHelp() { echo -e "${usage}"; exit 0; }
+function needsArg() { [[ -z "$OPTARG" ]] && die "no arg for --$OPT option"; }
+function isRepo() { git rev-parse --git-dir >/dev/null 2>&1 || exitOnError 'not a git repo !'; }
+function getRevision() { sha=$(git rev-parse -q --verify "$1^{commit}"); echo "${sha}"; }
+function trim() { IFS='' read -r str; echo "${str}" | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'; }
+
+function showParmas() {
+  [[ 6 -ne $# ]] && die "wrong parameters in showParams function"
+  local author=$1
+  local authorEmail=$2
+  local authorDate=$3
+  local committer=$4
+  local commitEmail=$5
+  local commitDate=$6
+
+  echo -e """
+  .. details ..\n
+         $(c M)author$(c) : '${author}'
+    $(c M)authorEmail$(c) : '${authorEmail}'
+     $(c M)authorDate$(c) : '${authorDate}'
+      $(c M)committer$(c) : '${committer}'
+    $(c M)commitEmail$(c) : '${commitEmail}'
+     $(c M)commitDate$(c) : '${commitDate}'
+         $(c M)params$(c) : $(c G)
+                   git <rr|ca> -a '${author}' -e '${authorEmail}' -d '${authorDate}' -c '${committer}' -E '${commitEmail}' -D '${commitDate}'
+                   git <rr|ca> --author=\"${author}\" --authorEmail=\"${authorEmail}\" --authorDate=\"${authorDate}\" --committer=\"${committer}\" --commitEmail=\"${commitEmail}\" --commitDate=\"${commitDate}\"$(c)
+    $(c M)environment$(c) : $(c C)
+                   export GIT_AUTHOR_NAME='${author}'
+                   export GIT_AUTHOR_EMAIL='${authorEmail}'
+                   export GIT_AUTHOR_DATE='${authorDate}'
+                   export GIT_COMMITTER_NAME='${committer}'
+                   export GIT_COMMITTER_EMAIL='${commitEmail}'
+                   export GIT_COMMITTER_DATE='${commitDate}'$(c)
+
+  .. or you can manual export again ..\n
+  $(c G)  \$$(c) $(c C)export GIT_AUTHOR_NAME='${author}'; export GIT_AUTHOR_EMAIL='${authorEmail}'; export GIT_AUTHOR_DATE='${authorDate}'; export GIT_COMMITTER_NAME='${committer}'; export GIT_COMMITTER_EMAIL='${commitEmail}'; export GIT_COMMITTER_DATE='${commitDate}'$(c)
+    or
+  $(c G)  \$$(c) $(c C)source ${tmpfile}$(c)
+  """
+}
+
+function getInfo() {
+  [[ 1 -ne $# ]] && die "must provide the revision number or refspec name for function getInfo"
+  local revision=$1
+  local command="git show -s ${revision} --pretty=tformat:'%an | %ae | %ad | %cn | %ce | %cd'"
+  echo -n "$(eval "${command}" || exitOnError 'failed to get revision information')"
+}
+
+function doSetEnv() {
+  [[ 6 -ne $# ]] && die "wrong parameters in showParams function"
+
+  local author=$1
+  local authorEmail=$2
+  local authorDate=$3
+  local committer=$4
+  local commitEmail=$5
+  local commitDate=$6
+
+  cat > "${tmpfile}" << EOF
+    GIT_AUTHOR_NAME="${author}"
+    GIT_AUTHOR_EMAIL="${authorEmail}"
+    GIT_AUTHOR_DATE="${authorDate}"
+    GIT_COMMITTER_NAME="${committer}"
+    GIT_COMMITTER_EMAIL="${commitEmail}"
+    GIT_COMMITTER_DATE="${commitDate}"
+EOF
+
+  # shellcheck disable=SC1090
+  source "${tmpfile}"
+  [[ 'true' = "${slient}" ]] || echo -e """  .. environment variable has been added to ..\n     $(c G)${tmpfile}$(c)  """
+
+}
+
+function doRM() {
+  if [[ -z "${filepath}" ]]; then
+    tempath=$(dirname "${tmpfile}")
+    # shellcheck disable=SC2045
+    for _i in $(ls -A --color=none "${tempath}"); do rm -v "${tempath}"/"${_i}"; done
+  else
+   rm -v "${tmpfile}"
+  fi
+  exit 0
+}
+
+function doUnSetEnv() {
+  GIT_COMMIT_ENV="GIT_AUTHOR_NAME GIT_AUTHOR_EMAIL GIT_AUTHOR_DATE GIT_COMMITTER_NAME GIT_COMMITTER_EMAIL GIT_COMMITTER_DATE";
+  for envvar in ${GIT_COMMIT_ENV}; do unset "${envvar}"; done;
+  echo -e """
+    .. unset successfully ..\n
+      $(echo "${GIT_COMMIT_ENV}" | trim | tr ' ' ',') has been removed.
+
+    .. or you can manually unset environment variable again ..\n
+      $(c C)\$ unset GIT_AUTHOR_NAME; unset GIT_AUTHOR_EMAIL; unset GIT_AUTHOR_DATE; unset GIT_COMMITTER_NAME; unset GIT_COMMITTER_EMAIL; unset GIT_COMMITTER_DATE$(c)
+  """;
+  exit 0
+}
+
+help='false'
+verbose='false'
+unSetEnv='false'
+remove='false'
+slient='false'
+sha=''
+filepath=''
+usage="""
+\t $(c R)git-set$(c) - $(c iR)set$(c): to set git revision author/authorEmail/authorDates/committer/commitEmail/commitDate to file
+\nSYNOPSIS:$(c sY)
+\n\t\$ git set [ -v | --verbose | --debug ]
+\t\t  [ -h | --help ]
+\t\t  [ -s | --slient ]
+\t\t  [ -u | --unset ]
+\t\t  [ -d | --rm | --delete ]
+\t\t  [ -r | --revision=<sha1> ]$(c)
+\t\t\t\t   + the long parameters MUST use '$(c R)=$(c)' to identify opt and args$(c sY)
+\t\t  [ -f | --file=</path/to/file> ]$(c)
+\t\t\t       + the long parameters MUST use '$(c R)=$(c)' to identify opt and args
+\nEXAMPLE:
+\n\tshow help
+\t\t$(c G)\$ git set $(c)| $(c G)\$ git set -h$(c) | $(c G)\$ git set --help$(c)
+\n\tget verbose
+\t\t$(c G)\$ git set -v$(c) | $(c G)\$ git set --verbose$(c) | $(c G)\$ git set --debug$(c)
+\n\tto set revision information only
+\t\t$(c G)\$ git set --revision=<revision>$(c) | $(c G)\$ git set -r <revision>$(c)
+\n\tto set revision information and setup the commit/push environment
+\t\t$(c G)\$ git set --set --revision=<revision>$(c) | $(c G)\$ git set -s -r <revision>$(c)
+\n\tto remove all git commit environment variables
+\t\t$(c G)\$ git set -u$(c) | $(c G)git set --unset$(c)
+"""
+
+# for non '-' params
+if [[ 1 -eq $# ]] && [[ '-' != "${1::1}" ]] && [[ "$1" =~ '=' ]]; then
+  sha="$1"
+else
+  # credit belongs to https://stackoverflow.com/a/28466267/519360
+  # shellcheck disable=SC2295
+  while getopts :huvdsr:f:-: OPT; do
+    if [ "$OPT" = "-" ]; then
+      OPT="${OPTARG%%=*}"
+      OPTARG="${OPTARG#$OPT}"
+      OPTARG="${OPTARG#=}"
+    fi
+    case "$OPT" in
+      h | help             ) help='true'                 ;;
+      v | verbose | debug  ) verbose='true'              ;;
+      u | unset            ) unSetEnv='true'             ;;
+      d | rm | delete      ) remove='true'               ;;
+      s | slient           ) slient='true'               ;;
+      r | revison          ) needsArg; sha="$OPTARG"     ;;
+      f | file             ) filepath="$OPTARG"          ;;
+      ??*                  ) die "Illegal option --$OPT" ;;
+      ?                    ) die "Illegal option --$OPT" ;;
+    esac
+  done
+  [[ 1 -eq $OPTIND ]] && showHelp
+  shift $((OPTIND-1))
+fi
+
+tmp="$HOME/.marslo/.tmp"
+path="${PWD}"
+timestamp="$(date '+%Y%m%d')"
+if [[ -z "${filepath}" ]]; then
+  tmpfile="${tmp}"/$(echo "${path}" | tr ' ' '_' | tr '/' '.')-"${timestamp}"
+else
+  tmpfile="${filepath}"
+fi
+# shellcheck disable=SC2086
+[[ -d "$(dirname ${tmpfile})" ]] || mkdir -p "$(dirname ${tmpfile})"
+
+[[ 'true' = "${help}"     ]] && showHelp
+[[ 'true' = "${unSetEnv}" ]] && doUnSetEnv
+[[ 'true' = "${remove}"   ]] && doRM
+
+isRepo
+revision=$(getRevision "${sha}")
+[[ -z "${revision}" ]] && die "ref '${sha}' cannot be found in current repo."
+# shortRevision="${revision:0:10}"
+
+values=$(getInfo "${revision}")
+author=$(echo "${values}"       |  awk -F'|' '{print $1}' | trim)
+authorEmail=$(echo "${values}"  |  awk -F'|' '{print $2}' | trim)
+authorDate=$(echo "${values}"   |  awk -F'|' '{print $3}' | trim)
+committer=$(echo "${values}"    |  awk -F'|' '{print $4}' | trim)
+commitEmail=$(echo "${values}"  |  awk -F'|' '{print $5}' | trim)
+commitDate=$(echo "${values}"   |  awk -F'|' '{print $6}' | trim)
+
+doSetEnv "${author}" "${authorEmail}" "${authorDate}" "${committer}" "${commitEmail}" "${commitDate}"
+# shellcheck disable=SC2015
+[[ 'true' = "${verbose}" ]] && showParmas "${author}" "${authorEmail}" "${authorDate}" "${committer}" "${commitEmail}" "${commitDate}" || true
+
+# vim: ft=sh ts=2 sts=2 sw=2 et
