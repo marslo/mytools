@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1078,SC1079,SC2086,SC2035,SC2155
+
+# references:
+# - [Git Rename Tag Guide](https://phoenixnap.com/kb/git-rename-tag)
+# ```bash
+# $ git tag -a [new_tag] [old_tag]^{} -m [new_message]
+# ```
+
+# credit belongs to https://raw.githubusercontent.com/ppo/bash-colors/master/bash-colors.sh
+# shellcheck disable=SC2015,SC2059
+c() { [ $# == 0 ] && printf "\e[0m" || printf "$1" | sed 's/\(.\)/\1;/g;s/\([SDIUFNHT]\)/2\1/g;s/\([KRGYBMCW]\)/3\1/g;s/\([krgybmcw]\)/4\1/g;y/SDIUFNHTsdiufnhtKRGYBMCWkrgybmcw/12345789123457890123456701234567/;s/^\(.*\);$/\\e[\1m/g'; }
+function showHelp() { echo -e "${usage}"; exit 0; }
+function die() { echo -e "$(c R)ERROR$(c) : $*" >&2; exit 2; }
+function isRepo() { git rev-parse --git-dir >/dev/null 2>&1 || exitOnError 'not a git repo !'; }
+function getRevision() { sha=$(git rev-parse -q --verify "$1^{commit}"); echo "${sha}"; }
+function refInfo() {
+  [[ 1 -ne $# ]] && die "must provide the valid fieldname for function refInfo. check details at : https://git-scm.com/docs/git-for-each-ref#_field_names"
+  local identify="$1"
+  cmd=" git for-each-ref 'refs/tags/${sourceTag}' --format=\"%(${identify})\" "
+  eval "${cmd}"
+}
+function grt() {
+  local command="git tag -d '${sourceTag}'; "
+  local pushCmd=''
+
+  # annotated tags
+  if [ 'tag' = "${objectType}" ]; then
+    command+="${gitEnv} git tag -a '${newTag}' ${objectName} -m '${contents}'"
+  # lightweight tags
+  else
+    command+="${gitEnv} git tag '${newTag}' ${objectName}"
+  fi
+  echo -e "$(c Y)~~> re-tag$(c) $(c R)refname:${objectType}$(c) $(c Y): '${sourceTag}' to '${newTag}'$(c) ${moreInfo}"
+  eval "${command}"
+
+  if [ 'true' = "${push}" ]; then
+    echo -e "$(c Y)~~> push ${newTag} and remove ${sourceTag}$(c) ${moreInfo}"
+    pushCmd+="git push origin ':${sourceTag}'; "
+    pushCmd+="git push origin 'tags/${newTag}'; "
+    pushCmd+="git pull --prune --tags"
+    echo -e "${pushCmd}"
+    eval ${pushCmd}
+  fi
+}
+
+usage="""
+\t $(c B)g$(c)it $(c M)r$(c)e-$(c R)t$(c)ag - re-tag with original committer and date to new revision
+\nSYNOPSIS$(c sY)
+\t\$ git retag [ <p|-p|push|--push> | <REVISION> ] <SOURCE_TAG> <NEW_TAG> $(c)
+\nEXAMPLE
+\n\tshow help$(c G)
+\t\t\$ git retag$(c)
+\n\tre-tag docker.v2.0 to docker.x$(c G)
+\t\t\$ git retag        docker.v2.0           docker.x
+\t\t\$ git retag        docker.v2.0           refs/tags/docker.x
+\t\t\$ git retag        refs/tags/docker.v2.0 docker.x
+\t\t\$ git retag        refs/tags/docker.v2.0 refs/tags/docker.x$(c)
+\n\tre-tag docker.v2.0 to docker.x and push into remote repository$(c G)
+\t\t\$ git retag -p     refs/tags/docker.v2.0 docker.x
+\t\t\$ git retag --push refs/tags/docker.v2.0 docker.x$(c)
+\n\tmove tag docker.v2.0 to docker.x on HEAD$(c G)
+\t\t\$ git retag        docker.v2.0           docker.x            HEAD$(c)
+\n\tmove tag docker.v2.0 to docker.x on HEAD and push to remote repository$(c G)
+\t\t\$ git retag -p     docker.v2.0           docker.x            HEAD
+\t\t\$ git retag --push docker.v2.0           refs/tags/docker.x  HEAD$(c)
+\nOPT
+\t$(c B)p$(c), $(c B)-p$(c), $(c B)push$(c), $(c B)--push$(c) : push changes into remote repository
+"""
+
+declare push='false'
+declare sourceTag=''
+declare newTag=''
+declare sha=''
+declare revision=''
+
+declare objectName=''
+declare contents=''
+declare tagger=''
+declare taggerEmail=''
+declare taggerDate=''
+declare committer=''
+declare commitEmail=''
+declare commitDate=''
+
+# parameters
+if [[ 2 -eq $# ]]; then
+  sourceTag="""$(echo "$1" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+  newTag="""$(echo "$2" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+elif [[ 3 -eq $# ]]; then
+  if [[ "$1" = @(p|push|-p|--push) ]]; then
+    push='true'
+    sourceTag="""$(echo "$2" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+    newTag="""$(echo "$3" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+  else
+    sourceTag="""$(echo "$1" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+    newTag="""$(echo "$2" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+    sha="$3"
+  fi
+elif [[ 4 -eq $# ]]; then
+  if [[ "$1" = @(p|push|-p|--push) ]]; then
+    push='true'
+    sourceTag="""$(echo "$2" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+    newTag="""$(echo "$3" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+    sha="$3"
+  else
+    showHelp
+  fi
+else
+  showHelp
+fi
+
+isRepo
+declare objectType="$(refInfo 'objecttype')"
+[[ -z "${objectType}" ]] && die "tag '${sourceTag}' cannot be found in current repo."
+revision=$(getRevision "${sha}")
+
+contents="$(refInfo 'contents')"
+tagger="$(refInfo 'taggername')"
+taggerEmail="$(refInfo 'taggeremail')"
+taggerDate="$(refInfo 'taggerdate')"
+committer="$(refInfo 'committername')"
+commitEmail="$(refInfo 'committeremail')"
+if [ 'tag' = "${objectType}" ]; then            # annotated tags
+  commitDate="$(refInfo '*committerdate')"
+else                                            # lightweight tags
+  commitDate="$(refInfo 'committerdate')"
+fi
+if [[ -n "${revision}" ]]; then
+  objectName="${revision}"
+else
+  # currently associated revision
+  if [ 'tag' = "${objectType}" ]; then          # annotated tags
+    objectName="$(refInfo '*objectname')"
+  else                                          # lightweight tags
+    objectName="$(refInfo 'objectname')"
+  fi
+fi
+
+declare gitEnv=''
+[[ -n "${tagger}"      ]] && gitEnv+="GIT_TAGGER_NAME='${tagger}' "
+[[ -n "${taggerEmail}" ]] && gitEnv+="GIT_TAGGER_EMAIL='${taggerEmail}' "
+[[ -n "${taggerDate}"  ]] && gitEnv+="GIT_TAGGER_DATE='${taggerDate}' "
+[[ -n "${committer}"   ]] && gitEnv+="GIT_COMMITTER_NAME='${committer}' "
+[[ -n "${commitEmail}" ]] && gitEnv+="GIT_COMMITTER_EMAIL='${commitEmail}' "
+[[ -n "${commitDate}"  ]] && gitEnv+="GIT_COMMITTER_DATE='${commitDate}' "
+
+declare moreInfo=''
+if [[ -n "${revision}" ]]; then
+  moreInfo=" on ${sha} ( $(c Y)${objectName}$(c) )"
+else
+  moreInfo=" on original associated revision ( $(c Y)${objectName}$(c) )"
+fi
+
+grt
+
+# vim: ts=2 sts=2 sw=2 et ft=sh

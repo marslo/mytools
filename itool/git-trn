@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1078,SC1079,SC2086,SC2035,SC2155
+
+# references:
+# - [Git Rename Tag Guide](https://phoenixnap.com/kb/git-rename-tag)
+# ```bash
+# $ git tag -a [new_tag] [old_tag]^{} -m [new_message]
+# ```
+
+# credit belongs to https://raw.githubusercontent.com/ppo/bash-colors/master/bash-colors.sh
+c() {
+  # shellcheck disable=SC1009,SC2015
+  [ $# -eq 0 ] && echo "\033[0m" || echo "$1" | sed -E "s/(.)/‹\1›/g;s/([KRGYBMCW])/3\1/g;s/([krgybmcw])/4\1/g;s/S/22/;y/sufnKRGYBMCWkrgybmcw›/14570123456701234567m/;s/‹/\\\033[/g";
+}
+
+function gtr() {
+  usage="""\t$(c B)g$(c)it $(c R)t$(c)ag $(c M)r$(c)ename - rename tag with original committer and date
+  \nSYNOPSIS$(c sY)
+  \t\$ git trn [p|-p|push|--push] <SOURCE_TAG> <NEW_TAG> $(c)
+  \nEXAMPLE$(c G)
+  \t\$ git trn docker.v2.0           docker.x
+  \t\$ git trn docker.v2.0           refs/tags/docker.x
+  \t\$ git trn refs/tags/docker.v2.0 docker.x
+  \t\$ git trn refs/tags/docker.v2.0 refs/tags/docker.x $(c)
+  \nOPT
+  \t$(c B)p$(c), $(c B)-p$(c), $(c B)push$(c), $(c B)--push$(c) : push changes into remote repository
+  """
+
+  if [ 2 -eq $# ]; then
+    declare push="false"
+    declare sourceTag="""$(echo "$1" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+    declare newTag="""$(echo "$2" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+  elif [ 3 -eq $# ] && { [ 'p' = "$1" ] || [ '-p' = "$1" ] || [ 'push' = "$1" ] || [ '--push' = "$1" ]; }; then
+    declare push="true"
+    declare sourceTag="""$(echo "$2" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+    declare newTag="""$(echo "$3" | sed -re "s:^(refs/)?(tags/)?(.*)$:\3:")"""
+  else
+    echo -e "${usage}"
+    return
+  fi
+
+  declare objectType="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(objecttype)")"""
+
+  echo -e "$(c Y)~~> rename$(c) $(c R)${objectType}$(c) $(c Y): ${sourceTag} to ${newTag}$(c)"
+  # annotated tags
+  if [ 'tag' = "${objectType}" ]; then
+    declare objectName="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(*objectname)")"""
+    declare contents="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(contents)")"""
+    GIT_TAGGER_NAME="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(taggername)")"""   \
+    GIT_TAGGER_EMAIL="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(taggeremail)")""" \
+    GIT_TAGGER_DATE="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(taggerdate)")"""   \
+    GIT_COMMITTER_DATE="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(taggerdate)")"""   \
+    git tag -a "${newTag}" "${objectName}" -m "${contents}"
+  # lightweight tags
+  else
+    declare objectName="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(objectname)")"""
+    GIT_COMMITTER_NAME="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(committername)")"""   \
+    GIT_COMMITTER_EMAIL="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(committeremail)")""" \
+    GIT_COMMITTER_DATE="""$(git for-each-ref "refs/tags/${sourceTag}" --format="%(committerdate)")"""   \
+    git tag "${newTag}" "${objectName}"
+  fi
+
+  git tag -d "${sourceTag}"
+  if [ 'true' = "${push}" ]; then
+    echo -e "$(c Y)~~> push ${newTag} and remove ${sourceTag}$(c)"
+    git push origin "tags/${newTag}" ":tags/${sourceTag}"
+    git pull --prune --tags
+  fi
+}
+
+gtr "$@"
+
+# vim: ts=2 sts=2 sw=2 et ft=sh
