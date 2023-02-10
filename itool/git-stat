@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2086,SC2124
+
+# usage:
+# $ git stats --author="marslo" --after="2022-01-01"
+# .. files changed : 1046
+# .. lines inserted : 14096
+# .. lines deleted : 8871
+
+shopt -s extglob
+
+# credit belongs to https://raw.githubusercontent.com/ppo/bash-colors/master/bash-colors.sh
+# shellcheck disable=SC2015,SC2059
+c() { [ $# == 0 ] && printf "\e[0m" || printf "$1" | sed 's/\(.\)/\1;/g;s/\([SDIUFNHT]\)/2\1/g;s/\([KRGYBMCW]\)/3\1/g;s/\([krgybmcw]\)/4\1/g;y/SDIUFNHTsdiufnhtKRGYBMCWkrgybmcw/12345789123457890123456701234567/;s/^\(.*\);$/\\e[\1m/g'; }
+function exitOnError() { if [ $? -ne 0 ]; then echo -e "$(c R)ERROR$(c) : $*" >&2; exit 1; fi; }
+function showHelp() { echo -e "${usage}"; exit 0; }
+function isRepo() { git rev-parse --git-dir >/dev/null 2>&1 || exitOnError 'not a git repo !'; }
+function trim() { IFS='' read -r str; echo "${str}" | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'; }
+function padRight() {
+  while IFS=':' read -r param value length; do
+    if [[ -n "${param}" ]] && [[ -n "${value}" ]]; then
+      padlength=${length:-40}
+      pad=$(printf '\x2e%.0s' $(seq "${padlength}"))
+      printf "%s%s%s\n" "${param}" "${pad:${#param}}" "${value}"
+    else
+      printf "%s:%s\n" "${param}" "${value}"
+    fi
+  done
+}
+
+function debugLog(){
+  local pad=true
+  case "$1" in --np | --no-pad ) pad=false; shift ;; esac
+  # shellcheck disable=SC2155
+  local str=$(echo -e "$@" | awk '{print "[DEBUG] >> " $0}')
+
+  echo -e "$(c W)${str}$(c)" | padRight
+  # if [[ true = "${pad}" ]]; then
+  #   # shellcheck disable=SC2046,SC2027
+  # else
+  #   # shellcheck disable=SC2046
+  #   echo -e "$(c W)${str}$(c)"
+  # fi
+}
+
+function lineChangesStat() {
+  local allChanges
+  local userChanges
+  local debugInfo
+  allChanges=$(git log --shortstat --oneline --format=tformat: ${GIT_OPT} |
+          awk '{ files+=$1; inserted+=$4; deleted+=$6 } END { print files, inserted, deleted }')
+  userChanges=$(git log --shortstat --oneline --author=${author} --format=tformat: ${GIT_OPT} |
+          awk '{ files+=$1; inserted+=$4; deleted+=$6 } END { print files, inserted, deleted }')
+
+  echo -e "\n$(c M)line changes$(c) :\n"
+  if [[ true = "${verbose}" ]]; then
+    debugInfo=$(echo "${allChanges} ${userChanges}" |
+                       awk '{ files=$1; inserted=$2; deleted=$3; userFiles=$4; userInserted=$5; userDeleted=$6 } END \
+                            {
+                              printf( "ALL CHANGES\\n" )
+                              printf( "\tfiles changed : %s\\n" , files        )
+                              printf( "\tline inserted : %s\\n" , inserted     )
+                              printf( "\tline deleted : %s\\n"  , deleted      )
+                              printf( "USER CHANGES\\n" )
+                              printf( "\tfiles changed : %s\\n" , userFiles    )
+                              printf( "\tline inserted : %s\\n" , userInserted )
+                              printf( "\tline deleted : %s"     , userDeleted  )
+                            }'
+              )
+    debugLog "${debugInfo}"
+  fi
+
+  echo -e "${allChanges} ${userChanges}" |
+           awk '{
+                  userFiles=$4; userInserted=$5; userDeleted=$6; fileRate=$4*100/$1; insertRate=$5*100/$2; deleteRate=$6*100/$3
+                } END {
+                  printf( "\tfiles changed : %s ( %s% ) \n" , userFiles    , fileRate   )
+                  printf( "\tline inserted : %s ( %s% ) \n" , userInserted , insertRate )
+                  printf( "\tline deleted : %s ( %s% ) \n"  , userDeleted  , deleteRate )
+                }' |
+           padRight
+}
+
+function commitsCount() {
+  local allCount
+  local userCount
+  local debugInfo
+
+  allCount=$(git shortlog -s -n ${GIT_OPT} | awk '{ sum += $1; } END { print sum; }')
+  userCount=$(git shortlog -s -n ${GIT_OPT} --author=${author} | awk '{print $1}')
+
+  echo -e "\n$(c M)commits$(c) :\n"
+  if [[ true = "${verbose}" ]]; then
+    debugInfo=$(echo -e "${allCount} ${userCount}" |
+                       awk '{ aCount=$1; uCount=$2 } END \
+                            { printf( "COMMITS\\n" )
+                              printf( "\tall commit : %s\\n"  , aCount )
+                              printf( "\tuser commit : %s" , uCount )
+                            }'
+              )
+    debugLog "${debugInfo}"
+  fi
+
+  echo -e "${allCount} ${userCount}" |
+           awk '{ aCount=$1; uCount=$2; countRate=$2*100/$1; } END \
+                { printf( "\tcommit submitted : %s ( %s% ) \n", uCount, countRate ) }' |
+           padRight
+}
+
+declare verbose=false
+declare allStats=false
+declare lineChanges=false
+declare commitsCount=false
+declare GIT_OPT
+
+usage="""
+\t $(c R)git-stat$(c) - to get git statistic for line-changes and commit count
+\nSYNOPSIS:
+\n\t$(c sY)\$ git stat [ -h | --help ]
+\t\t   [ -v | --verbose | --debug ]
+\t\t   [ -a | --all ]
+\t\t   [ -l | --line-change ]
+\t\t   [ -c | --commit-count ]
+\t\t   [ -u | --user | --account <account> ]
+\t\t   [ -- <GIT_OPT> ]$(c)
+\nEXAMPLE:
+\n\tshow help
+\t\t$(c G)\$ git stat -h$(c) | $(c G)\$ git stat --help$(c)
+\n\tget verbose
+\t\t$(c G)\$ git stat -v$(c) | $(c G)\$ git stat --verbose$(c) | $(c G)\$ git stat --debug$(c)
+\n\tto list all statistic for current user
+\t\t$(c G)\$ git stat -a$(c)
+\n\tto list line changes for current user since 1 month ago
+\t\t$(c G)\$ git stat --line-change -- --since='1 month ago'$(c)
+\n\tto list line-changes statistic for particular account
+\t\t$(c G)\$ git stat -l -u <account>$(c) | $(c G)\$ git stat --line-change --account <account>$(c)
+\n\tto list statistic for current user with specific GIT_OPT
+\t\t$(c G)\$ git stat -- --after='2022-01-01' --before='2023-01-01'$(c)
+\t\t$(c G)\$ git stat -- --since='2 weeks 3 days 2 hours 30 minutes 59 seconds ago'$(c)
+"""
+
+while test -n "$1"; do
+  case "$1" in
+    -v | --verbose | --debug   ) verbose=true       ; shift   ;;
+    -u | --author  | --user    ) user="$2"          ; shift 2 ;;
+    -l | --lc | --line-change  ) lineChanges=true   ; shift   ;;
+    -c | --cc | --commit-count ) commitsCount=true  ; shift   ;;
+    -a | --all                 ) allStats=true      ; shift   ;;
+    --                         ) shift ; GIT_OPT=$@ ; break   ;;
+    -h | --help | *            ) showHelp                     ;;
+  esac
+done
+
+declare author="${user:-$(git config --get user.name)}"
+if [[ true = "${allStats}" ]]; then
+  lineChanges=true
+  commitsCount=true
+fi
+
+isRepo
+echo -e "statistics for $(c Y)${author}$(c) - $(c G)$(git config --get remote.origin.url)$(c) :"
+
+if [[ true = "${verbose}" ]]; then
+  debugLog "PARAMS"
+  debugLog "\tverbose      : ${verbose}     "
+  debugLog "\tGIT_OPT      : ${GIT_OPT}     "
+  debugLog "\tauthor       : ${author}      "
+  debugLog "\tlineChanges  : ${lineChanges} "
+  debugLog "\tcommitsCount : ${commitsCount}"
+  echo ''
+fi
+
+[[ true = "${lineChanges}"  ]] && lineChangesStat
+[[ true = "${commitsCount}" ]] && commitsCount
+
+# vim: ft=sh ts=2 sts=2 sw=2 et
