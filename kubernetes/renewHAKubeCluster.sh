@@ -100,9 +100,9 @@ function renewKubeConfig() {
 
 function rebootKubelet() {
   echo '~~> reboot kubelet'
-  [ -z $(/usr/sbin/pidof kube-apiserver) ] || sudo kill -s SIGHUP $(/usr/sbin/pidof kube-apiserver)
+  [ -z $(/usr/sbin/pidof kube-apiserver)          ] || sudo kill -s SIGHUP $(/usr/sbin/pidof kube-apiserver)
   [ -z $(/usr/sbin/pidof kube-controller-manager) ] || sudo kill -s SIGHUP $(/usr/sbin/pidof kube-controller-manager)
-  [ -z $(/usr/sbin/pidof kube-scheduler) ] || sudo kill -s SIGHUP $(/usr/sbin/pidof kube-scheduler)
+  [ -z $(/usr/sbin/pidof kube-scheduler)          ] || sudo kill -s SIGHUP $(/usr/sbin/pidof kube-scheduler)
 
   sudo rm -rf /var/lib/kubelet/pki/*
   sudo systemctl restart kubelet
@@ -117,7 +117,7 @@ function renewMajor(){
   rebootKubelet
 }
 
-function renewOthers() {
+function renewPeers() {
   backup
   showInfo
   clean
