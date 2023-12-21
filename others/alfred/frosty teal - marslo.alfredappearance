@@ -1,0 +1,64 @@
+{
+  "alfredtheme" : {
+    "result" : {
+      "textSpacing" : 7,
+      "subtext" : {
+        "size" : 12,
+        "colorSelected" : "#FFFFFFA7",
+        "font" : "Monaco",
+        "color" : "#FFFFFF6F"
+      },
+      "shortcut" : {
+        "size" : 15,
+        "colorSelected" : "#FFFFFF9E",
+        "font" : "Monaco",
+        "color" : "#FFFFFF7E"
+      },
+      "backgroundSelected" : "#0000001F",
+      "text" : {
+        "size" : 21,
+        "colorSelected" : "#FFFFFFFF",
+        "font" : "Titillium",
+        "color" : "#FFFFFFAD"
+      },
+      "iconPaddingHorizontal" : 6,
+      "roundness" : 0,
+      "paddingVertical" : 4,
+      "iconSize" : 44
+    },
+    "search" : {
+      "backgroundSelected" : "#D8D8DBFF",
+      "paddingHorizontal" : 8,
+      "spacing" : 5,
+      "text" : {
+        "size" : 42,
+        "colorSelected" : "#000000FF",
+        "font" : "Monaco",
+        "color" : "#FFFFFFFF"
+      },
+      "background" : "#FFFFFF00",
+      "roundness" : 0,
+      "paddingVertical" : 1
+    },
+    "window" : {
+      "color" : "#106480B4",
+      "paddingHorizontal" : 0,
+      "width" : 589,
+      "borderPadding" : 0,
+      "borderColor" : "#000000FF",
+      "blur" : 27,
+      "roundness" : -64,
+      "paddingVertical" : 4
+    },
+    "credit" : "marslo.jiao@philips.com",
+    "separator" : {
+      "color" : "#CD00FFFF",
+      "thickness" : 0
+    },
+    "scrollbar" : {
+      "color" : "#00000033",
+      "thickness" : 3
+    },
+    "name" : "frosty teal - marslo"
+  }
+}
