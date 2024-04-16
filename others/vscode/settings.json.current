@@ -1,47 +1,136 @@
+// ~/Library/Application Support/Code/User/settings.json
 {
+    // windows
+    "window.title": "${activeEditorLong}${separator}${rootName}",
+    "window.zoomLevel": 1.4,
+    "window.systemColorTheme": "dark",
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.colorTheme": "Gruvbox Material Dark",
+    "workbench.editor.titleScrollbarSizing": "large",
+    "workbench.preferredHighContrastLightColorTheme": "Gruvbox Dark Hard",
+    "workbench.iconTheme": "gruvbox-material-icon-theme",
+    "gruvboxMaterial.darkContrast": "medium",
+    "gruvboxMaterial.darkWorkbench": "material",
+    "gruvboxMaterial.colorfulSyntax": true,
+    "gruvboxMaterial.italicComments": true,
+    "gruvboxMaterial.italicKeywords": true,
+
+    // editor
+    "editor.suggestSelection": "first",
+    "editor.suggestFontSize": 16,
+    "editor.inlayHints.fontSize": 16,
     "editor.fontSize": 20,
-    "[Log]": {
-        "editor.fontSize": 12,
-    },
-    "window.zoomLevel": 1.5,
-    "vim.useSystemClipboard": true,
     "editor.formatOnPaste": true,
-    "editor.formatOnSave": true,
+    "editor.fontLigatures": true,
+    "editor.fontFamily": "\"OperatorMonoLig Nerd Font Mono\",  \"VictorMono Nerd Font Mono\", \"JetBrainsMono NFM\",  \"Monaco Nerd Font Mono\"",
+    "editor.tabSize": 2,
+    "editor.cursorBlinking": "smooth",
+    "editor.wordWrap": "on",
+    "editor.renderWhitespace": "trailing",
+    "editor.smartSelect.selectLeadingAndTrailingWhitespace": false,
+    "editor.cursorStyle": "line-thin",
+    "editor.find.autoFindInSelection": "multiline",
+    "editor.inlineSuggest.enabled": true,
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "editor.codeLensFontFamily": "\"OperatorMonoLig Nerd Font Mono\", \"JetBrainsMono NFM\", \"Monaco Nerd Font Mono\"",
+    "editor.inlineSuggest.fontFamily": "\"OperatorMonoLig Nerd Font Mono\"",
+    "editor.rulers": [80,120],
+    "workbench.colorCustomizations": {
+        "editorCursor.foreground": "#ece8d6",
+        "terminalCursor.foreground": "#88982d"
+    },
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": [
+                    //following will be in italic (=FlottFlott)
+                    "comment",
+                    "entity.name.type.class", //class names
+                    "keyword", //import, export, return…
+                    "constant", //String, Number, Boolean…, this, super
+                    "storage.modifier", //static keyword
+                    "storage.type.class.js", //class keyword
+                ],
+                "settings": {
+                    "fontStyle": "italic"
+                }
+            },
+        ]
+    },
+
+    // terminal
     "terminal.external.osxExec": "iTerm.app",
     "terminal.integrated.cursorStyle": "underline",
     "terminal.integrated.drawBoldTextInBrightColors": false,
     "terminal.integrated.scrollback": 9999999,
+    "terminal.integrated.fontSize": 18,
+    "terminal.integrated.fontFamily": "\"RecMonoCasual Nerd Font Mono\", \"ComicMono Nerd Font Mono\",\"Andale Mono\"",
+    "terminal.integrated.bellDuration": 9999,
+    "terminal.integrated.defaultProfile.osx": "bash",
+    // "terminal.integrated.shell.osx": "/usr/local/bin/bash",
+
+    // vim
+    "vim.changeWordIncludesWhitespace": true,
+    "vim.cursorStylePerMode.insert": "line",
+    "vim.cursorStylePerMode.normal": "underline",
+    "vim.cursorStylePerMode.visual": "underline",
+    "vim.cursorStylePerMode.visualblock": "line",
+    "vim.cursorStylePerMode.visualline": "underline",
+    "vim.cursorStylePerMode.replace": "underline",
+    "vim.useSystemClipboard": true,
     "vim.sneakUseIgnorecaseAndSmartcase": true,
-    "terminal.integrated.fontSize": 16,
-    "terminal.integrated.fontFamily": "'Andale Mono'",
-    "editor.fontLigatures": true,
-    "window.title": "${rootPath}/${activeEditorShort}",
-    "explorer.openEditors.visible": 8,
-    "search.smartCase": true,
-    "debug.allowBreakpointsEverywhere": true,
-    "scm.alwaysShowActions": true,
-    "scm.alwaysShowProviders": true,
+    "vim.easymotion": true,
+    "vim.incsearch": true,
+    "vim.hlsearch": true,
+    "vim.neovimConfigPath": "~/.config/nvim/init.lua",
+    "vim.neovimPath": "/usr/local/bin/nvim",
+    "vim.vimrc.path": "$HOME/.vimrc",
+
+    // git
+    "gitlens.blame.ignoreWhitespace": true,
+    "gitblame.ignoreWhitespace": true,
     "gitlens.advanced.messages": {
         "suppressCommitHasNoPreviousCommitWarning": true
     },
-    "python.jediEnabled": false,
-    "workbench.colorTheme": "Gruvbox Dark Hard",
-    "editor.fontFamily": "'MonacoLigaturized Nerd Font Mono', 'Agave Nerd Font Mono', 'Rec Mono Casual',  Monaco, 'Andale Mono', 'Ubuntu Mono', Menlo, 'Courier New', monospace",
-    "editor.tabSize": 2,
-    "editor.cursorBlinking": "smooth",
-    "editor.wordWrap": "on",
-    "vs-kubernetes": {
-        "vs-kubernetes.draft-path.mac": "/Users/marslo/.vs-kubernetes/tools/draft/darwin-amd64/draft",
-        "vs-kubernetes.helm-path.mac": "/Users/marslo/.vs-kubernetes/tools/helm/darwin-amd64/helm",
-        "vs-kubernetes.minikube-path.mac": "/Users/marslo/.vs-kubernetes/tools/minikube/darwin-amd64/minikube"
+    "gitlens.blame.fontFamily": "\"VictorMono Nerd Font Mono\"",
+    "gitlens.codeLens.includeSingleLineSymbols": true,
+    "git.openRepositoryInParentFolders": "always",
+    "chat.editor.fontFamily": "\"VictorMono Nerd Font Mono\"",
+    "github.copilot.enable": {
+        "plaintext": "true",
+        "scminput": "true"
     },
+
+    // jenkins, groovy
+    "groovyLint.lint.trigger": "user",
     "groovyLint.basic.verbose": true,
     "groovyLint.debug.enable": true,
-    "groovyLint.java.executable": "/System/Library/Frameworks/JavaVM.framework/Versions/A/Commands/java",
-    "screencastMode.fontSize": 20,
-    "debug.console.fontSize": 14,
-    "workbench.editor.highlightModifiedTabs": true,
-    "editor.renderWhitespace": "all",
+    "groovyLint.java.executable": "/usr/local/Cellar/openjdk/21.0.2/libexec/openjdk.jdk/Contents/Home/bin/java",
+    "jenkins.url": "https://ssdfw-devops-jenkins.marvell.com",
+    "jenkins-runner.hostConfigs": {
+        "ssdfw-devops-jenkins.marvell.com": {
+            "url": "https://ssdfw-devops-jenkins.marvell.com",
+            "user": "marslo",
+            "useCrumbIssuer": false,
+            "rejectUnauthorizedCert": false
+        },
+    },
+    "[groovy]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.detectIndentation": true
+    },
+
+    // python
+    "python.jediEnabled": false,
+    "python.languageServer": "Default",
+    "python.defaultInterpreterPath": "/usr/local/opt/python/libexec/bin/python",
+    "[python]": {
+        "editor.formatOnType": true
+    },
+
+    // coding executor
     "code-runner.executorMap": {
         "javascript": "node",
         "java": "cd $dir && javac $fileName && java $fileNameWithoutExt",
@@ -90,29 +179,52 @@
         "scss": "scss --style expanded",
         "less": "cd $dir && lessc $fileName $fileNameWithoutExt.css"
     },
-    "terminal.integrated.shell.osx": "/bin/bash",
-    "python.languageServer": "Default",
-    "python.defaultInterpreterPath": "/usr/local/opt/python/libexec/bin/python",
-    "editor.suggestSelection": "first",
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+
+    "[Log]": {
+        "editor.fontSize": 16,
+    },
+
     "tabnine.experimentalAutoImports": true,
-    "editor.cursorStyle": "underline",
-    "vim.cursorStylePerMode.insert": "underline",
-    "vim.cursorStylePerMode.normal": "underline",
-    "vim.cursorStylePerMode.replace": "underline",
-    "vim.cursorStylePerMode.visual": "line",
-    "vim.cursorStylePerMode.visualblock": "block",
-    "vim.cursorStylePerMode.visualline": "block",
-    "editor.defaultFormatter": "marlon407.code-groovy",
-    "vim.showMarksInGutter": true,
-    "vim.matchpairs": "(:),{:},[:],':',\":\",<:>",
-    "vim.leader": ",",
-    "vim.hlsearch": true,
-    "vim.highlightedyank.enable": true,
-    "vim.foldfix": true,
-    // "editor.rulers": [
-    //     20,
-    //     40,
-    //     60
-    // ]
+    "tabnine.useProxySupport": false,
+
+    // others
+    "explorer.openEditors.visible": 8,
+    "search.smartCase": true,
+    "debug.console.fontSize": 14,
+    "debug.allowBreakpointsEverywhere": true,
+    "scm.alwaysShowActions": true,
+    "scm.inputFontSize": 16,
+    "scm.diffDecorationsGutterWidth": 2,
+    "screencastMode.fontSize": 20,
+    "files.trimTrailingWhitespace": true,
+    "http.proxyStrictSSL": false,
+    "redhat.telemetry.enabled": true,
+    "security.workspace.trust.untrustedFiles": "open",
+    "gitpod.remote.useLocalApp": false,
+
+    // sync
+    "sync.gist": "11af55cde08c8ed3433266d77821ca5a",
+    "sync.autoUpload": true,
+    "configurationSync.store": {
+        "url": "https://gitpod.io/code-sync",
+        "stableUrl": "https://gitpod.io/code-sync",
+        "insidersUrl": "https://gitpod.io/code-sync",
+        "canSwitch": false,
+        "authenticationProviders": {
+            "gitpod": {
+                "scopes": [
+                    "function:accessCodeSyncStorage",
+                    "function:getLoggedInUser",
+                    "resource:default"
+                ]
+            }
+        }
+    },
+
+    // "remote.SSH.configFile": "/Users/marslo/.ssh/id_ed25519",
+    "remote.SSH.configFile": "/Users/marslo/.ssh/marslo@devops/marslo@devops",
+    "remote.SSH.defaultExtensions": [
+        "gitpod.gitpod-remote-ssh"
+    ],
+    "chat.editor.fontSize": 14,
 }
