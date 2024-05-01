@@ -1,10 +1,10 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
+    "actions":
     [
         {
-            "command": 
+            "command":
             {
                 "action": "globalSummon",
                 "desktop": "toCurrent",
@@ -16,29 +16,7 @@
             "keys": "shift+space"
         },
         {
-            "command": 
-            {
-                "action": "globalSummon",
-                "name": "_quake"
-            }
-        },
-        {
-            "command": 
-            {
-                "action": "clearBuffer",
-                "clear": "all"
-            },
-            "keys": "ctrl+l"
-        },
-        {
-            "command": 
-            {
-                "action": "moveFocus",
-                "direction": "left"
-            }
-        },
-        {
-            "command": 
+            "command":
             {
                 "action": "moveTab",
                 "direction": "backward"
@@ -46,7 +24,22 @@
             "keys": "alt+shift+l"
         },
         {
-            "command": 
+            "command":
+            {
+                "action": "moveFocus",
+                "direction": "left"
+            }
+        },
+        {
+            "command":
+            {
+                "action": "clearBuffer",
+                "clear": "all"
+            },
+            "keys": "ctrl+l"
+        },
+        {
+            "command":
             {
                 "action": "nextTab"
             },
@@ -56,22 +49,7 @@
             "command": "paste"
         },
         {
-            "command": 
-            {
-                "action": "globalSummon"
-            },
-            "keys": "ctrl+alt+o"
-        },
-        {
-            "command": 
-            {
-                "action": "moveTab",
-                "direction": "forward"
-            },
-            "keys": "alt+shift+h"
-        },
-        {
-            "command": 
+            "command":
             {
                 "action": "copy",
                 "singleLine": false
@@ -79,11 +57,22 @@
             "keys": "ctrl+c"
         },
         {
-            "command": "find",
-            "keys": "ctrl+shift+f"
+            "command":
+            {
+                "action": "moveTab",
+                "direction": "forward"
+            },
+            "keys": "alt+shift+h"
         },
         {
-            "command": 
+            "command":
+            {
+                "action": "globalSummon"
+            },
+            "keys": "ctrl+alt+o"
+        },
+        {
+            "command":
             {
                 "action": "splitPane",
                 "split": "auto",
@@ -92,11 +81,15 @@
             "keys": "alt+shift+d"
         },
         {
+            "command": "find",
+            "keys": "ctrl+shift+f"
+        },
+        {
             "command": "unbound",
             "keys": "ctrl+v"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "prevTab"
             },
@@ -108,44 +101,65 @@
     "centerOnLaunch": true,
     "copyFormatting": "none",
     "copyOnSelect": true,
-    "defaultProfile": "{e5a83caa-4c73-52b3-ae6b-bc438d721ef9}",
+    "defaultProfile": "{2260c23e-e02a-497d-8729-0bab32a2cc30}",
     "experimental.rendering.forceFullRepaint": true,
     "experimental.rendering.software": true,
     "firstWindowPreference": "persistedWindowLayout",
     "initialCols": 108,
     "initialRows": 22,
     "language": "en-US",
-    "newTabMenu": 
+    "newTabMenu":
     [
         {
             "type": "remainingProfiles"
         }
     ],
     "newTabPosition": "afterCurrentTab",
-    "profiles": 
+    "profiles":
     {
-        "defaults": 
+        "defaults":
         {
+            "bellStyle": "taskbar",
             "colorScheme": "One Half Dark",
             "cursorShape": "underscore",
-            "font": 
+            "font":
             {
-                "face": "OperatorMono Nerd Font",
+                "face": "OperatorMonoLig Nerd Font Mono",
                 "size": 18.0
             },
+            "historySize": 999999999,
             "opacity": 98,
             "useAcrylic": true,
             "useAtlasEngine": true
         },
-        "list": 
+        "list":
         [
+            {
+                "bellStyle": "taskbar",
+                "colorScheme": "gruvbox-dark",
+                "commandline": "ubuntu.exe",
+                "cursorShape": "underscore",
+                "font":
+                {
+                    "face": "OperatorMonoLig Nerd Font Mono",
+                    "size": 20.0
+                },
+                "guid": "{2260c23e-e02a-497d-8729-0bab32a2cc30}",
+                "hidden": false,
+                "historySize": 999999999,
+                "icon": "https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png",
+                "name": "Ubuntu",
+                "suppressApplicationTitle": false,
+                "tabTitle": "Ubuntu"
+            },
             {
                 "colorScheme": "gruvbox-dark",
                 "cursorShape": "underscore",
-                "font": 
+                "experimental.retroTerminalEffect": true,
+                "font":
                 {
                     "face": "OperatorMono Nerd Font",
-                    "size": 19.0,
+                    "size": 20.0,
                     "weight": "semi-light"
                 },
                 "guid": "{e5a83caa-4c73-52b3-ae6b-bc438d721ef9}",
@@ -157,8 +171,9 @@
             },
             {
                 "colorScheme": "Relaxed",
-                "font": 
+                "font":
                 {
+                    "face": "ComicMono Nerd Font Mono",
                     "size": 19.0
                 },
                 "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
@@ -168,8 +183,9 @@
             },
             {
                 "colorScheme": "nord",
-                "font": 
+                "font":
                 {
+                    "face": "OperatorMonoLig Nerd Font Mono",
                     "size": 19.0,
                     "weight": "semi-light"
                 },
@@ -182,6 +198,10 @@
                 "colorScheme": "rebecca",
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
                 "cursorShape": "underscore",
+                "font":
+                {
+                    "face": "ComicMono Nerd Font Mono"
+                },
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
                 "name": "Windows PowerShell"
@@ -189,6 +209,10 @@
             {
                 "colorScheme": "Aardvark Blue",
                 "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "font":
+                {
+                    "face": "RecMonoCasual Nerd Font Mono"
+                },
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
                 "name": "Command Prompt"
@@ -202,12 +226,18 @@
             {
                 "guid": "{17bf3de4-5353-5709-bcf9-835bd952a95e}",
                 "hidden": true,
-                "name": "Ubuntu-22.04",
+                "name": "Linux",
                 "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{aab79973-318f-43b6-a9bc-b4096493753f}",
+                "hidden": false,
+                "name": "Nushell",
+                "source": "nu"
             }
         ]
     },
-    "schemes": 
+    "schemes":
     [
         {
             "background": "#102040",
@@ -594,6 +624,29 @@
             "foreground": "#FFFFFF",
             "green": "#26A269",
             "name": "Ubuntu-22.04-ColorScheme",
+            "purple": "#881798",
+            "red": "#C21A23",
+            "selectionBackground": "#FFFFFF",
+            "white": "#CCCCCC",
+            "yellow": "#A2734C"
+        },
+        {
+            "background": "#300A24",
+            "black": "#171421",
+            "blue": "#0037DA",
+            "brightBlack": "#767676",
+            "brightBlue": "#08458F",
+            "brightCyan": "#2C9FB3",
+            "brightGreen": "#26A269",
+            "brightPurple": "#A347BA",
+            "brightRed": "#C01C28",
+            "brightWhite": "#F2F2F2",
+            "brightYellow": "#A2734C",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#3A96DD",
+            "foreground": "#FFFFFF",
+            "green": "#26A269",
+            "name": "Ubuntu-ColorScheme",
             "purple": "#881798",
             "red": "#C21A23",
             "selectionBackground": "#FFFFFF",
