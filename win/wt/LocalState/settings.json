@@ -33,14 +33,6 @@
         {
             "command":
             {
-                "action": "clearBuffer",
-                "clear": "all"
-            },
-            "keys": "ctrl+l"
-        },
-        {
-            "command":
-            {
                 "action": "nextTab"
             },
             "keys": "ctrl+shift+l"
