@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+# shellcheck source=/dev/null disable=SC2035
+
+source ~/.marslo/bin/bash-color.sh
+
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  # dirs=$(git rev-parse --show-toplevel)
+  dirs='.'
+else
+  # shellcheck disable=SC2046
+  dirs=$(dirname $(fd '\.git$' -uu --type d --hidden --exclude *archive* --exclude *archives*) | uniq)
+fi
+
+while read -r _dir; do
+  declare GITDIR="${_dir}"
+  declare MODIFIED=''
+  declare UNTRACKED=''
+  declare UNMERGED=''
+  declare STATUS=''
+  declare REBASED=''
+  declare STASHED=''
+  declare UPGRADABLE=''
+  declare -i isUpgradable=0
+  declare -i isModified=0
+  declare -i isUnMerged=0
+  declare -i isStash=0
+  declare -i isUpgradable=0
+
+  if ! git -C "${GITDIR}" rev-parse --abbrev-ref HEAD >/dev/null 2>&1; then
+    # isBranch
+    GITBRANCH="\033[0;38;5;198;3mNO HEAD\033[0m"
+    echo -e "$(c Bd)===$(c) $(c B)${GITDIR} »$(c) ${GITBRANCH} $(c Bd)===$(c)"
+    continue
+  fi
+
+  pushd . > /dev/null
+  cd "${_dir}" || return
+
+  # isModified : ± 󱓉 (* in git-prompt)
+  isModified=$(git ls-files --modified --exclude-standard | wc -l)
+  [[ "${isModified}" -gt 0 ]] && MODIFIED="\033[0;38;5;184m±\033[0m"
+
+
+  # isUntracked: new : %
+  isUntracked=$(git ls-files --others --exclude-standard | wc -l)
+  [[ "${isUntracked}" -gt 0 ]] && UNTRACKED="\033[0;38;5;197m%\033[0m"
+
+  # isUnMerged :  ⨄ ( + or # in git-prompt )
+  isUnMerged=$(git ls-files --unmerged | wc -l)
+  [[ "${isUnMerged}" -gt 0 ]] && UNMERGED="\033[0;38;5;207m⨄\033[0m"
+
+  if [[ -n "${MODIFIED}" ]] || [[ -n "${UNTRACKED}" ]] || [[ -n "${UNMERGED}" ]]; then
+    STATUS=" ${MODIFIED}${UNTRACKED}${UNMERGED}"
+  fi
+
+  GITBRANCH=$(git rev-parse --abbrev-ref HEAD)
+  if [[ "${GITBRANCH}" == 'meta/config' ]]; then
+    # meta/config
+    GITBRANCH="$(c Ci)${GITBRANCH}$(c)${STATUS}"
+  else
+    GITBRANCH="$(c Y)${GITBRANCH}$(c)${STATUS}"
+  fi
+
+  # isRebase: $(c R)
+  if test -d "$(git rev-parse --git-path rebase-merge)" || test -d "$(git rev-parse --git-path rebase-apply)" ; then
+    REBASED=" $(c Y)»$(c) $(c Ri)REBASE$(c)"
+  fi
+
+  # isStash: $(c M)
+  # or isStash=$(git rev-parse --verify --quiet refs/stash | wc -l)
+  isStash=$(git stash list | wc -l)
+  if [[ "${isStash}" -gt 0 ]]; then
+    [[ -n "${REBASED}" ]] && STASHED=" $(c R)»$(c)" || STASHED=" $(c Y)»$(c)"
+    STASHED+=" $(c Mi)STASHED$(c)"
+  fi
+
+  # isUpgradable: 38;5;166
+  # shellcheck disable=SC1083
+  UPSTREAM=$(git rev-parse --symbolic-full-name --abbrev-ref @{upstream})
+  # shellcheck disable=SC2086
+  isUpgradable=$(git fetch ${UPSTREAM//\//\ } --dry-run 2>&1 | grep -c "${UPSTREAM}")
+  if [[ "${isUpgradable}" -gt 0 ]]; then
+    if [[ -n "${STASHED}" ]]; then
+      UPGRADABLE=" $(c M)»$(c)"
+    elif [[ -z "${REBASED}" ]] && [[ -z "${STASHED}" ]]; then
+      UPGRADABLE=" $(c Y)»$(c)"
+    elif [[ -n "${REBASED}" ]] && [[ -z "${STASHED}" ]]; then
+      UPGRADABLE=" $(c R)»$(c)"
+    fi
+    UPGRADABLE+=" \033[0;38;5;166mUPDATEABLE\033[0m"
+  fi
+
+  #
+  # TODO: # isMergeable
+  # isMergeable=$(git rev-parse --verify MERGE_HEAD 2>/dev/null)
+  #
+
+  popd > /dev/null || return
+
+  echo -e "$(c Bd)===$(c) $(c B)${GITDIR} »$(c) ${GITBRANCH}${REBASED}${STASHED}${UPGRADABLE} $(c Bd)===$(c)"
+done < <(echo "${dirs}" | fmt -1)
+
+# vim:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:filetype=sh
