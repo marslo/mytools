@@ -296,12 +296,13 @@
     "Blue Component" : 0
   },
   "Cursor Color" : {
-    "Red Component" : 0.92156863212585449,
-    "Color Space" : "sRGB",
-    "Blue Component" : 0.69803923368453979,
+    "Red Component" : 0.27450980392156865,
+    "Color Space" : "P3",
+    "Blue Component" : 0.70588235294117652,
     "Alpha Component" : 1,
-    "Green Component" : 0.85882353782653809
+    "Green Component" : 0.50980392156862742
   },
+  "Unicode Version" : 9,
   "Option Key Sends" : 2,
   "Idle Code" : 0,
   "Ansi 13 Color (Dark)" : {
@@ -317,6 +318,7 @@
     "Alpha Component" : 1,
     "Green Component" : 0.36078432202339172
   },
+  "Non-ASCII Ligatures" : false,
   "Terminal Type" : "xterm-256color",
   "Show Status Bar" : true,
   "Right Option Key Sends" : 0,
@@ -434,7 +436,7 @@
     "slogin",
     "telnet"
   ],
-  "Use Non-ASCII Font" : true,
+  "Use Non-ASCII Font" : false,
   "Custom Directory" : "Advanced",
   "Ansi 8 Color (Light)" : {
     "Green Component" : 0.3333333432674408,
@@ -572,7 +574,7 @@
     "Red Component" : 0.3333333432674408,
     "Blue Component" : 0.3333333432674408
   },
-  "Normal Font" : "OperatorMonoNerdFontComplete-Light 29",
+  "Normal Font" : "OperatorMonoLigNFM-Light 29",
   "Foreground Color" : {
     "Red Component" : 0.92156863212585449,
     "Color Space" : "sRGB",
@@ -945,6 +947,7 @@
     "Red Component" : 0.70980000495910645,
     "Blue Component" : 1
   },
+  "ASCII Ligatures" : true,
   "AWDS Pane Option" : "Recycle",
   "Ansi 1 Color" : {
     "Red Component" : 0.80000001192092896,
@@ -2440,7 +2443,7 @@
     "slogin",
     "telnet"
   ],
-  "Use Non-ASCII Font" : true,
+  "Use Non-ASCII Font" : false,
   "Custom Directory" : "Advanced",
   "Use Selected Text Color (Light)" : true,
   "Bold Color (Light)" : {
@@ -2610,7 +2613,7 @@
     "Alpha Component" : 1,
     "Green Component" : 0.69061970710754395
   },
-  "Normal Font" : "OperatorMonoNerdFontComplete-Light 29",
+  "Normal Font" : "MenloNFM-Regular 11",
   "Use Selected Text Color (Dark)" : true,
   "Triggers" : [
 
@@ -3480,7 +3483,7 @@
     "slogin",
     "telnet"
   ],
-  "Use Non-ASCII Font" : true,
+  "Use Non-ASCII Font" : false,
   "Custom Directory" : "Advanced",
   "Ansi 8 Color (Light)" : {
     "Green Component" : 0.3333333432674408,
@@ -3560,7 +3563,7 @@
     "Red Component" : 0.3333333432674408,
     "Blue Component" : 0.3333333432674408
   },
-  "Normal Font" : "OperatorMonoNerdFontComplete-Light 29",
+  "Normal Font" : "MenloNFM-Regular 11",
   "Foreground Color" : {
     "Red Component" : 0.15686275064945221,
     "Color Space" : "sRGB",
@@ -4901,10 +4904,12 @@
   }
 },
 {
-  "Foreground Color (Dark)" : {
-    "Green Component" : 0.73333334922790527,
-    "Red Component" : 0.73333334922790527,
-    "Blue Component" : 0.73333334922790527
+  "Ansi 0 Color" : {
+    "Red Component" : 0.12549020349979401,
+    "Color Space" : "sRGB",
+    "Blue Component" : 0.27450981736183167,
+    "Alpha Component" : 1,
+    "Green Component" : 0.15294118225574493
   },
   "Ansi 15 Color (Dark)" : {
     "Green Component" : 1,
@@ -5474,7 +5479,7 @@
     "Red Component" : 0.3333333432674408,
     "Blue Component" : 0.3333333432674408
   },
-  "Normal Font" : "MonaspiceRnNFM-Light 24",
+  "Normal Font" : "BlexMonoNFM-Text 24",
   "Foreground Color" : {
     "Red Component" : 0.9296875,
     "Color Space" : "sRGB",
@@ -5846,6 +5851,7 @@
     "Red Component" : 0.70980000495910645,
     "Blue Component" : 1
   },
+  "ASCII Ligatures" : true,
   "AWDS Pane Option" : "Recycle",
   "Ansi 1 Color" : {
     "Red Component" : 0.78823530673980713,
@@ -5862,18 +5868,16 @@
     "Alpha Component" : 1,
     "Green Component" : 0.61568629741668701
   },
-  "Ansi 0 Color" : {
-    "Red Component" : 0.12549020349979401,
-    "Color Space" : "sRGB",
-    "Blue Component" : 0.27450981736183167,
-    "Alpha Component" : 1,
-    "Green Component" : 0.15294118225574493
-  },
-  "Show Timestamps" : 2,
   "Ansi 12 Color (Light)" : {
     "Green Component" : 0.3333333432674408,
     "Red Component" : 0.3333333432674408,
     "Blue Component" : 1
+  },
+  "Show Timestamps" : 2,
+  "Foreground Color (Dark)" : {
+    "Green Component" : 0.73333334922790527,
+    "Red Component" : 0.73333334922790527,
+    "Blue Component" : 0.73333334922790527
   }
 }
 ]
