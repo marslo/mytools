@@ -1,0 +1,63 @@
+{
+  "alfredtheme" : {
+    "result" : {
+      "textSpacing" : 5,
+      "subtext" : {
+        "size" : 16,
+        "colorSelected" : "#EBDAB2FF",
+        "font" : "MonaspiceRn Nerd Font Mono",
+        "color" : "#655B52FF"
+      },
+      "shortcut" : {
+        "size" : 16,
+        "colorSelected" : "#97961BFF",
+        "font" : "Mononoki Nerd Font Mono Regular",
+        "color" : "#D69921FF"
+      },
+      "backgroundSelected" : "#665B54FF",
+      "text" : {
+        "size" : 22,
+        "colorSelected" : "#EBDBB2FF",
+        "font" : "OperatorMono Nerd Font Mono",
+        "color" : "#655B55FF"
+      },
+      "iconPaddingHorizontal" : 4,
+      "roundness" : 0,
+      "paddingVertical" : 6,
+      "iconSize" : 40
+    },
+    "separator" : {
+      "color" : "#CBCBCBF3",
+      "thickness" : 0
+    },
+    "search" : {
+      "backgroundSelected" : "#B2D7FFFF",
+      "paddingHorizontal" : 8,
+      "spacing" : 8,
+      "text" : {
+        "size" : 48,
+        "colorSelected" : "#000000FF",
+        "font" : "OperatorMonoLig Nerd Font Mono",
+        "color" : "#EADAB1FF"
+      },
+      "background" : "#262626FF",
+      "roundness" : 0,
+      "paddingVertical" : 2
+    },
+    "scrollbar" : {
+      "color" : "#908273FF",
+      "thickness" : 6
+    },
+    "name" : "gruvbox-dark-marslo",
+    "window" : {
+      "color" : "#262626FF",
+      "paddingHorizontal" : 0,
+      "width" : 834,
+      "borderPadding" : 6,
+      "borderColor" : "#3C3836FF",
+      "blur" : 40,
+      "roundness" : -64,
+      "paddingVertical" : 1
+    }
+  }
+}
