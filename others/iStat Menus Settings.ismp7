@@ -45,9 +45,9 @@
 		<key>License.Validation.license</key>
 		<string>zapp-lost-nubs-iffy-1232-7</string>
 		<key>License.Validation.signature</key>
-		<string>MIGIAkIBZ7e3V5hHvLOGtGhcV525cauHCc/KpTlNvHgfKepsxEVQ0OC4/eVRMxy6g1hhjWkhq9pa09O1lk7csGUAwUhiRlsCQgCaTYSRjGJ6kUQviJXubIOMmeEuJ6aeYTxdlm7q7Zd1ms+Cd+sG+3RWxRsX32zmoqnoPF+nkETgUyFsMrUDZ3ixQA==</string>
+		<string>MIGHAkF22GHQmqeWaMwQ1fOxA7u9MYP0qKVX/yxJFUjiLKMYJz2ojsHL3hztvrmjU1K4VaCbfx5hYiz1e82aEXVOAPIOcwJCAf/Y2wtaDdhzj3oYwOi7HBoEfK/TWCnsz5X8AKwtcUookCsJqCLIBbQn6dmOyDUFjBIl1noB9o+lFkjmtpNor5G3</string>
 		<key>License.Validation.time</key>
-		<string>1727213493</string>
+		<string>1729635626</string>
 		<key>Memory.Menu.Processes.Count</key>
 		<integer>8</integer>
 		<key>Memory.Menu.Processes.Format</key>
