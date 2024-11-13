@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Custom Controls (4001)</key>
+	<array>
+		<dict>
+			<key>Action</key>
+			<integer>10001</integer>
+			<key>Chain</key>
+			<true/>
+			<key>Chain Mode</key>
+			<integer>0</integer>
+			<key>Children</key>
+			<array>
+				<dict>
+					<key>Action</key>
+					<integer>19</integer>
+					<key>Configuration Grid</key>
+					<dict>
+						<key>Configuration Grid: Columns</key>
+						<integer>8</integer>
+						<key>Configuration Grid: Rows</key>
+						<integer>8</integer>
+					</dict>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>662B4BE2-1B07-4759-A372-193B9E041EF5</string>
+						<key>Key Code</key>
+						<integer>123</integer>
+						<key>Modifier Flags</key>
+						<integer>12058920</integer>
+						<key>Visual Representation</key>
+						<string>⌥⌘←</string>
+					</dict>
+					<key>Identifier</key>
+					<string>662B4BE2-1B07-4759-A372-193B9E041EF5</string>
+					<key>Relative Frame</key>
+					<string>{{0, 0}, {0.5, 1}}</string>
+					<key>Window Description</key>
+					<dict>
+						<key>Application Name</key>
+						<string>Google Chrome</string>
+						<key>Available Screen Frame</key>
+						<string>{{0, 0}, {1728, 1079}}</string>
+						<key>Bundle Identifier</key>
+						<string>com.google.chrome</string>
+						<key>Screen Frame</key>
+						<string>{{0, 0}, {1728, 1117}}</string>
+						<key>Window Frame</key>
+						<string>{{209, 158}, {1344, 839}}</string>
+						<key>Window Subrole</key>
+						<string>AXStandardWindow</string>
+						<key>Window Title</key>
+						<string>Announcing Moom 4, the next-generation window manager · Tales of a Running Bird - Google Chrome</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>19</integer>
+					<key>Configuration Grid</key>
+					<dict>
+						<key>Configuration Grid: Columns</key>
+						<integer>8</integer>
+						<key>Configuration Grid: Rows</key>
+						<integer>8</integer>
+					</dict>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>12C1A307-46BB-4713-96FD-E1EAE6B94268</string>
+						<key>Key Code</key>
+						<integer>124</integer>
+						<key>Modifier Flags</key>
+						<integer>12058920</integer>
+						<key>Visual Representation</key>
+						<string>⌥⌘→</string>
+					</dict>
+					<key>Identifier</key>
+					<string>12C1A307-46BB-4713-96FD-E1EAE6B94268</string>
+					<key>Relative Frame</key>
+					<string>{{0.5, 0}, {0.5, 1}}</string>
+					<key>Window Description</key>
+					<dict>
+						<key>Application Name</key>
+						<string>Google Chrome</string>
+						<key>Available Screen Frame</key>
+						<string>{{0, 0}, {1728, 1079}}</string>
+						<key>Bundle Identifier</key>
+						<string>com.google.chrome</string>
+						<key>Screen Frame</key>
+						<string>{{0, 0}, {1728, 1117}}</string>
+						<key>Window Frame</key>
+						<string>{{209, 158}, {1344, 839}}</string>
+						<key>Window Subrole</key>
+						<string>AXStandardWindow</string>
+						<key>Window Title</key>
+						<string>Announcing Moom 4, the next-generation window manager · Tales of a Running Bird - Google Chrome</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>19</integer>
+					<key>Configuration Grid</key>
+					<dict>
+						<key>Configuration Grid: Columns</key>
+						<integer>8</integer>
+						<key>Configuration Grid: Rows</key>
+						<integer>8</integer>
+					</dict>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>143AF65B-D876-483F-82D8-CF9ECEB37F31</string>
+						<key>Key Code</key>
+						<integer>125</integer>
+						<key>Modifier Flags</key>
+						<integer>12058920</integer>
+						<key>Visual Representation</key>
+						<string>⌥⌘↓</string>
+					</dict>
+					<key>Identifier</key>
+					<string>143AF65B-D876-483F-82D8-CF9ECEB37F31</string>
+					<key>Relative Frame</key>
+					<string>{{0, 0}, {1, 0.5}}</string>
+					<key>Window Description</key>
+					<dict>
+						<key>Application Name</key>
+						<string>Google Chrome</string>
+						<key>Available Screen Frame</key>
+						<string>{{0, 0}, {1728, 1079}}</string>
+						<key>Bundle Identifier</key>
+						<string>com.google.chrome</string>
+						<key>Screen Frame</key>
+						<string>{{0, 0}, {1728, 1117}}</string>
+						<key>Window Frame</key>
+						<string>{{209, 158}, {1344, 839}}</string>
+						<key>Window Subrole</key>
+						<string>AXStandardWindow</string>
+						<key>Window Title</key>
+						<string>Announcing Moom 4, the next-generation window manager · Tales of a Running Bird - Google Chrome</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>19</integer>
+					<key>Configuration Grid</key>
+					<dict>
+						<key>Configuration Grid: Columns</key>
+						<integer>8</integer>
+						<key>Configuration Grid: Rows</key>
+						<integer>8</integer>
+					</dict>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>DCD49E4F-9DC2-420E-96CD-403F07C9D583</string>
+						<key>Key Code</key>
+						<integer>126</integer>
+						<key>Modifier Flags</key>
+						<integer>12058920</integer>
+						<key>Visual Representation</key>
+						<string>⌥⌘↑</string>
+					</dict>
+					<key>Identifier</key>
+					<string>DCD49E4F-9DC2-420E-96CD-403F07C9D583</string>
+					<key>Relative Frame</key>
+					<string>{{0, 0.5}, {1, 0.5}}</string>
+					<key>Window Description</key>
+					<dict>
+						<key>Application Name</key>
+						<string>Google Chrome</string>
+						<key>Available Screen Frame</key>
+						<string>{{0, 0}, {1728, 1079}}</string>
+						<key>Bundle Identifier</key>
+						<string>com.google.chrome</string>
+						<key>Screen Frame</key>
+						<string>{{0, 0}, {1728, 1117}}</string>
+						<key>Window Frame</key>
+						<string>{{209, 158}, {1344, 839}}</string>
+						<key>Window Subrole</key>
+						<string>AXStandardWindow</string>
+						<key>Window Title</key>
+						<string>Announcing Moom 4, the next-generation window manager · Tales of a Running Bird - Google Chrome</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>31</integer>
+					<key>Confine to Display</key>
+					<false/>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>71EFFAA1-0F61-4F30-8124-FC75F26C5C43</string>
+						<key>Key Code</key>
+						<integer>38</integer>
+						<key>Modifier Flags</key>
+						<integer>1179914</integer>
+						<key>Visual Representation</key>
+						<string>⇧⌘J</string>
+					</dict>
+					<key>Identifier</key>
+					<string>71EFFAA1-0F61-4F30-8124-FC75F26C5C43</string>
+					<key>Move Delta</key>
+					<integer>50</integer>
+					<key>Move Delta Unit</key>
+					<integer>0</integer>
+					<key>Move Direction</key>
+					<integer>7</integer>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>31</integer>
+					<key>Confine to Display</key>
+					<false/>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>C8550B44-A208-43F5-8FAF-48B1CF97506C</string>
+						<key>Key Code</key>
+						<integer>4</integer>
+						<key>Modifier Flags</key>
+						<integer>1179914</integer>
+						<key>Visual Representation</key>
+						<string>⇧⌘H</string>
+					</dict>
+					<key>Identifier</key>
+					<string>C8550B44-A208-43F5-8FAF-48B1CF97506C</string>
+					<key>Move Delta</key>
+					<integer>50</integer>
+					<key>Move Delta Unit</key>
+					<integer>0</integer>
+					<key>Move Direction</key>
+					<integer>9</integer>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>31</integer>
+					<key>Confine to Display</key>
+					<false/>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>E51EF1A7-59AB-43C8-8601-D50CDA710C05</string>
+						<key>Key Code</key>
+						<integer>40</integer>
+						<key>Modifier Flags</key>
+						<integer>1179914</integer>
+						<key>Visual Representation</key>
+						<string>⇧⌘K</string>
+					</dict>
+					<key>Identifier</key>
+					<string>E51EF1A7-59AB-43C8-8601-D50CDA710C05</string>
+					<key>Move Delta</key>
+					<integer>20</integer>
+					<key>Move Delta Unit</key>
+					<integer>0</integer>
+					<key>Move Direction</key>
+					<integer>3</integer>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>31</integer>
+					<key>Confine to Display</key>
+					<false/>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>7E35BA69-790E-41DB-AE67-81741F6A9B06</string>
+						<key>Key Code</key>
+						<integer>37</integer>
+						<key>Modifier Flags</key>
+						<integer>1179914</integer>
+						<key>Visual Representation</key>
+						<string>⇧⌘L</string>
+					</dict>
+					<key>Identifier</key>
+					<string>7E35BA69-790E-41DB-AE67-81741F6A9B06</string>
+					<key>Move Delta</key>
+					<integer>20</integer>
+					<key>Move Delta Unit</key>
+					<integer>0</integer>
+					<key>Move Direction</key>
+					<integer>5</integer>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>19</integer>
+					<key>Configuration Grid</key>
+					<dict>
+						<key>Configuration Grid: Columns</key>
+						<integer>9</integer>
+						<key>Configuration Grid: Rows</key>
+						<integer>9</integer>
+					</dict>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>579F60F7-7E0B-444D-98DC-F34CCBB2C64C</string>
+						<key>Key Code</key>
+						<integer>125</integer>
+						<key>Modifier Flags</key>
+						<integer>11534600</integer>
+						<key>Visual Representation</key>
+						<string>⌘↓</string>
+					</dict>
+					<key>Identifier</key>
+					<string>579F60F7-7E0B-444D-98DC-F34CCBB2C64C</string>
+					<key>Relative Frame</key>
+					<string>{{0.1111111111111111, 0.1111111111111111}, {0.7777777777777779, 0.7777777777777779}}</string>
+					<key>Window Description</key>
+					<dict>
+						<key>Application Name</key>
+						<string>iTerm2</string>
+						<key>Available Screen Frame</key>
+						<string>{{0, 0}, {1728, 1079}}</string>
+						<key>Bundle Identifier</key>
+						<string>com.googlecode.iterm2</string>
+						<key>Screen Frame</key>
+						<string>{{0, 0}, {1728, 1117}}</string>
+						<key>Window Frame</key>
+						<string>{{0, 0}, {1728, 1079}}</string>
+						<key>Window Subrole</key>
+						<string>AXStandardWindow</string>
+						<key>Window Title</key>
+						<string>HNWH3C04CX</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>19</integer>
+					<key>Configuration Grid</key>
+					<dict>
+						<key>Configuration Grid: Columns</key>
+						<integer>9</integer>
+						<key>Configuration Grid: Rows</key>
+						<integer>9</integer>
+					</dict>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>F71661EA-4551-437C-8D94-11B5BD0833B4</string>
+						<key>Key Code</key>
+						<integer>126</integer>
+						<key>Modifier Flags</key>
+						<integer>11534600</integer>
+						<key>Visual Representation</key>
+						<string>⌘↑</string>
+					</dict>
+					<key>Identifier</key>
+					<string>F71661EA-4551-437C-8D94-11B5BD0833B4</string>
+					<key>Relative Frame</key>
+					<string>{{0, 0}, {1, 1}}</string>
+					<key>Window Description</key>
+					<dict>
+						<key>Application Name</key>
+						<string>iTerm2</string>
+						<key>Available Screen Frame</key>
+						<string>{{0, 0}, {1728, 1079}}</string>
+						<key>Bundle Identifier</key>
+						<string>com.googlecode.iterm2</string>
+						<key>Screen Frame</key>
+						<string>{{0, 0}, {1728, 1117}}</string>
+						<key>Window Frame</key>
+						<string>{{0, 0}, {1728, 1079}}</string>
+						<key>Window Subrole</key>
+						<string>AXStandardWindow</string>
+						<key>Window Title</key>
+						<string>HNWH3C04CX</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>1001</integer>
+					<key>Apply to Overlapping Windows</key>
+					<true/>
+					<key>Auto-Trigger</key>
+					<false/>
+					<key>Auto-Trigger Display Count</key>
+					<integer>1</integer>
+					<key>Generic</key>
+					<true/>
+					<key>Identifier</key>
+					<string>55E42AD3-3AFA-4A63-9AC7-677CCC283D09</string>
+					<key>Snapshot</key>
+					<array>
+						<dict>
+							<key>Application Name</key>
+							<string>Safari</string>
+							<key>Available Screen Frame</key>
+							<string>{{0, 50}, {2056, 1235}}</string>
+							<key>Bundle Identifier</key>
+							<string>com.apple.safari</string>
+							<key>Screen Frame</key>
+							<string>{{0, 0}, {2056, 1329}}</string>
+							<key>Window Frame</key>
+							<string>{{0, 50}, {1370, 1235}}</string>
+							<key>Window Subrole</key>
+							<string>AXStandardWindow</string>
+							<key>Window Title</key>
+							<string>Untitled</string>
+						</dict>
+						<dict>
+							<key>Application Name</key>
+							<string>Dictionary</string>
+							<key>Available Screen Frame</key>
+							<string>{{0, 50}, {2056, 1235}}</string>
+							<key>Bundle Identifier</key>
+							<string>com.apple.dictionary</string>
+							<key>Screen Frame</key>
+							<string>{{0, 0}, {2056, 1329}}</string>
+							<key>Window Frame</key>
+							<string>{{1371, 50}, {685, 1235}}</string>
+							<key>Window Subrole</key>
+							<string>AXStandardWindow</string>
+							<key>Window Title</key>
+							<string>Dictionary</string>
+						</dict>
+					</array>
+					<key>Snapshot Screens</key>
+					<array>
+						<string>{{0, 0}, {2056, 1329}}</string>
+					</array>
+					<key>Stubborn</key>
+					<false/>
+					<key>Title</key>
+					<string>Sidebar</string>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>1001</integer>
+					<key>Apply to Overlapping Windows</key>
+					<true/>
+					<key>Auto-Trigger</key>
+					<false/>
+					<key>Auto-Trigger Display Count</key>
+					<integer>1</integer>
+					<key>Generic</key>
+					<true/>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>2743234A-421F-4494-8AC9-1CFEA9EDB50E</string>
+						<key>Key Code</key>
+						<integer>124</integer>
+						<key>Modifier Flags</key>
+						<integer>11927819</integer>
+						<key>Visual Representation</key>
+						<string>⌃⇧⌘→</string>
+					</dict>
+					<key>Identifier</key>
+					<string>2743234A-421F-4494-8AC9-1CFEA9EDB50E</string>
+					<key>Snapshot</key>
+					<array>
+						<dict>
+							<key>Application Name</key>
+							<string>TextEdit</string>
+							<key>Available Screen Frame</key>
+							<string>{{0, 50}, {2056, 1235}}</string>
+							<key>Bundle Identifier</key>
+							<string>com.apple.textedit</string>
+							<key>Screen Frame</key>
+							<string>{{0, 0}, {2056, 1329}}</string>
+							<key>Window Frame</key>
+							<string>{{0, 50}, {1028, 1235}}</string>
+							<key>Window Subrole</key>
+							<string>AXStandardWindow</string>
+							<key>Window Title</key>
+							<string>1.txt</string>
+						</dict>
+						<dict>
+							<key>Application Name</key>
+							<string>TextEdit</string>
+							<key>Available Screen Frame</key>
+							<string>{{0, 50}, {2056, 1235}}</string>
+							<key>Bundle Identifier</key>
+							<string>com.apple.textedit</string>
+							<key>Screen Frame</key>
+							<string>{{0, 0}, {2056, 1329}}</string>
+							<key>Window Frame</key>
+							<string>{{1029, 50}, {1027, 1235}}</string>
+							<key>Window Subrole</key>
+							<string>AXStandardWindow</string>
+							<key>Window Title</key>
+							<string>2.txt</string>
+						</dict>
+					</array>
+					<key>Snapshot Screens</key>
+					<array>
+						<string>{{0, 0}, {2056, 1329}}</string>
+					</array>
+					<key>Stubborn</key>
+					<false/>
+					<key>Title</key>
+					<string>Left &amp; Right</string>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>1001</integer>
+					<key>Apply to Overlapping Windows</key>
+					<true/>
+					<key>Auto-Trigger</key>
+					<false/>
+					<key>Auto-Trigger Display Count</key>
+					<integer>1</integer>
+					<key>Generic</key>
+					<true/>
+					<key>Hot Key</key>
+					<dict>
+						<key>Identifier</key>
+						<string>E55F52EE-140E-490D-BCF6-0ECD210474BF</string>
+						<key>Key Code</key>
+						<integer>125</integer>
+						<key>Modifier Flags</key>
+						<integer>11927819</integer>
+						<key>Visual Representation</key>
+						<string>⌃⇧⌘↓</string>
+					</dict>
+					<key>Identifier</key>
+					<string>E55F52EE-140E-490D-BCF6-0ECD210474BF</string>
+					<key>Snapshot</key>
+					<array>
+						<dict>
+							<key>Application Name</key>
+							<string>Google Chrome</string>
+							<key>Available Screen Frame</key>
+							<string>{{0, 0}, {1728, 1079}}</string>
+							<key>Bundle Identifier</key>
+							<string>com.google.chrome</string>
+							<key>Screen Frame</key>
+							<string>{{0, 0}, {1728, 1117}}</string>
+							<key>Window Frame</key>
+							<string>{{0, 540}, {1728, 539}}</string>
+							<key>Window Subrole</key>
+							<string>AXStandardWindow</string>
+							<key>Window Title</key>
+							<string>Tales of a Running Bird - Google Chrome</string>
+						</dict>
+						<dict>
+							<key>Application Name</key>
+							<string>Google Chrome</string>
+							<key>Available Screen Frame</key>
+							<string>{{0, 0}, {1728, 1079}}</string>
+							<key>Bundle Identifier</key>
+							<string>com.google.chrome</string>
+							<key>Screen Frame</key>
+							<string>{{0, 0}, {1728, 1117}}</string>
+							<key>Window Frame</key>
+							<string>{{0, 0}, {1728, 539}}</string>
+							<key>Window Subrole</key>
+							<string>AXStandardWindow</string>
+							<key>Window Title</key>
+							<string>Tales of a Running Bird - Google Chrome</string>
+						</dict>
+					</array>
+					<key>Snapshot Screens</key>
+					<array>
+						<string>{{0, 0}, {1728, 1117}}</string>
+					</array>
+					<key>Stubborn</key>
+					<false/>
+					<key>Title</key>
+					<string>top &amp; bottom</string>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<integer>10001</integer>
+					<key>Chain Mode</key>
+					<integer>0</integer>
+					<key>Children</key>
+					<array>
+						<dict>
+							<key>Action</key>
+							<integer>19</integer>
+							<key>Configuration Grid</key>
+							<dict>
+								<key>Configuration Grid: Columns</key>
+								<integer>3</integer>
+								<key>Configuration Grid: Rows</key>
+								<integer>1</integer>
+							</dict>
+							<key>Identifier</key>
+							<string>AB882840-D8CE-47A4-97E3-675EDFE218F7</string>
+							<key>Relative Frame</key>
+							<string>{{0, 0}, {0.33333333333333331, 1}}</string>
+							<key>Title</key>
+							<string>Left Third</string>
+						</dict>
+						<dict>
+							<key>Action</key>
+							<integer>19</integer>
+							<key>Configuration Grid</key>
+							<dict>
+								<key>Configuration Grid: Columns</key>
+								<integer>3</integer>
+								<key>Configuration Grid: Rows</key>
+								<integer>1</integer>
+							</dict>
+							<key>Identifier</key>
+							<string>FAD5D019-AF6D-4403-8528-CFEE9C81A2E6</string>
+							<key>Relative Frame</key>
+							<string>{{0.33333333333333331, 0}, {0.33333333333333331, 1}}</string>
+							<key>Title</key>
+							<string>Middle Third</string>
+						</dict>
+						<dict>
+							<key>Action</key>
+							<integer>19</integer>
+							<key>Configuration Grid</key>
+							<dict>
+								<key>Configuration Grid: Columns</key>
+								<integer>3</integer>
+								<key>Configuration Grid: Rows</key>
+								<integer>1</integer>
+							</dict>
+							<key>Identifier</key>
+							<string>F17C017B-13F8-42AC-B0E2-8F94659A92C5</string>
+							<key>Relative Frame</key>
+							<string>{{0.66666666666666663, 0}, {0.33333333333333337, 1}}</string>
+							<key>Title</key>
+							<string>Right Third</string>
+						</dict>
+						<dict>
+							<key>Action</key>
+							<integer>0</integer>
+							<key>Identifier</key>
+							<string>9E06B731-51EE-4EDA-B0E5-17DC4B537DC5</string>
+						</dict>
+						<dict>
+							<key>Action</key>
+							<integer>41</integer>
+							<key>Identifier</key>
+							<string>B5ACA447-6A2B-410C-8F04-F7B975DD7C2F</string>
+							<key>Loop Through Displays</key>
+							<true/>
+							<key>Move Direction</key>
+							<integer>5</integer>
+							<key>Resize Proportionally</key>
+							<true/>
+						</dict>
+					</array>
+					<key>Identifier</key>
+					<string>726EE442-A31C-46E4-92FB-C4EA2329F6D0</string>
+					<key>Title</key>
+					<string>More Examples</string>
+				</dict>
+			</array>
+			<key>Children Expanded</key>
+			<true/>
+			<key>Identifier</key>
+			<string>2B1E0566-DB2B-4404-8018-38CB4319E837</string>
+			<key>Title</key>
+			<string>marslo</string>
+		</dict>
+	</array>
+</dict>
+</plist>
