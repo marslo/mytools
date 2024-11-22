@@ -9,7 +9,8 @@ SetTitleMatchMode RegEx ;http://www.autohotkey.com/docs/commands/SetTitleMatchMo
 ;^ = Ctrl, ! = ALT, # = Win
 #Include %A_ScriptDir%
 ;autoexecute section
-preventScreenSaverVar := False ; Boolean for Screen-saver prevention label (subroutine). True = running/enabled.
+; preventScreenSaverVar := False ; Boolean for Screen-saver prevention label (subroutine). True = running/enabled.
+preventScreenSaverVar := True ;
 SetTimer, preventScreenSaver, 60000 ; Screen-saver launch prevention label (subroutine), checks every 1 minute
 
 

@@ -1,0 +1,33 @@
+Critical updates:
+- Lenovo Fingerprint Manager Pro
+- ThinkPad Hotkey Features Integration Package Setup
+- ThinkVantage Access Connections
+
+Recommanded updates:
+- Intel(R) Chipset Device Software
+- Lenovo QuickDisplay
+- ThinkVantage Active Protection System
+- Intel Management Engine 11.0 Software
+- Message Center Plus
+- Intel@ USB3.0 Driver
+- Auto Scroll Utility
+- Intel Bluetooth Devices Software - Initial Install
+- ThinkPad Power Manager
+- REACHit 2.0
+- Sunplus Integrated Camera Driver
+- Lenovo Communications Utility
+- Intel Wireless Display
+- Windows 7 Update Module KB2877999 64bit
+- Windows 7 Update Module KB2661796 64bit
+- Windows 7 Update Module KB2397190 64bit
+- Windows 7 Update Module KB2459268 64bit
+
+Optional updates:
+- Password Manager
+- Synaptics UltraNav Driver
+- Realtek High Definition Audio Driver
+- Lenovo Power Management Driver
+- Intel HD Graphics Driver
+- Intel PRO/1000 LAN Adapter Software
+- Intel WLAN Driver
+- Intel Rapid Storage AHCI Driver
