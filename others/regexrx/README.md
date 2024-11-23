@@ -1,1 +1,5 @@
+## location
+
+```bash
 ~/Library/Containers/com.mactechnologies.regexrx/Data/Library/Application Support/RegExRX
+```
