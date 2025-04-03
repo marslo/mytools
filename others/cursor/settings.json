@@ -1,0 +1,266 @@
+{
+  "update.releaseTrack": "prerelease",
+  "window.commandCenter": true,
+  "editor.fontSize": 18,
+  "editor.fontFamily": "'OperatorMonoLig Nerd Font Mono', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontWeight": "300",
+  "editor.fontLigatures": true,
+  "editor.inlayHints.fontSize": 14,
+  "editor.inlayHints.fontFamily": "'MonaspiceRn Nerd Font Mono', 'FantasqueSansM Nerd Font'",
+  "editor.codeLensFontSize": 16,
+  "editor.codeLensFontFamily": "'MonaspiceRn Nerd Font Mono'",
+  "editor.tabSize": 2,
+  "editor.tabCompletion": "on",
+  "editor.unusualLineTerminators": "auto",
+  "editor.cursorStyle": "underline",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.cursorSurroundingLinesStyle": "all",
+  "editor.dropIntoEditor.preferences": [],
+  "editor.find.globalFindClipboard": true,
+  "editor.minimap.autohide": true,
+  "editor.suggestFontSize": 16,
+  "editor.suggest.shareSuggestSelections": true,
+  "editor.suggest.showStatusBar": true,
+  "editor.find.autoFindInSelection": "multiline",
+  "editor.fontVariations": true,
+  "editor.colorDecorators": true,
+  "editor.defaultColorDecorators": "always",
+  "editor.tokenColorCustomizations": {
+      "textMateRules": [
+        {
+          "scope": [
+              // following will be in italic (=FlottFlott)
+              "comment",
+              "entity.name.type.class", // class names
+              "keyword",                // import, export, return…
+              "constant",               // String, Number, Boolean…, this, super
+              "storage.modifier",       // static keyword
+              "storage.type.class.js",  // class keyword
+          ],
+          "settings": {
+              "fontStyle": "italic"
+          }
+        },
+      ]
+  },
+  // inline suggest
+  "editor.inlineSuggest.fontFamily": "'iMWritingMono Nerd Font Mono', 'FantasqueSansM Nerd Font'",
+  "editor.inlineSuggest.edits.experimental.useMixedLinesDiff": "whenPossible",
+  "editor.inlineSuggest.showToolbar": "always",
+  "editor.inlineSuggest.syntaxHighlightingEnabled": true,
+
+  "cursor.composer.shouldChimeAfterChatFinishes": true,
+  "cursor.composer.shouldAllowCustomModes": true,
+  "timeline.pageOnScroll": true,
+  "search.globalFindClipboard": true,
+  "search.seedOnFocus": true,
+
+  // font family and font size
+  "debug.console.fontSize": 16,
+  "debug.console.fontFamily": "'BlexMono Nerd Font Mono'",
+  "chat.editor.fontSize": 18,
+  "chat.editor.fontFamily": "'FantasqueSansM Nerd Font', 'LXGWWenKaiMono Nerd Font Mono'",
+  "inlineChat.lineEmptyHint": true,
+  "markdown.preview.fontSize": 16,
+  "markdown.preview.fontFamily": "'VictorMono Nerd Font Mono', 'Yozai Nerd Font', -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif",
+  "notebook.output.fontFamily": "'VictorMono Nerd Font Mono', 'LXGWWenKaiMono Nerd Font Mono'",
+  "notebook.defaultFormatter": "fnando.linter",
+
+  // diff
+  "diffEditor.codeLens": true,
+  "diffEditor.experimental.showMoves": true,
+  "diffEditor.experimental.useTrueInlineView": true,
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+
+  // accessibility
+  "accessibility.signalOptions.debouncePositionChanges": true,
+  "accessibility.underlineLinks": true,
+
+  // terminal
+  "terminal.external.linuxExec": "xterm-256color",
+  "terminal.external.osxExec": "iTerm.app",
+  "terminal.integrated.fontSize": 18,
+  "terminal.integrated.fontFamily": "'FantasqueSansM Nerd Font', 'iMWritingMono Nerd Font Mono', 'LXGWWenKaiMono Nerd Font Mono'",
+  "terminal.integrated.accessibleViewPreserveCursorPosition": true,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.defaultProfile.osx": "bash",
+  "terminal.integrated.smoothScrolling": true,
+  "terminal.integrated.suggest.enabled": true,
+  "terminal.integrated.suggest.enableExtensionCompletions": true,
+  "terminal.integrated.tabStopWidth": 4,
+  "terminal.integrated.fontLigatures": true,
+  "terminal.integrated.fontWeight": "200",
+  "terminal.integrated.mouseWheelZoom": true,
+  "terminal.integrated.tabs.defaultColor": "terminal.ansiGreen",
+
+  // sync
+  "sync.autoUpload": true,
+  "sync.autoDownload": false,
+  "sync.gist": "5237cf066bd002c56074ecb22d446d2c",
+  "sync.quietSync": true,
+
+  // git/scm
+  "scm.inputFontSize": 16,
+  "scm.inputFontFamily": "'Lekton Nerd Font Mono', 'VictorMono Nerd Font Mono'",
+  "git.alwaysSignOff": true,
+  "git.enableCommitSigning": true,
+  // using gitlens instead of
+  "git.blame.editorDecoration.enabled": false,
+  "git.blame.editorDecoration.template": " ${authorName} • ${hasShort} • ${subject} (${authorDateAgo})",
+  "git.blame.statusBarItem.enabled": true,
+  "git.blame.statusBarItem.template": " ${authorName} • ${hasShort} (${authorDateAgo})",
+
+  // vim/nvim
+  "vim.cursorStylePerMode.insert": "line-thin",
+  "vim.cursorStylePerMode.normal": "underline",
+  "vim.cursorStylePerMode.replace": "block",
+  "vim.cursorStylePerMode.visual": "block",
+  "vim.cursorStylePerMode.visualblock": "block",
+  "vim.cursorStylePerMode.visualline": "underline",
+  "vim.easymotionMarkerFontWeight": "normal",
+  "vim.searchMatchColor": "#A9B665",
+  "vim.startInInsertMode": false,
+
+  // color highlight
+  "color-highlight.markerType": "dot-after",
+  "color-highlight.matchHslWithNoFunction": true,
+  "color-highlight.matchRgbWithNoFunction": true,
+  "color-highlight.matchWords": true,
+  "color-highlight.useARGB": true,
+
+  // groovy
+  "groovyLint.basic.loglevel": "warning",
+  "groovyLint.debug.enable": true,
+  "groovyLint.basic.config": "/Users/marslo/.groovylintrc.json",
+
+  // python
+  "ipynb.experimental.serialization": true,
+  "python.terminal.activateEnvInCurrentTerminal": true,
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": true,
+  "python.venvPath": "$HOME/.venv",
+  "python.venvFolders": [
+    ".venv",
+    "$HOME/.venv"
+  ],
+
+  // vim/nvim
+  "vim.useSystemClipboard": true,
+  "vim.enableNeovim": true,
+  "vim.neovimConfigPath": "~/.config/nvim/init.lua",
+  "vim.neovimPath": "/opt/homebrew/bin/nvim",
+  "vim.vimrc.enable": true,
+  "vim.vimrc.path": "$HOME/.vimrc",
+  "vim.changeWordIncludesWhitespace": true,
+  "vim.matchpairs": "(:),{:},[:],<:>,':',\":\"",
+  "vim.leader": ",",
+  "vim.hlsearch": true,
+  "vim.highlightedyank.enable": true,
+  "vim.neovimUseConfigFile": true,
+  "vim.searchMatchTextColor": "#A9B665",
+  "vim.highlightedyank.textColor": "#A9B665",
+  "vim.smartRelativeLine": true,
+  "vim.visualstar": true,
+  "vim.statusBarColorControl": true,
+  "vim.statusBarColors.insert": "#604F72",
+  "vim.statusBarColors.normal": "#202020",
+  "vim.statusBarColors.visual": "#724f60",
+  "vim.statusBarColors.visualblock": "#724F60",
+  "vim.statusBarColors.searchinprogressmode": "#4E7260",
+  "vim.statusBarStrings.replace": "#72614E",
+  "vim.statusBarStrings.visual": "-- VISUAL --",
+  "vim.statusBarStrings.visualline": "-- VISUAL LINE --",
+  "vim.statusBarStrings.visualblock": "-- VISUAL BLOCK --",
+
+  // theme
+  "workbench.colorTheme": "Gruvbox Material Dark",
+  "workbench.iconTheme": "gruvbox-material-icon-theme",
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#007acc",
+    "statusBar.noFolderBackground": "#007acc",
+    "statusBar.debuggingBackground": "#007acc",
+    "statusBar.foreground": "#ffffff",
+    "statusBar.debuggingForeground": "#ffffff"
+  },
+  "workbench.editor.defaultBinaryEditor": "default",
+  "workbench.list.horizontalScrolling": true,
+  "workbench.reduceMotion": "on",
+  "workbench.editor.enablePreviewFromCodeNavigation": true,
+  "workbench.editor.enablePreviewFromQuickOpen": true,
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.editor.scrollToSwitchTabs": true,
+  "workbench.commandPalette.experimental.suggestCommands": true,
+  "workbench.externalBrowser": "chrome",
+  "workbench.list.scrollByPage": true,
+  "workbench.list.smoothScrolling": true,
+  "workbench.view.alwaysShowHeaderActions": true,
+  "workbench.quickOpen.preserveInput": true,
+  "workbench.view.showQuietly": {
+    "workbench.panel.output": true
+  },
+  "gruvboxMaterial.darkCursor": "purple",
+  "gruvboxMaterial.darkContrast": "hard",
+  "gruvboxMaterial.diagnosticTextBackgroundOpacity": "12.5%",
+  "gruvboxMaterial.italicKeywords": true,
+  "gruvboxMaterial.highContrast": true,
+  "gruvboxMaterial.colorfulSyntax": true,
+
+  // indent rainbow
+  "indentRainbow.indicatorStyle": "light",
+  "indentRainbow.errorColor": "",
+  "indentRainbow.colorOnWhiteSpaceOnly": false,
+  "indentRainbow.colors": [
+    "rgba(255,255,64,0.2)",
+    "rgba(127,255,127,0.2)",
+    "rgba(255,127,255,0.2)",
+    "rgba(79,236,236,0.2)"
+  ],
+  "indentRainbow.tabmixColor": "",
+
+  // git graph
+  "git-graph.date.type": "Commit Date",
+  "git-graph.dialog.applyStash.reinstateIndex": true,
+  "git-graph.dialog.createBranch.checkOut": true,
+  "git-graph.repository.commits.showSignatureStatus": true,
+  // "git-graph.commitDetailsView.location": "Docked to Bottom",
+
+  "problems.autoReveal": false,
+  "problems.defaultViewMode": "table",
+  "problems.showCurrentInStatus": true,
+
+  // gitlens
+  "gitlens.currentLine.fontSize": 14,
+  "gitlens.currentLine.fontWeight": "300",
+  "gitlens.currentLine.fontStyle": "italic",
+  "gitlens.currentLine.fontFamily": "'VictorMono Nerd Font Mono'', 'Lekton Nerd Font Mono'",
+  "gitlens.blame.fontStyle": "italic",
+  "gitlens.blame.fontSize": 14,
+  "gitlens.blame.fontFamily": "'JetBrainsMono Nerd Font Mono'",
+  "gitlens.graph.experimental.renderer.enabled": true,
+  "gitlens.graph.dimMergeCommits": true,
+  "gitlens.graph.showRemoteNames": true,
+  "gitlens.cloudPatches.enabled": false,
+  "gitlens.cloudIntegrations.enabled": false,
+  "gitlens.views.workspaces.branches.showStashes": true,
+  "gitlens.views.workspaces.includeWorkingTree": true,
+  "gitlens.launchpad.indicator.useColors": true,
+  "gitlens.views.showContributorsStatistics": true,
+  "gitlens.views.repositories.showStashes": true,
+  "gitlens.views.repositories.showIncomingActivity": true,
+  "gitlens.views.repositories.branches.showStashes": true,
+  "gitlens.views.branches.showRemoteBranches": true,
+  "gitlens.views.branches.showStashes": true,
+  "gitlens.views.contributors.showAllBranches": true,
+  "gitlens.views.contributors.showStatistics": true,
+  "gitlens.debug": true,
+  "gitlens.blame.format": "${message|100?} ${agoOrDate|14-}",
+  "gitlens.currentLine.format": " ${author -} ${id •} ${agoOrDate}${' via  'pullRequest}${ • message|100?}",
+  "gitlens.currentLine.uncommittedChangesFormat": " ${author}",
+  "gitlens.blame.fontWeight": "200",
+  "gitlens.statusBar.format": "${author} • ${agoOrDate}${' via  'pullRequest}",
+}
