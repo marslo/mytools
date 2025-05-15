@@ -4,32 +4,33 @@ tap "hashicorp/tap"
 tap "homebrew/command-not-found"
 tap "vitorgalvao/tiny-scripts"
 brew "ack"
+brew "shellcheck", args: ["HEAD"]
+brew "actionlint"
 brew "ansible-lint"
 brew "ansifilter"
-brew "gettext"
 brew "pcre2"
-brew "python-setuptools"
 brew "ruby", args: ["HEAD"]
 brew "bash"
 brew "bash-completion@2"
-brew "bat"
-brew "cheat"
+brew "bat", args: ["HEAD"]
+brew "chafa"
+brew "cheat", args: ["HEAD"]
 brew "colordiff"
 brew "coreutils"
 brew "corkscrew"
+brew "create-dmg"
 brew "curl", args: ["HEAD"]
+brew "dialog"
 brew "diff-so-fancy", args: ["HEAD"]
 brew "diffutils"
 brew "dos2unix"
-brew "node"
 brew "eslint", args: ["HEAD"]
-brew "exiftool"
-brew "eza"
-brew "fd"
+brew "expect"
+brew "fd", args: ["HEAD"]
+brew "fdupes"
 brew "figlet"
 brew "file-formula"
 brew "findutils"
-brew "libtool"
 brew "fontforge"
 brew "fortune"
 brew "fzf", args: ["HEAD"]
@@ -37,14 +38,15 @@ brew "fzy", args: ["HEAD"]
 brew "gawk"
 brew "gh"
 brew "git", args: ["HEAD"]
-brew "git-extras"
-brew "git-flow"
+brew "git-extras", args: ["HEAD"]
+brew "git-filter-repo"
 brew "glances"
+brew "gnu-getopt"
 brew "gnu-indent"
 brew "gnu-sed"
 brew "gnu-tar"
 brew "gnu-which"
-brew "pkgconf"
+brew "gnutls"
 brew "openjdk"
 brew "gradle"
 brew "gradle-completion", args: ["HEAD"]
@@ -53,6 +55,7 @@ brew "groovy"
 brew "gum", args: ["HEAD"]
 brew "gzip"
 brew "hadolint"
+brew "hexyl", args: ["HEAD"]
 brew "highlight", args: ["HEAD"]
 brew "htop"
 brew "ifstat"
@@ -65,42 +68,36 @@ brew "jsonlint"
 brew "kubecolor"
 brew "kubernetes-cli", args: ["HEAD"]
 brew "less"
+brew "libxml2"
 brew "lsof"
 brew "lynx"
 brew "macvim", args: ["HEAD"], link: false
-brew "maven"
+brew "mas", args: ["HEAD"]
 brew "mkdocs"
 brew "mongosh"
 brew "moreutils"
 brew "mtr", args: ["HEAD"]
+brew "mupdf-tools", args: ["HEAD"]
 brew "ncdu"
-brew "tree-sitter", args: ["HEAD"]
-brew "utf8proc", args: ["HEAD"]
 brew "neovim", args: ["HEAD"]
 brew "nmap"
-brew "node@22"
-brew "nushell", args: ["HEAD"]
 brew "nvm"
 brew "openldap"
-brew "pandoc"
+brew "pandoc", args: ["HEAD"]
+brew "qrencode"
+brew "tree"
 brew "pass", args: ["HEAD"]
 brew "pass-otp"
+brew "pdfcpu"
 brew "pinentry-mac", args: ["HEAD"]
 brew "poppler", args: ["HEAD"]
 brew "proctools"
 brew "pstree"
 brew "pv"
-brew "pwsafe"
-brew "python@3.12"
-brew "python-tk@3.12"
 brew "python-tk@3.13"
 brew "rename", args: ["HEAD"]
 brew "ripgrep", args: ["HEAD"]
-brew "rlwrap", args: ["HEAD"]
-brew "sevenzip", args: ["HEAD"]
-brew "shellcheck", args: ["HEAD"]
 brew "shfmt", args: ["HEAD"]
-brew "spark"
 brew "stow"
 brew "stylelint"
 brew "telnet"
@@ -109,10 +106,11 @@ brew "tig", args: ["HEAD"]
 brew "tlrc", args: ["HEAD"]
 brew "tmux"
 brew "toilet", args: ["HEAD"]
-brew "trash", link: true
+brew "trash"
 brew "unzip"
 brew "util-linux"
 brew "vint"
+brew "viu", args: ["HEAD"]
 brew "vnstat"
 brew "w3m", args: ["HEAD"]
 brew "watch"
@@ -121,7 +119,6 @@ brew "wget"
 brew "whois", args: ["HEAD"]
 brew "yamlfmt", args: ["HEAD"]
 brew "yamllint", args: ["HEAD"]
-brew "youtube-dl", args: ["HEAD"]
 brew "zenity"
 brew "zip"
 brew "carlocab/personal/unrar"
@@ -129,7 +126,6 @@ brew "hashicorp/tap/vault"
 cask "alfred"
 cask "baiduinput"
 cask "beyond-compare"
-cask "bob"
 cask "chatbox"
 cask "cherry-studio"
 cask "cleanmymac"
@@ -143,54 +139,39 @@ cask "macvim"
 cask "moom"
 cask "paintbrush"
 cask "shottr"
-cask "sip"
 cask "snipaste"
 cask "vimr"
+cask "warp"
 cask "wechat"
+mas "Numbers", id: 409203825
+mas "Overlap", id: 1516950324
+mas "pwSafe", id: 520993579
+mas "Xcode", id: 497799835
 vscode "argylewolflabs.vscode-groovy"
 vscode "dave-hagedorn.jenkins-runner"
 vscode "deerawan.vscode-dash"
-vscode "dnicolson.binary-plist"
 vscode "eamodio.gitlens"
-vscode "formulahendry.code-runner"
 vscode "github.copilot"
 vscode "github.copilot-chat"
-vscode "gitpod.gitpod-desktop"
-vscode "gitpod.gitpod-remote-ssh"
-vscode "henrytsz.nvim"
 vscode "ivory-lab.jenkinsfile-support"
 vscode "janjoerke.jenkins-pipeline-linter-connector"
 vscode "jdinhlife.gruvbox"
-vscode "jfrog.jfrog-vscode-extension"
 vscode "jonathanharty.gruvbox-material-icon-theme"
-vscode "linhmtran168.mac-ca-vscode"
 vscode "maarti.jenkins-doc"
-vscode "manuth.markdown-converter"
-vscode "marlon407.code-groovy"
 vscode "mellowmarshmallow.groovy"
 vscode "ms-azuretools.vscode-docker"
-vscode "ms-python.debugpy"
 vscode "ms-python.python"
-vscode "ms-python.vscode-pylance"
-vscode "ms-vscode-remote.remote-containers"
-vscode "ms-vscode-remote.remote-ssh"
-vscode "ms-vscode-remote.remote-ssh-edit"
-vscode "ms-vscode-remote.remote-wsl"
-vscode "ms-vscode-remote.vscode-remote-extensionpack"
-vscode "ms-vscode.cmake-tools"
 vscode "ms-vscode.cpptools"
 vscode "ms-vscode.cpptools-extension-pack"
 vscode "ms-vscode.cpptools-themes"
-vscode "ms-vscode.remote-explorer"
-vscode "ms-vscode.remote-server"
 vscode "nicolasvuillamy.vscode-groovy-lint"
 vscode "paulvarache.vscode-jenkins"
+vscode "redhat.java"
 vscode "sainnhe.gruvbox-material"
 vscode "secanis.jenkinsfile-support"
 vscode "shan.code-settings-sync"
-vscode "tabnine.tabnine-vscode"
 vscode "tomsaunders.vscode-workspace-explorer"
-vscode "twxs.cmake"
 vscode "valiantsin.operatormonodarktheme"
+vscode "vscjava.vscode-java-debug"
+vscode "vscjava.vscode-java-pack"
 vscode "vscodevim.vim"
-vscode "xadillax.viml"
