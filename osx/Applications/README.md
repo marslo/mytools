@@ -12,7 +12,7 @@
 
 ## create dmg
 
-> [!NOTE|label:references:]
+> [!TIP]
 > - [* iMarlso: osx tips: create image](https://marslo.github.io/ibook/osx/tricky.html#create-image)
 > - [How do I create a nice-looking DMG for Mac OS X using command-line tools?](https://stackoverflow.com/a/1513578/2940319)
 
@@ -41,7 +41,7 @@ $ create-dmg --volname 'Python3 IDLE' \
 
 ## install dmg
 
-> [!NOTE|label:references:]
+> [!NOTE]
 > - [* iMarlso: osx: install dmg](https://marslo.github.io/ibook/osx/apps/apps.html#install-dmg)
 
 - attach

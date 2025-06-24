@@ -7,6 +7,7 @@
   "files.trimTrailingWhitespace": true,
   "files.autoSave": "afterDelay",
   "http.proxyStrictSSL": false,
+  "http.experimental.systemCertificatesV2": true,
   // "http.proxy": "http://ipamunix.marvell.com:8080",
 
   // editor
@@ -20,11 +21,12 @@
   "editor.fontFamily": "'OperatorMonoLig Nerd Font Mono', 'VictorMono Nerd Font Mono', 'JetBrainsMono NFM', 'MonacoLigaturized Nerd Font Mono'",
   "editor.fontLigatures": true,
   "editor.tabSize": 2,
-  "editor.cursorBlinking": "smooth",
   "editor.wordWrap": "on",
   "editor.renderWhitespace": "trailing",
   "editor.smartSelect.selectLeadingAndTrailingWhitespace": false,
+  "editor.cursorBlinking": "smooth",
   "editor.cursorStyle": "underline-thin",
+  "editor.cursorSmoothCaretAnimation": "on",
   "editor.find.autoFindInSelection": "multiline",
   "editor.suggestSelection": "first",
   "editor.codeLensFontSize": 14,
@@ -70,6 +72,8 @@
   "workbench.preferredHighContrastLightColorTheme": "Gruvbox Material Light",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.enablePreview": false,
+
+  // theme
   "gruvboxMaterial.darkContrast": "hard",
   "gruvboxMaterial.darkWorkbench": "material",
   "gruvboxMaterial.colorfulSyntax": true,
@@ -104,14 +108,17 @@
   "terminal.integrated.cursorStyle": "underline",
   "terminal.integrated.drawBoldTextInBrightColors": false,
   "terminal.integrated.scrollback": 9999999,
-  "terminal.integrated.fontSize": 16,
-  "terminal.integrated.fontFamily": "'RecMonoCasual Nerd Font Mono', 'ComicMono Nerd Font Mono', 'Andale Mono'",
+  "terminal.integrated.fontSize": 18,
+  "terminal.integrated.fontFamily": "'FantasqueSansM Nerd Font', 'RecMonoCasual Nerd Font Mono', 'ComicMono Nerd Font Mono', 'Andale Mono'",
   "terminal.integrated.bellDuration": 9999,
   "terminal.integrated.defaultProfile.osx": "bash",
   "terminal.integrated.fontLigatures.enabled": true,
   "terminal.integrated.sendKeybindingsToShell": true,
   "terminal.integrated.tabs.defaultColor": "terminal.ansiMagenta",
   "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.env.osx": {
+    "NPM_CONFIG_PREFIX": null
+  },
   // "terminal.integrated.shell.osx": "/usr/local/bin/bash",
 
   // vim
@@ -183,6 +190,7 @@
   "groovyLint.fix.enable": false,
   "groovyLint.insight.enable": true,
   "groovyLint.showProblemsView": false,
+  "groovyLint.basic.loglevel": "warning",
   "groovy.tools.classpath": [
     "$HOME/.groovy/lib/*"
   ],
@@ -210,7 +218,7 @@
   // python
   "python.jediEnabled": false,
   "python.languageServer": "Default",
-  "python.defaultInterpreterPath": "/usr/local/opt/python/libexec/bin/python",
+  "python.defaultInterpreterPath": "/opt/homebrew/opt/python/libexec/bin/python",
   "[python]": {
       "editor.formatOnType": true,
       "editor.tabSize": 2,
@@ -273,7 +281,7 @@
     "editor.detectIndentation": true,
   },
 
-  // chat
+  // copilot/chat
   "chat.editor.fontFamily": "'LXGWWenKaiMono Nerd Font Mono', 'Lekton Nerd Font Mono'",
   "chat.editor.fontSize": 14,
   "chat.renderRelatedFiles": true,
@@ -345,6 +353,5 @@
   "sync.autoUpload": true,
   "sync.autoDownload": true,
   "sync.quietSync": true,
-  "editor.cursorSmoothCaretAnimation": "on",
-  "groovyLint.basic.loglevel": "warning",
+  "github.copilot.nextEditSuggestions.enabled": true,
 }

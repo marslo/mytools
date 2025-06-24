@@ -12,7 +12,7 @@ if test "$(uname)" = "Darwin" ; then
 else
   # Linux
   font_dir="$HOME/.local/share/fonts"
-  mkdir -p $font_dir
+  mkdir -p "${font_dir}"
 fi
 
 # Copy all fonts to user fonts directory
@@ -22,7 +22,7 @@ find "$powerline_fonts_dir" \( -name "$prefix*.[ot]tf" -or -name "$prefix*.pcf.g
 # Reset font cache on Linux
 if which fc-cache >/dev/null 2>&1 ; then
     echo "Resetting font cache, this may take a moment..."
-    fc-cache -f "$font_dir"
+    fc-cache -f "${font_dir}"
 fi
 
 echo "Powerline fonts installed to $font_dir"

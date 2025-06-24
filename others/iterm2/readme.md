@@ -1,10 +1,11 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [pick colors](#pick-colors)
+- [add favor color to a file (`~/.marslo/.colors`)](#add-favor-color-to-a-file-marslocolors)
 - [get color hex (for `it2setcolor`https://raw.githubusercontent.com/jonathaneunice/iterm2-tab-set/master/csscolors.js))](#get-color-hex-for-it2setcolorhttpsrawgithubusercontentcomjonathaneuniceiterm2-tab-setmastercsscolorsjs)
 - [show color in iterm2](#show-color-in-iterm2)
+- [sample profiles](#sample-profiles)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -42,24 +43,24 @@ $ while read -r i; do
 result:
   ```bash
   $ ./rgb2hex.sh
-  yellowgreen :	154, 205, 50 :	9acd32
-  wheat :	245, 222, 179 :	f5deb3
-  tomato :	255, 99, 71 :	ff6347
-  steelblue :	70, 130, 180 :	4682b4
-  tan :	210, 180, 140 :	d2b48c
-  sandybrown :	244, 164, 96 :	f4a460
-  plum :	221, 160, 221 :	dda0dd
-  palegoldenrod :	238, 232, 170 :	eee8aa
-  palegreen :	152, 251, 152 :	98fb98
-  navajowhite :	255, 222, 173 :	ffdead
-  olive :	128, 128, 0 :	80800
-  moccasin :	255, 228, 181 :	ffe4b5
-  chartreuse :	127, 255, 0 :	7fff0
-  palegreen :	152, 251, 152 :	98fb98
-  mediumorchid :	186, 85, 211 :	ba55d3
-  royalblue :	65, 105, 225 :	4169e1
-  olivedrab :	107, 142, 35 :	6b8e23
-  khaki :	240, 230, 140 :	f0e68c
+  yellowgreen : 154, 205, 50 :  9acd32
+  wheat : 245, 222, 179 : f5deb3
+  tomato :  255, 99, 71 : ff6347
+  steelblue : 70, 130, 180 :  4682b4
+  tan : 210, 180, 140 : d2b48c
+  sandybrown :  244, 164, 96 :  f4a460
+  plum :  221, 160, 221 : dda0dd
+  palegoldenrod : 238, 232, 170 : eee8aa
+  palegreen : 152, 251, 152 : 98fb98
+  navajowhite : 255, 222, 173 : ffdead
+  olive : 128, 128, 0 : 80800
+  moccasin :  255, 228, 181 : ffe4b5
+  chartreuse :  127, 255, 0 : 7fff0
+  palegreen : 152, 251, 152 : 98fb98
+  mediumorchid :  186, 85, 211 :  ba55d3
+  royalblue : 65, 105, 225 :  4169e1
+  olivedrab : 107, 142, 35 :  6b8e23
+  khaki : 240, 230, 140 : f0e68c
   ```
 
 ### [show color in iterm2](https://raw.githubusercontent.com/marslo/mylinux/master/confs/home/.marslo/.marslorc)
@@ -87,3 +88,8 @@ EOF
 - result:
 
 ![tabset list](../screenshot/iterm2/itit-c.png)
+
+
+### sample profiles
+
+![profiles](./profiles/profiles.png)
