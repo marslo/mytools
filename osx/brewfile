@@ -33,6 +33,8 @@ brew "colordiff"
 brew "coreutils"
 # Tunnel SSH through HTTP proxies
 brew "corkscrew"
+# Static analysis of C and C++ code
+brew "cppcheck", args: ["HEAD"]
 # Shell script to build fancy DMGs
 brew "create-dmg"
 # Get a file from an HTTP, HTTPS or FTP server
@@ -41,6 +43,8 @@ brew "curl", args: ["HEAD"]
 brew "dialog"
 # Good-lookin' diffs with diff-highlight and more
 brew "diff-so-fancy", args: ["HEAD"]
+# Diff that understands syntax
+brew "difftastic"
 # File comparison utilities
 brew "diffutils"
 # Bash, Zsh and Fish completion for Docker
@@ -75,6 +79,8 @@ brew "fzy", args: ["HEAD"]
 brew "gawk"
 # Bash completion for gem
 brew "gem-completion", args: ["HEAD"]
+# Interact with Google Gemini AI models from the command-line
+brew "gemini-cli"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
@@ -83,6 +89,8 @@ brew "git", args: ["HEAD"]
 brew "git-extras", args: ["HEAD"]
 # Quickly rewrite git repository history
 brew "git-filter-repo"
+# Git extension for versioning large files
+brew "git-lfs"
 # Alternative to top/htop
 brew "glances"
 # Command-line option parsing utility
@@ -151,6 +159,8 @@ brew "lynx"
 brew "macvim", args: ["HEAD"], link: false
 # Mac App Store command-line interface
 brew "mas", args: ["HEAD"]
+# Like sed, awk, cut, join & sort for name-indexed data such as CSV
+brew "miller", args: ["HEAD"]
 # Project documentation with Markdown
 brew "mkdocs"
 # MongoDB Shell to connect, configure, query, and work with your MongoDB database
@@ -207,6 +217,8 @@ brew "rename", args: ["HEAD"]
 brew "ripgrep", args: ["HEAD"]
 # Autoformat shell script source code
 brew "shfmt", args: ["HEAD"]
+# Cross-shell prompt for astronauts
+brew "starship"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
 # Modern CSS linter
@@ -253,6 +265,8 @@ brew "yamllint", args: ["HEAD"]
 brew "zenity"
 # Compression and file packaging/archive utility
 brew "zip"
+# New zlib (gzip, deflate) compatible compressor
+brew "zopfli"
 # Extract, view, and test RAR archives
 brew "carlocab/personal/unrar"
 # Vault
