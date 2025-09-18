@@ -4,12 +4,12 @@
 #     FileName : checkOS.sh
 #       Author : marslo
 #      Created : 2024-06-11 14:15:47
-#   LastChange : 2025-09-18 01:53:58
+#   LastChange : 2025-09-18 02:01:09
 #=============================================================================
 
 set -euo pipefail
 
-echo -e "\033[1;32m>> O:\033[0m"
+echo -e "\033[1;32m>> OS:\033[0m"
 awk -F= '/^PRETTY_NAME=/ { gsub(/"/, "", $2); print $2 }' /etc/os-release
 uname -a
 
@@ -17,10 +17,10 @@ echo -e "\033[1;32m>> SYSTEM INFO:\033[0m"
 sudo dmidecode | grep -A5 '^System Information'
 
 echo -e "\033[1;32m>> NIC:\033[0m"
-# interface=$("ip route get \"$(dig +short github.com | head -1)\" | sed -rn 's|.*dev\s+(\S+)\s+src.*$|\1|p'")
-interface=$(netstat -nr | command grep -E '(^0.0.0)|(default|UG|UGScg)\ ' | awk '$2 ~ /([0-9]{1,3}\.){3}[0-9]{1,3}/' | awk '{print $NF}' | head -1)
-macaddress=$(ip link show "${interface}" | sed -rn 's|.*ether ([0-9a-fA-F:]{17}).*$|\1|p' | tr '[:lower:]' '[:upper:]')
-bandwidth=$(sudo /sbin/ethtool "${interface}"| sed -rn 's|\s*Speed:\s*(.+)$|\1|p')
+# interface="$(/bin/ip route get "$(dig +short github.com | head -1)" | sed -rn 's|.*dev\s+(\S+)\s+src.*$|\1|p')"
+interface=$(/bin/ip route show default | awk '{print $5}')
+macaddress=$(/bin/ip link show "${interface}" | sed -rn 's|.*ether ([0-9a-fA-F:]{17}).*$|\1|p' | tr '[:lower:]' '[:upper:]')
+bandwidth=$(sudo /sbin/ethtool "${interface}" | sed -rn 's|\s*Speed:\s*(.+)$|\1|p')
 echo -e "• interface: ${interface}\n• mac address: ${macaddress}\n• bandwidth: ${bandwidth}"
 
 echo -en "\033[1;32m>> MEMORY OVERALL:\033[0m "
