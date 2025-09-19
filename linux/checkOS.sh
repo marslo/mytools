@@ -27,20 +27,34 @@ echo -en "\033[1;32m>> MEMORY OVERALL:\033[0m "
 sudo lshw -short | grep --color=never 'System Memory' | sed -E 's/.*\s([0-9]+[A-Za-z]+) System Memory/\1/'
 sudo dmidecode -t memory | awk -v RS="" '
 /^Handle [^\n]*\nMemory Device/ {
-  size=""; unit=""; type=""; speed="";
+  size=""; unit=""; type=""; sp="";
 
-  if (match($0, /Size:[[:space:]]+([0-9]+)[[:space:]]+(GB|MB)/, m)) {
-    size=m[1]; unit=m[2];
+  # Size: 16384 MB
+  if (match($0, /Size:[[:space:]]+[0-9]+[[:space:]]+(GB|MB)/)) {
+    seg = substr($0, RSTART, RLENGTH);
+    sub(/^Size:[[:space:]]+/, "", seg);
+    n = split(seg, f, /[[:space:]]+/);
+    size = f[1]; unit = f[2];
   } else next;
 
-  if (match($0, /Type:[[:space:]]+(DDR[0-9]+)/, t)) type=t[1]; else next;
-  if (match($0, /Speed:[[:space:]]+([0-9]+)[[:space:]]+MT\/s/, s)) {
-    sp=s[1];
-  } else if (match($0, /Configured Memory Speed:[[:space:]]+([0-9]+)[[:space:]]+MT\/s/, s2)) {
-    sp=s2[1];
-  } else sp="";
+  # Type: DDR4
+  if (match($0, /Type:[[:space:]]+DDR[0-9]+/)) {
+    seg = substr($0, RSTART, RLENGTH);
+    sub(/^Type:[[:space:]]+/, "", seg);
+    type = seg;
+  } else next;
 
-  szGB = (unit=="MB") ? int(size/1024) : size;
+  # Speed or Configured Memory Speed
+  if (match($0, /Speed:[[:space:]]+[0-9]+[[:space:]]+MT\/s/)) {
+    seg = substr($0, RSTART, RLENGTH);
+    gsub(/[^0-9]/, "", seg); sp = seg;
+  } else if (match($0, /Configured Memory Speed:[[:space:]]+[0-9]+[[:space:]]+MT\/s/)) {
+    seg = substr($0, RSTART, RLENGTH);
+    gsub(/[^0-9]/, "", seg); sp = seg;
+  }
+
+  # to GB
+  szGB = (unit=="MB") ? int(size/1024) : size+0;
 
   if (type != "" && szGB > 0) {
     key = szGB "GB|" type "|" sp;
@@ -54,6 +68,7 @@ END {
     if (a[3] != "") printf " @ %s MT/s", a[3];
     print "";
   }
+  if (total>0) printf "Total: %d GB\n", total;
 }'
 
 echo -e "\033[1;32m>> MEMORY USAGE:\033[0m"
@@ -73,6 +88,7 @@ echo -ne "\033[1;32m>> SERIAL NUMBER:\033[0m "
 sudo dmidecode -s system-serial-number
 
 echo -ne "\033[1;32m>> RAID INFO:\033[0m "
+type -P mdadm >/dev/null 2>&1 || { echo -e "\n.. install mdadm via \`sudo apt install -y mdadm\` first"; exit 0; }
 RAID_SCAN=$(sudo mdadm --detail --scan)
 if [[ -z "$RAID_SCAN" ]]; then
   echo -e "\033[38;5;245;3mNO RAID\033[0m"
