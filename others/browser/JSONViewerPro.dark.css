@@ -1,0 +1,31 @@
+/**Write your CSS style **/
+#json-viewer {
+    font-size: 24px !important;
+    font-family: "VictorMono Nerd Font Mono" !important;
+}
+
+.property{
+    /*color:#994c9e;*/
+    color: #548386;
+}
+
+.json-literal-numeric {
+    /*color:#F5B041;*/
+}
+
+.json-literal-url {
+    /*color: #34a632;*/
+}
+
+.json-literal-string {
+    /*color:#0642b0;*/
+    color: #979736;
+}
+
+.json-literal {
+    /*color:#b568de;*/
+}
+
+.json-literal-boolean {
+    /*color: #f23ebb;*/
+}

@@ -55,6 +55,8 @@ brew "dos2unix"
 brew "eslint", args: ["HEAD"]
 # Program that can automate interactive applications
 brew "expect"
+# Modern, maintained replacement for ls
+brew "eza"
 # Simple, fast and user-friendly alternative to find
 brew "fd", args: ["HEAD"]
 # Identify or delete duplicate files
@@ -83,6 +85,8 @@ brew "gem-completion", args: ["HEAD"]
 brew "gemini-cli"
 # GitHub command-line tool
 brew "gh"
+# Interpreter for PostScript and PDF
+brew "ghostscript"
 # Distributed revision control system
 brew "git", args: ["HEAD"]
 # Small git utilities
@@ -106,13 +110,15 @@ brew "gnu-which"
 # GNU Transport Layer Security (TLS) Library
 brew "gnutls"
 # Development kit for the Java programming language
-brew "openjdk"
+brew "openjdk@21"
 # Open-source build automation tool based on the Groovy and Kotlin DSL
 brew "gradle"
 # Bash and Zsh completion for Gradle
 brew "gradle-completion", args: ["HEAD"]
 # GNU grep, egrep and fgrep
 brew "grep"
+# Development kit for the Java programming language
+brew "openjdk"
 # Java-based scripting language
 brew "groovy"
 # Tool for glamorous shell scripts
@@ -133,6 +139,8 @@ brew "htop"
 brew "ifstat"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
+# GNU utilities for networking
+brew "inetutils"
 # Calculate various network masks, etc. from a given IP address
 brew "ipcalc"
 # CLI wrapper for basic network utilities on macOS - ip command
@@ -149,18 +157,18 @@ brew "kubecolor"
 brew "kubernetes-cli", args: ["HEAD"]
 # Pager program similar to more
 brew "less"
+# Sophisticated file transfer program
+brew "lftp"
 # GNOME XML library
 brew "libxml2"
 # Utility to list open files
 brew "lsof"
 # Text-based web browser
 brew "lynx"
-# GUI for vim, made for macOS
-brew "macvim", args: ["HEAD"], link: false
 # Mac App Store command-line interface
 brew "mas", args: ["HEAD"]
 # Like sed, awk, cut, join & sort for name-indexed data such as CSV
-brew "miller", args: ["HEAD"]
+brew "miller"
 # Project documentation with Markdown
 brew "mkdocs"
 # MongoDB Shell to connect, configure, query, and work with your MongoDB database
@@ -170,7 +178,7 @@ brew "moreutils"
 # 'traceroute' and 'ping' in a single tool
 brew "mtr", args: ["HEAD"]
 # Lightweight PDF and XPS viewer
-brew "mupdf-tools", args: ["HEAD"]
+brew "mupdf-tools"
 # NCurses Disk Usage
 brew "ncdu"
 # Ambitious Vim-fork focused on extensibility and agility
@@ -181,8 +189,6 @@ brew "nmap"
 brew "nvm"
 # Bash completion for open
 brew "open-completion", args: ["HEAD"]
-# Development kit for the Java programming language
-brew "openjdk@21"
 # Open source suite of directory software
 brew "openldap"
 # 7-Zip (high compression file archiver) implementation
@@ -224,7 +230,7 @@ brew "stow"
 # Modern CSS linter
 brew "stylelint"
 # User interface to the TELNET protocol
-brew "telnet"
+brew "telnet", link: false
 # Code-search similar to ack
 brew "the_silver_searcher", args: ["HEAD"]
 # Text interface for Git repositories
@@ -258,7 +264,7 @@ brew "wget"
 # Lookup tool for domain names and other internet resources
 brew "whois", args: ["HEAD"]
 # Extensible command-line tool to format YAML files
-brew "yamlfmt", args: ["HEAD"]
+brew "yamlfmt"
 # Linter for YAML files
 brew "yamllint", args: ["HEAD"]
 # GTK+ dialog boxes for the command-line
@@ -282,8 +288,6 @@ cask "chatbox"
 cask "cherry-studio"
 # Tool to remove unnecessary files and folders from disk
 cask "cleanmymac"
-# Write, edit, and chat about your code with AI
-cask "cursor"
 # API documentation browser and code snippet manager
 cask "dash"
 # Web browser
@@ -304,6 +308,8 @@ cask "paintbrush"
 cask "qq"
 # Screenshot measurement and annotation tool
 cask "shottr"
+# Collect, organise & share colours
+cask "sip-app"
 # Snip or pin screenshots
 cask "snipaste"
 # GUI for the Neovim text editor
@@ -315,8 +321,8 @@ cask "wechat"
 mas "Numbers", id: 409203825
 mas "Overlap", id: 1516950324
 mas "pwSafe", id: 520993579
-mas "Xcode", id: 497799835
 vscode "argylewolflabs.vscode-groovy"
+vscode "bierner.markdown-mermaid"
 vscode "dave-hagedorn.jenkins-runner"
 vscode "deerawan.vscode-dash"
 vscode "eamodio.gitlens"
@@ -333,6 +339,7 @@ vscode "ms-azuretools.vscode-docker"
 vscode "ms-python.debugpy"
 vscode "ms-python.python"
 vscode "ms-python.vscode-pylance"
+vscode "ms-python.vscode-python-envs"
 vscode "ms-vscode.cpptools"
 vscode "ms-vscode.cpptools-extension-pack"
 vscode "ms-vscode.cpptools-themes"
