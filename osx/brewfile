@@ -15,14 +15,12 @@ brew "ansible-lint"
 brew "ansifilter"
 # Perl compatible regular expressions library with a new API
 brew "pcre2"
-# Powerful, clean, object-oriented scripting language
-brew "ruby", args: ["HEAD"]
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
 # Programmable completion for Bash 4.2+
 brew "bash-completion@2"
 # Clone of cat(1) with syntax highlighting and Git integration
-brew "bat", args: ["HEAD"]
+brew "bat"
 # Versatile and fast Unicode/ASCII/ANSI graphics renderer
 brew "chafa"
 # Create and view interactive cheat sheets for *nix commands
@@ -52,7 +50,7 @@ brew "docker-completion", args: ["HEAD"]
 # Convert text between DOS, UNIX, and Mac formats
 brew "dos2unix"
 # AST-based pattern checker for JavaScript
-brew "eslint", args: ["HEAD"]
+brew "eslint"
 # Program that can automate interactive applications
 brew "expect"
 # Modern, maintained replacement for ls
@@ -110,15 +108,13 @@ brew "gnu-which"
 # GNU Transport Layer Security (TLS) Library
 brew "gnutls"
 # Development kit for the Java programming language
-brew "openjdk@21"
+brew "openjdk"
 # Open-source build automation tool based on the Groovy and Kotlin DSL
 brew "gradle"
 # Bash and Zsh completion for Gradle
-brew "gradle-completion", args: ["HEAD"]
+brew "gradle-completion"
 # GNU grep, egrep and fgrep
 brew "grep"
-# Development kit for the Java programming language
-brew "openjdk"
 # Java-based scripting language
 brew "groovy"
 # Tool for glamorous shell scripts
@@ -146,7 +142,7 @@ brew "ipcalc"
 # CLI wrapper for basic network utilities on macOS - ip command
 brew "iproute2mac"
 # Command-line interface for JFrog products
-brew "jfrog-cli", args: ["HEAD"]
+brew "jfrog-cli"
 # Lightweight and flexible command-line JSON processor
 brew "jq", args: ["HEAD"]
 # JSON parser and validator with a CLI
@@ -182,19 +178,21 @@ brew "mupdf-tools"
 # NCurses Disk Usage
 brew "ncdu"
 # Ambitious Vim-fork focused on extensibility and agility
-brew "neovim", args: ["HEAD"]
+brew "neovim"
 # Port scanning utility for large networks
 brew "nmap"
 # Manage multiple Node.js versions
 brew "nvm"
 # Bash completion for open
 brew "open-completion", args: ["HEAD"]
+# Development kit for the Java programming language
+brew "openjdk@21"
 # Open source suite of directory software
 brew "openldap"
 # 7-Zip (high compression file archiver) implementation
 brew "p7zip"
 # Swiss-army knife of markup format conversion
-brew "pandoc", args: ["HEAD"]
+brew "pandoc"
 # QR Code generation
 brew "qrencode"
 # Display directories as trees (with optional color/HTML output)
@@ -217,10 +215,14 @@ brew "pstree"
 brew "pv"
 # Python interface to Tcl/Tk
 brew "python-tk@3.13"
+# Python interface to Tcl/Tk
+brew "python-tk@3.14"
 # Perl-powered file rename script with many helpful built-ins
 brew "rename", args: ["HEAD"]
 # Search tool like grep and The Silver Searcher
-brew "ripgrep", args: ["HEAD"]
+brew "ripgrep"
+# Powerful, clean, object-oriented scripting language
+brew "ruby", args: ["HEAD"]
 # Autoformat shell script source code
 brew "shfmt", args: ["HEAD"]
 # Cross-shell prompt for astronauts
@@ -243,6 +245,8 @@ brew "tmux"
 brew "toilet", args: ["HEAD"]
 # CLI tool that moves files or folder to the trash
 brew "trash"
+# Parser generator tool
+brew "tree-sitter-cli"
 # Extraction utility for .zip compressed archives
 brew "unzip"
 # Collection of Linux utilities
@@ -318,6 +322,7 @@ cask "vimr"
 cask "warp"
 # Free messaging and calling application
 cask "wechat"
+mas "iShot Pro", id: 1611347086
 mas "Numbers", id: 409203825
 mas "Overlap", id: 1516950324
 mas "pwSafe", id: 520993579
