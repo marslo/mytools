@@ -1,0 +1,376 @@
+tap "benjiwolff/neovim-nightly"
+tap "buo/cask-upgrade"
+tap "homebrew/command-not-found"
+tap "homebrew/core"
+tap "marslo/icu4c-70-1"
+tap "marslo/icu4c-71-1"
+tap "mkdryden/misc"
+# Search tool like grep, but optimized for programmers
+brew "ack"
+# Color management engine supporting ICC profiles
+brew "little-cms2"
+# Image format providing lossless and lossy compression for web images
+brew "webp"
+# New file format for still image compression
+brew "jpeg-xl"
+# Automatic configure script builder
+brew "autoconf"
+# Bourne-Again SHell, a UNIX command interpreter
+brew "bash"
+# Programmable completion for Bash 4.2+
+brew "bash-completion@2"
+# C library implementing the SSH2 protocol
+brew "libssh2"
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
+# Bash scripts that integrate bat with various command-line tools
+brew "bat-extras"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
+# Bash Automated Testing System
+brew "bats-core"
+# GNU binary tools for native development
+brew "binutils"
+# Fish completion for brew-cask
+brew "brew-cask-completion"
+# Cross-platform make
+brew "cmake"
+# Documentation for CMake
+brew "cmake-docs"
+# Color-highlighted diff(1) output
+brew "colordiff"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
+# Lint commit messages according to a commit convention
+brew "commitlint"
+# Tunnel SSH through HTTP proxies
+brew "corkscrew"
+# Tool for downloading RTMP streaming media
+brew "rtmpdump"
+# Get a file from an HTTP, HTTPS or FTP server
+brew "curl"
+# Display user-friendly message boxes from shell scripts
+brew "dialog"
+# Good-lookin' diffs with diff-highlight and more
+brew "diff-so-fancy"
+# File comparison utilities
+brew "diffutils"
+# Convert text between DOS, UNIX, and Mac formats
+brew "dos2unix"
+# Classic UNIX line editor
+brew "ed"
+# Modern, maintained replacement for ls
+brew "eza"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
+# Library to load and enumerate PKCS#11 modules
+brew "p11-kit"
+# Validating, recursive, caching DNS resolver
+brew "unbound"
+# GNU Transport Layer Security (TLS) Library
+brew "gnutls"
+# OpenType text shaping engine
+brew "harfbuzz"
+# Play, record, convert, and stream audio and video
+brew "ffmpeg"
+# Banner-like program prints strings as ASCII art
+brew "figlet"
+# Utility to determine file types
+brew "file-formula"
+# Collection of GNU find, xargs, and locate
+brew "findutils"
+# Command-line outline and bitmap font editor/converter
+brew "fontforge"
+# Infamous electronic fortune-cookie generator
+brew "fortune"
+# Command-line fuzzy finder written in Go
+brew "fzf"
+# Fast, simple fuzzy text selector with an advanced scoring algorithm
+brew "fzy"
+# GNU awk utility
+brew "gawk"
+# GNU compiler collection
+brew "gcc"
+# GitHub command-line tool
+brew "gh"
+# Interpreter for PostScript and PDF
+brew "ghostscript"
+# Distributed revision control system
+brew "git"
+# Extensions to follow Vincent Driessen's branching model
+brew "git-flow"
+# Alternative to top/htop
+brew "glances"
+# C code prettifier
+brew "gnu-indent"
+# GNU implementation of the famous stream editor
+brew "gnu-sed"
+# GNU version of the tar archiving utility
+brew "gnu-tar"
+# GNU implementation of which utility
+brew "gnu-which"
+# Open source programming language to build simple/reliable/efficient software
+brew "go"
+# Open-source build automation tool based on the Groovy and Kotlin DSL
+brew "gradle"
+# Bash and Zsh completion for Gradle
+brew "gradle-completion"
+# GNU grep, egrep and fgrep
+brew "grep"
+# Java-based scripting language
+brew "groovy"
+# Numerical library for C and C++
+brew "gsl"
+# Tool for glamorous shell scripts
+brew "gum", args: ["HEAD"]
+# Popular GNU data compression program
+brew "gzip"
+# Smarter Dockerfile linter to validate best practices
+brew "hadolint"
+# Improved top (interactive process viewer)
+brew "htop"
+# C/C++ and Java libraries for Unicode and globalization
+brew "icu4c@76"
+# Tool to report network interface bandwidth
+brew "ifstat"
+# ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
+brew "libheif"
+# Tools and libraries to manipulate images in many formats
+brew "imagemagick"
+# Command-line interface for interacting with the IoTeX blockchain
+brew "ioctl"
+# Calculate various network masks, etc. from a given IP address
+brew "ipcalc"
+# CLI wrapper for basic network utilities on macOS - ip command
+brew "iproute2mac"
+# Java language specific implementation of the Language Server Protocol
+brew "jdtls"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+# Kubernetes command-line interface
+brew "kubernetes-cli"
+# Pager program similar to more
+brew "less"
+# Conversion library
+brew "libiconv"
+# Next-gen compiler infrastructure
+brew "llvm"
+# Utility to list open files
+brew "lsof"
+# Package manager for the Lua programming language
+brew "luarocks"
+# Mac App Store command-line interface
+brew "mas"
+# Cross platform, open source .NET development framework
+brew "mono"
+# Collection of tools that nobody wrote when UNIX was young
+brew "moreutils"
+# NCurses Disk Usage
+brew "ncdu"
+# Incremental parsing library
+brew "tree-sitter"
+# Clean C library for processing UTF-8 Unicode data
+brew "utf8proc", args: ["HEAD"]
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# HTTP/2 C Library
+brew "nghttp2"
+# Port scanning utility for large networks
+brew "nmap"
+# Cryptography and SSL/TLS Toolkit
+brew "openssl@1.1"
+# Platform built on V8 to build network applications
+brew "node@12"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node@20"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node@22"
+# Manage multiple Node.js versions
+brew "nvm"
+# Open source suite of directory software
+brew "openldap"
+# 7-Zip (high compression file archiver) implementation
+brew "p7zip"
+# Swiss-army knife of markup format conversion
+brew "pandoc"
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
+# Password manager
+brew "pass"
+# General-purpose scripting language
+brew "php"
+# Pinentry for GPG on Mac
+brew "pinentry-mac"
+# Python dependency management tool
+brew "pipenv"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
+# Framework for managing multi-language pre-commit hooks
+brew "pre-commit"
+# OpenBSD and Darwin versions of pgrep, pkill, and pfind
+brew "proctools"
+# Show ps output as a tree
+brew "pstree"
+# Monitor data's progress through a pipe
+brew "pv"
+# Python version management
+brew "pyenv"
+# Tool Command Language
+brew "tcl-tk", link: false
+# Python interface to Tcl/Tk
+brew "python-tk@3.13"
+# Python interface to Tcl/Tk
+brew "python-tk@3.14"
+# Ruby version manager
+brew "rbenv"
+# Perl-powered file rename script with many helpful built-ins
+brew "rename"
+# Tools for file renaming
+brew "renameutils"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# Powerful, clean, object-oriented scripting language
+brew "ruby"
+# Safe, concurrent, practical language
+brew "rust"
+# Generate ASCII art with terminal, shell, and OS info
+brew "screenfetch"
+# Static analysis and lint tool, for (ba)sh scripts
+brew "shellcheck"
+# Simple keystroke visualizer
+brew "showkey"
+# Organize software neatly under a single directory tree (e.g. /usr/local)
+brew "stow"
+# User interface to the TELNET protocol
+brew "telnet"
+# Code-search similar to ack
+brew "the_silver_searcher"
+# Text interface for Git repositories
+brew "tig"
+# Simplified and community-driven man pages
+brew "tldr"
+# Terminal multiplexer
+brew "tmux"
+# Color-based alternative to figlet (uses libcaca)
+brew "toilet"
+# CLI tool that moves files or folder to the trash
+brew "trash", link: true
+# Maintained ctags implementation
+brew "universal-ctags"
+# Extraction utility for .zip compressed archives
+brew "unzip"
+# Collection of Linux utilities
+brew "util-linux"
+# Console-based network traffic monitor
+brew "vnstat"
+# Executes a program periodically, showing output fullscreen
+brew "watch"
+# Watch files and take action when they change
+brew "watchman"
+# Display word differences between text files
+brew "wdiff"
+# Internet file retriever
+brew "wget"
+# Linter for YAML files
+brew "yamllint"
+# C/C++ and Java libraries for Unicode and globalization
+brew "marslo/icu4c-70-1/icu4c@70.1"
+# C/C++ and Java libraries for Unicode and globalization
+brew "marslo/icu4c-71-1/icu4c@71.1"
+# Tool to find terminal points in paths.
+brew "mkdryden/misc/namei"
+# Compact TeX distribution as alternative to the full TeX Live / MacTeX
+cask "basictex"
+# Tool to show caps lock status
+cask "captin"
+# Web browser
+cask "firefox-developer-edition"
+# Flip clock screensaver
+cask "fliqlo"
+# Web browser
+cask "google-chrome"
+# Vector graphics editor
+cask "inkscape"
+# Terminal emulator as alternative to Apple's Terminal app
+cask "iterm2-beta"
+# Open-source keystroke visualiser
+cask "keycastr"
+# Text editor
+cask "macvim-app"
+# Add more gestures for Trackpad and Magic Mouse
+cask "multitouch"
+# Convert HTML to PDF
+cask "prince"
+# Snip or pin screenshots
+cask "snipaste"
+# Open-source code editor
+cask "visual-studio-code"
+mas "AutoSwitchInput Pro", id: 1551531632
+mas "Bob", id: 1630034110
+mas "Caps Lock Tone", id: 1562503375
+mas "CleanMyDrive 2", id: 523620159
+mas "Color Picker", id: 1545870783
+mas "GarageBand", id: 682658836
+mas "GIF Brewery 3", id: 1081413713
+mas "iMovie", id: 408981434
+mas "iShot", id: 1485844094
+mas "iShot Pro", id: 1611347086
+mas "Keynote", id: 409183694
+mas "Microsoft OneNote", id: 784801555
+mas "Moom Classic", id: 419330170
+mas "MSG Viewer for Outlook", id: 973213640
+mas "OpenChat", id: 6455304581
+mas "Overlap", id: 1516950324
+mas "Patterns", id: 429449079
+mas "Plain Text Editor", id: 1572202501
+mas "pwSafe", id: 520993579
+mas "QQ", id: 451108668
+mas "QQMusic", id: 595615424
+mas "Record It", id: 1339001002
+mas "Record It Pro", id: 1340697163
+mas "RegExRX", id: 498370702
+mas "ShadowsocksX", id: 1295053131
+mas "Slack", id: 803453959
+mas "Spark", id: 1176895641
+mas "Speedtest", id: 1153157709
+mas "Visualize", id: 978980906
+mas "WeChat", id: 836500024
+mas "Week Number", id: 6502579523
+mas "WiFi Speed Test", id: 1455463454
+mas "Windows App", id: 1295203466
+mas "WPS Office", id: 1443749478
+mas "Xcode", id: 497799835
+mas "喜马拉雅", id: 876336838
+mas "快帆", id: 1442745175
+mas "网易有道翻译", id: 491854842
+mas "腾讯视频", id: 1231336508
+vscode "argylewolflabs.vscode-groovy"
+vscode "dave-hagedorn.jenkins-runner"
+vscode "deerawan.vscode-dash"
+vscode "eamodio.gitlens"
+vscode "github.copilot"
+vscode "github.copilot-chat"
+vscode "ivory-lab.jenkinsfile-support"
+vscode "janjoerke.jenkins-pipeline-linter-connector"
+vscode "jdinhlife.gruvbox"
+vscode "jonathanharty.gruvbox-material-icon-theme"
+vscode "maarti.jenkins-doc"
+vscode "mellowmarshmallow.groovy"
+vscode "ms-azuretools.vscode-docker"
+vscode "ms-python.python"
+vscode "ms-vscode.cpptools"
+vscode "ms-vscode.cpptools-extension-pack"
+vscode "ms-vscode.cpptools-themes"
+vscode "nicolasvuillamy.vscode-groovy-lint"
+vscode "paulvarache.vscode-jenkins"
+vscode "ransh.ransh"
+vscode "redhat.java"
+vscode "sainnhe.gruvbox-material"
+vscode "secanis.jenkinsfile-support"
+vscode "shan.code-settings-sync"
+vscode "tomsaunders.vscode-workspace-explorer"
+vscode "valiantsin.operatormonodarktheme"
+vscode "vscjava.vscode-java-debug"
+vscode "vscjava.vscode-java-pack"
+vscode "vscodevim.vim"
+go "github.com/hidetatz/kubecolor/cmd/kubecolor"
