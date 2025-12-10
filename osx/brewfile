@@ -36,7 +36,7 @@ brew "cppcheck", args: ["HEAD"]
 # Shell script to build fancy DMGs
 brew "create-dmg"
 # Get a file from an HTTP, HTTPS or FTP server
-brew "curl", args: ["HEAD"]
+brew "curl"
 # Display user-friendly message boxes from shell scripts
 brew "dialog"
 # Good-lookin' diffs with diff-highlight and more
@@ -46,7 +46,7 @@ brew "difftastic"
 # File comparison utilities
 brew "diffutils"
 # Bash, Zsh and Fish completion for Docker
-brew "docker-completion", args: ["HEAD"]
+brew "docker-completion"
 # Convert text between DOS, UNIX, and Mac formats
 brew "dos2unix"
 # AST-based pattern checker for JavaScript
@@ -107,12 +107,12 @@ brew "gnu-tar"
 brew "gnu-which"
 # GNU Transport Layer Security (TLS) Library
 brew "gnutls"
+# Bash and Zsh completion for Gradle
+brew "gradle-completion"
 # Development kit for the Java programming language
 brew "openjdk"
 # Open-source build automation tool based on the Groovy and Kotlin DSL
 brew "gradle"
-# Bash and Zsh completion for Gradle
-brew "gradle-completion"
 # GNU grep, egrep and fgrep
 brew "grep"
 # Java-based scripting language
@@ -206,13 +206,15 @@ brew "pdfcpu"
 # Pinentry for GPG on Mac
 brew "pinentry-mac", args: ["HEAD"]
 # PDF rendering library (based on the xpdf-3.0 code base)
-brew "poppler", args: ["HEAD"]
+brew "poppler"
 # OpenBSD and Darwin versions of pgrep, pkill, and pfind
 brew "proctools"
 # Show ps output as a tree
 brew "pstree"
 # Monitor data's progress through a pipe
 brew "pv"
+# Python version management
+brew "pyenv"
 # Python interface to Tcl/Tk
 brew "python-tk@3.13"
 # Python interface to Tcl/Tk
@@ -231,6 +233,8 @@ brew "starship"
 brew "stow"
 # Modern CSS linter
 brew "stylelint"
+# Traceroute implementation using TCP packets
+brew "tcptraceroute"
 # User interface to the TELNET protocol
 brew "telnet", link: false
 # Code-search similar to ack
@@ -356,8 +360,6 @@ vscode "secanis.jenkinsfile-support"
 vscode "shan.code-settings-sync"
 vscode "tomsaunders.vscode-workspace-explorer"
 vscode "valiantsin.operatormonodarktheme"
-vscode "visualstudioexptteam.intellicode-api-usage-examples"
-vscode "visualstudioexptteam.vscodeintellicode"
 vscode "vscjava.vscode-gradle"
 vscode "vscjava.vscode-java-debug"
 vscode "vscjava.vscode-java-dependency"
