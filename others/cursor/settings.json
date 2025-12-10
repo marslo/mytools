@@ -2,15 +2,16 @@
 {
   "update.releaseTrack": "prerelease",
   "window.commandCenter": true,
-  "editor.fontSize": 18,
+  "window.zoomLevel": 1.8,
+  "editor.fontSize": 16,
   "editor.fontFamily": "'OperatorMonoLig Nerd Font Mono', Menlo, Monaco, 'Courier New', monospace",
   "editor.fontWeight": "300",
   "editor.fontLigatures": true,
   "editor.inlayHints.fontSize": 14,
   "editor.inlayHints.fontFamily": "'MonaspiceRn Nerd Font Mono', 'FantasqueSansM Nerd Font'",
-  "editor.codeLensFontSize": 16,
+  "editor.codeLensFontSize": 14,
   "editor.codeLensFontFamily": "'MonaspiceRn Nerd Font Mono'",
-  "editor.tabSize": 2,
+  "editor.tabSize": 1.8,
   "editor.tabCompletion": "on",
   "editor.unusualLineTerminators": "auto",
   "editor.cursorStyle": "underline",
@@ -19,6 +20,7 @@
   "editor.dropIntoEditor.preferences": [],
   "editor.find.globalFindClipboard": true,
   "editor.minimap.autohide": true,
+  "editor.scrollbar.verticalScrollbarSize": 12,
   "editor.suggestFontSize": 16,
   "editor.suggest.shareSuggestSelections": true,
   "editor.suggest.showStatusBar": true,
@@ -62,7 +64,6 @@
   "chat.editor.fontSize": 18,
   "chat.editor.fontFamily": "'FantasqueSansM Nerd Font', 'LXGWWenKaiMono Nerd Font Mono'",
   "inlineChat.lineEmptyHint": true,
-  "markdown.preview.fontSize": 16,
   "markdown.preview.fontFamily": "'VictorMono Nerd Font Mono', 'Yozai Nerd Font', -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif",
   "notebook.output.fontFamily": "'VictorMono Nerd Font Mono', 'LXGWWenKaiMono Nerd Font Mono'",
   "notebook.defaultFormatter": "fnando.linter",
@@ -73,6 +74,7 @@
   "diffEditor.experimental.useTrueInlineView": true,
   "files.trimTrailingWhitespace": true,
   "files.trimFinalNewlines": true,
+  // using jsonc-parse instead of jsonlint
   "files.associations": {
     "*.json": "jsonc"
   },
@@ -84,7 +86,7 @@
   // terminal
   "terminal.external.linuxExec": "xterm-256color",
   "terminal.external.osxExec": "iTerm.app",
-  "terminal.integrated.fontSize": 18,
+  "terminal.integrated.fontSize": 17,
   "terminal.integrated.fontFamily": "'FantasqueSansM Nerd Font', 'iMWritingMono Nerd Font Mono', 'LXGWWenKaiMono Nerd Font Mono'",
   "terminal.integrated.accessibleViewPreserveCursorPosition": true,
   "terminal.integrated.cursorBlinking": true,
@@ -97,6 +99,13 @@
   "terminal.integrated.fontWeight": "200",
   "terminal.integrated.mouseWheelZoom": true,
   "terminal.integrated.tabs.defaultColor": "terminal.ansiGreen",
+  "terminal.integrated.profiles.osx": {
+    "Homebrew Bash": {
+      "path": "/opt/homebrew/bin/bash",
+      "args": ["-l"],
+      "icon": "terminal-bash"
+    }
+  },
   "terminal.integrated.defaultProfile.osx": "Homebrew Bash",
   "terminal.integrated.automationProfile.osx": {
     "path": "/opt/homebrew/bin/bash"
@@ -186,9 +195,9 @@
   "workbench.colorTheme": "Gruvbox Material Dark",
   "workbench.iconTheme": "gruvbox-material-icon-theme",
   "workbench.colorCustomizations": {
-    "statusBar.background": "#007acc",
-    "statusBar.noFolderBackground": "#007acc",
-    "statusBar.debuggingBackground": "#007acc",
+    "statusBar.background": "#202020",
+    "statusBar.noFolderBackground": "#202020",
+    "statusBar.debuggingBackground": "#202020",
     "statusBar.foreground": "#ffffff",
     "statusBar.debuggingForeground": "#ffffff"
   },
@@ -267,12 +276,5 @@
   "gitlens.currentLine.format": " ${author -} ${id •} ${agoOrDate}${' via  'pullRequest}${ • message|100?}",
   "gitlens.currentLine.uncommittedChangesFormat": " ${author}",
   "gitlens.blame.fontWeight": "200",
-  "gitlens.statusBar.format": "${author} • ${agoOrDate}${' via  'pullRequest}",
-  "terminal.integrated.profiles.osx": {
-    "Homebrew Bash": {
-      "path": "/opt/homebrew/bin/bash",
-      "args": ["-l"],
-      "icon": "terminal-bash"
-    }
-  }
+  "gitlens.statusBar.format": "${author} • ${agoOrDate}${' via  'pullRequest}"
 }
