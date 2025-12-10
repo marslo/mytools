@@ -1,3 +1,4 @@
+// $HOME/Library/Application Support/Cursor/User/settings.json
 {
   "update.releaseTrack": "prerelease",
   "window.commandCenter": true,
@@ -88,7 +89,6 @@
   "terminal.integrated.accessibleViewPreserveCursorPosition": true,
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.copyOnSelection": true,
-  "terminal.integrated.defaultProfile.osx": "bash",
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.suggest.enabled": true,
   "terminal.integrated.suggest.enableExtensionCompletions": true,
@@ -97,6 +97,11 @@
   "terminal.integrated.fontWeight": "200",
   "terminal.integrated.mouseWheelZoom": true,
   "terminal.integrated.tabs.defaultColor": "terminal.ansiGreen",
+  "terminal.integrated.defaultProfile.osx": "Homebrew Bash",
+  "terminal.integrated.automationProfile.osx": {
+    "path": "/opt/homebrew/bin/bash"
+  },
+  "application.shellEnvironmentResolutionTimeout": 120,
 
   // sync
   "sync.autoUpload": true,
@@ -263,4 +268,11 @@
   "gitlens.currentLine.uncommittedChangesFormat": " ${author}",
   "gitlens.blame.fontWeight": "200",
   "gitlens.statusBar.format": "${author} • ${agoOrDate}${' via  'pullRequest}",
+  "terminal.integrated.profiles.osx": {
+    "Homebrew Bash": {
+      "path": "/opt/homebrew/bin/bash",
+      "args": ["-l"],
+      "icon": "terminal-bash"
+    }
+  }
 }
