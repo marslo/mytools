@@ -65,5 +65,39 @@
     "key": "ctrl+-",
     "command": "-workbench.action.navigateBack",
     "when": "canNavigateBack"
+  },
+  // terminal maximize/restore
+  {
+    "key": "shift+cmd+m",
+    "command": "workbench.action.toggleMaximizedPanel",
+    "when": "panelFocus"
+  },
+
+  // editor maximize/restore
+  {
+    "key": "shift+cmd+m",
+    "command": "workbench.action.closePanel",
+    "when": "editorTextFocus && panelVisible"
+  },
+  // multi-command to open terminal panel and focus back to editor - to fix the focus issue
+  {
+    "key": "shift+cmd+m",
+    "command": "extension.multiCommand.execute",
+    "args": { "command": "openPanelAndFocusEditor" },
+    "when": "editorTextFocus && !panelVisible"
+  },
+  {
+    "key": "ctrl+shift+l",
+    "command": "editor.action.inlineSuggest.acceptNextWord",
+    "when": "cursorBeforeGhostText && inlineSuggestionVisible && !accessibilityModeEnabled && !editorReadonly"
+  },
+  {
+    "key": "cmd+right",
+    "command": "-editor.action.inlineSuggest.acceptNextWord",
+    "when": "cursorBeforeGhostText && inlineSuggestionVisible && !accessibilityModeEnabled && !editorReadonly"
+  },
+  {
+    "key": "ctrl+alt+l",
+    "command": "editor.action.inlineSuggest.acceptNextLine"
   }
 ]

@@ -4,6 +4,8 @@
   "window.title": "${activeEditorLong}${separator}${rootName}",
   "window.systemColorTheme": "dark",
   "window.doubleClickIconToClose": true,
+  "window.titleBarStyle": "custom",
+  "window.autoDetectColorScheme": false,
   "files.trimTrailingWhitespace": true,
   "files.autoSave": "afterDelay",
   "http.proxyStrictSSL": false,
@@ -43,6 +45,7 @@
   "notebook.output.fontFamily": "'FantasqueSansM Nerd Font'",
   "markdown.preview.lineHeight": 1.2,
   "markdown.preview.fontFamily": "\"iMWritingMono Nerd Font Mono\", 'OperatorMonoLig Nerd Font Mono', -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif",
+  "editor.largeFileOptimizations": false,
   // disable audio
   "editor.accessibilitySupport": "off",
   "editor.tokenColorCustomizations": {
@@ -85,8 +88,7 @@
 
   // status bar
   "workbench.colorCustomizations": {
-    "editorCursor.foreground": "#ece8d6",
-    "terminalCursor.foreground": "#88982d",
+    "terminal.background": "#00000000",
     "statusBar.background": "#007acc",
     "statusBar.noFolderBackground": "#007acc",
     "statusBar.debuggingBackground": "#007acc",
@@ -109,17 +111,30 @@
   "terminal.integrated.drawBoldTextInBrightColors": false,
   "terminal.integrated.scrollback": 9999999,
   "terminal.integrated.fontSize": 18,
-  "terminal.integrated.fontFamily": "'FantasqueSansM Nerd Font', 'RecMonoCasual Nerd Font Mono', 'ComicMono Nerd Font Mono', 'Andale Mono'",
+  "terminal.integrated.fontFamily": "'VictorMono Nerd Font Mono', 'FantasqueSansM Nerd Font', 'RecMonoCasual Nerd Font Mono', 'ComicMono Nerd Font Mono', 'Andale Mono'",
   "terminal.integrated.bellDuration": 9999,
-  "terminal.integrated.defaultProfile.osx": "bash",
   "terminal.integrated.fontLigatures.enabled": true,
   "terminal.integrated.sendKeybindingsToShell": true,
   "terminal.integrated.tabs.defaultColor": "terminal.ansiMagenta",
+  "terminal.integrated.gpuAcceleration": "off",
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.env.osx": {
+    "TERM": "xterm-256color",
+    "COLORTERM": "truecolor",
     "NPM_CONFIG_PREFIX": null
   },
-  // "terminal.integrated.shell.osx": "/usr/local/bin/bash",
+  // "terminal.integrated.shell.osx": "/opt/homebrew/bin/bash",
+  "terminal.integrated.profiles.osx": {
+    "Homebrew Bash": {
+      "path": "/opt/homebrew/bin/bash",
+      "args": ["-l"],
+      "icon": "terminal"
+    }
+  },
+  "terminal.integrated.defaultProfile.osx": "Homebrew Bash",
+  "terminal.integrated.automationProfile.osx": {
+    "path": "/opt/homebrew/bin/bash"
+  },
 
   // vim
   "vim.enableNeovim": true,
@@ -156,6 +171,7 @@
   "scm.diffDecorationsGutterWidth": 2,
   "git.autofetch": true,
   "git.openRepositoryInParentFolders": "always",
+  "gitlens.mode.active": "review",
   "gitlens.blame.ignoreWhitespace": true,
   "gitlens.blame.fontSize": 14,
   "gitlens.blame.fontStyle": "itliac",
@@ -223,6 +239,8 @@
       "editor.formatOnType": true,
       "editor.tabSize": 2,
   },
+  "code-runner.saveFileBeforeRun": true,
+  "code-runner.clearPreviousOutput": true,
   "code-runner.executorMap": {
     "javascript": "node",
     "java": "cd $dir && javac $fileName && java $fileNameWithoutExt",
@@ -236,7 +254,7 @@
     "ruby": "ruby",
     "go": "go run",
     "lua": "lua",
-    "groovy": "/opt/groovy/current/bin/groovy",
+    "groovy": "/opt/homebrew/bin/groovy",
     "powershell": "powershell -ExecutionPolicy ByPass -File",
     "bat": "cmd /c",
     "shellscript": "bash",
@@ -271,6 +289,44 @@
     "scss": "scss --style expanded",
     "less": "cd $dir && lessc $fileName $fileNameWithoutExt.css"
   },
+  "code-runner.executorMapByFileExtension": {
+    ".vb": "cd $dir && vbc /nologo $fileName && $dir$fileNameWithoutExt",
+    ".vbs": "cscript //Nologo",
+    ".scala": "scala",
+    ".jl": "julia",
+    ".cr": "crystal",
+    ".ml": "ocaml",
+    ".zig": "zig run",
+    ".exs": "elixir",
+    ".hx": "haxe --cwd $dirWithoutTrailingSlash --run $fileNameWithoutExt",
+    ".rkt": "racket",
+    ".scm": "csi -script",
+    ".ahk": "autohotkey",
+    ".au3": "autoit3",
+    ".kt": "cd $dir && kotlinc $fileName -include-runtime -d $fileNameWithoutExt.jar && java -jar $fileNameWithoutExt.jar",
+    ".kts": "kotlinc -script",
+    ".dart": "dart",
+    ".pas": "cd $dir && fpc $fileName && $dir$fileNameWithoutExt",
+    ".pp": "cd $dir && fpc $fileName && $dir$fileNameWithoutExt",
+    ".d": "cd $dir && dmd $fileName && $dir$fileNameWithoutExt",
+    ".hs": "runhaskell",
+    ".nim": "nim compile --verbosity:0 --hints:off --run",
+    ".csproj": "dotnet run --project",
+    ".fsproj": "dotnet run --project",
+    ".lisp": "sbcl --script",
+    ".kit": "kitc --run",
+    ".v": "v run",
+    ".vsh": "v run",
+    ".sass": "sass --style expanded",
+    ".cu": "cd $dir && nvcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+    ".ring": "ring",
+    ".sml": "cd $dir && sml $fileName",
+    ".mojo": "mojo run",
+    ".erl": "escript",
+    ".spwn": "spwn build",
+    ".pkl": "cd $dir && pkl eval -f yaml $fileName -o $fileNameWithoutExt.yaml",
+    ".gleam": "gleam run -m $fileNameWithoutExt"
+  },
   "[Log]": {
     "editor.fontSize": 16,
   },
@@ -303,6 +359,7 @@
       // "debug.overrideProxyUrl": "http://ipamunix.marvell.com:8080"
   },
   "github.copilot.chat.editor.temporalContext.enabled": true,
+  "github.copilot.nextEditSuggestions.enabled": true,
   "editor.unicodeHighlight.nonBasicASCII": false,
   // "http.proxySupport": "on",
   // "http.proxy": "http://ipamunix.marvell.com:8080",
@@ -353,5 +410,56 @@
   "sync.autoUpload": true,
   "sync.autoDownload": true,
   "sync.quietSync": true,
-  "github.copilot.nextEditSuggestions.enabled": true,
+
+  // ryuta46.multi-command - cmd+shift+m to maximize panel
+  "multiCommand.commands": [
+    {
+      "command": "openPanelAndFocusEditor",
+      "sequence": [
+        "workbench.action.togglePanel",
+        { "command": "workbench.action.focusActiveEditorGroup", "interval": 200 }
+      ]
+    }
+  ],
+
+  // extensions
+  "extensions.allowed": {
+    "wowbox.code-debuger": true,
+    "formulahendry.code-runner": true,
+    "asvetliakov.vscode-neovim": true,
+    "jdinhlife.gruvbox": true,
+    "gvscode.gruvbox-material-icon-theme": true,
+    "jonathanharty.gruvbox-material-icon-theme": true,
+    "sainnhe.gruvbox-material": true,
+    "illixion.vscode-vibrancy-continued": true,
+    "JackPaget.gruvbox-glass": true,
+    "Valiantsin.operatormonodarktheme": true,
+    "github.copilot": true,
+    "github.copilot-chat": true,
+    "vscodevim.vim": true,
+    "ms-azuretools.vscode-docker": true,
+    "eamodio.gitlens": true,
+    "mellowmarshmallow.groovy": true,
+    "ivory-lab.jenkinsfile-support": true,
+    "nicolasvuillamy.vscode-groovy-lint": true,
+    "secanis.jenkinsfile-support": true,
+    "janjoerke.jenkins-pipeline-linter-connector": true,
+    "Maarti.jenkins-doc": true,
+    "vscjava.vscode-java-pack": true,
+    "vscjava.vscode-java-test": true,
+    "vscjava.vscode-java-debug": true,
+    "redhat.java": true,
+    "bierner.markdown-mermaid": true,
+    "ms-python.python": true,
+    "ms-python.debugpy": true,
+    "ms-python.vscode-pylance": true,
+    "ms-python.vscode-python-envs": true,
+    "ArgyleWolfLabs.vscode-groovy": true,
+    "tomsaunders.vscode-workspace-explorer": true,
+    "deerawan.vscode-dash": true,
+    "rogalmic.bash-debug": true,
+    "ms-azuretools.vscode-containers": true,
+    "Shan.code-settings-sync": true,
+    "ryuta46.multi-command": true
+  }
 }
