@@ -21,6 +21,8 @@ brew "bash"
 brew "bash-completion@2"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Bash scripts that integrate bat with various command-line tools
+brew "bat-extras"
 # Versatile and fast Unicode/ASCII/ANSI graphics renderer
 brew "chafa"
 # Create and view interactive cheat sheets for *nix commands
@@ -59,6 +61,8 @@ brew "eza"
 brew "fd", args: ["HEAD"]
 # Identify or delete duplicate files
 brew "fdupes"
+# Play, record, convert, and stream select audio and video codecs
+brew "ffmpeg"
 # Banner-like program prints strings as ASCII art
 brew "figlet"
 # Utility to determine file types
@@ -85,6 +89,8 @@ brew "gemini-cli"
 brew "gh"
 # Interpreter for PostScript and PDF
 brew "ghostscript"
+# Conversion library
+brew "libiconv"
 # Distributed revision control system
 brew "git", args: ["HEAD"]
 # Small git utilities
@@ -93,6 +99,8 @@ brew "git-extras", args: ["HEAD"]
 brew "git-filter-repo"
 # Git extension for versioning large files
 brew "git-lfs"
+# Data validation using Python type hints
+brew "pydantic"
 # Alternative to top/htop
 brew "glances"
 # Command-line option parsing utility
@@ -107,6 +115,8 @@ brew "gnu-tar"
 brew "gnu-which"
 # GNU Transport Layer Security (TLS) Library
 brew "gnutls"
+# Open source programming language to build simple/reliable/efficient software
+brew "go"
 # Bash and Zsh completion for Gradle
 brew "gradle-completion"
 # Development kit for the Java programming language
@@ -133,7 +143,7 @@ brew "highlight", args: ["HEAD"]
 brew "htop"
 # Tool to report network interface bandwidth
 brew "ifstat"
-# Tools and libraries to manipulate images in many formats
+# Tools and libraries to manipulate images in select formats
 brew "imagemagick"
 # GNU utilities for networking
 brew "inetutils"
@@ -157,6 +167,10 @@ brew "less"
 brew "lftp"
 # GNOME XML library
 brew "libxml2"
+# High-performance theorem prover
+brew "z3"
+# Next-gen compiler infrastructure
+brew "llvm"
 # Utility to list open files
 brew "lsof"
 # Text-based web browser
@@ -193,6 +207,8 @@ brew "openldap"
 brew "p7zip"
 # Swiss-army knife of markup format conversion
 brew "pandoc"
+# Shell command parallelization utility
+brew "parallel", link: false
 # QR Code generation
 brew "qrencode"
 # Display directories as trees (with optional color/HTML output)
@@ -207,6 +223,8 @@ brew "pdfcpu"
 brew "pinentry-mac", args: ["HEAD"]
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
+# Code formatter for JavaScript, CSS, JSON, GraphQL, Markdown, YAML
+brew "prettier"
 # OpenBSD and Darwin versions of pgrep, pkill, and pfind
 brew "proctools"
 # Show ps output as a tree
@@ -219,12 +237,16 @@ brew "pyenv"
 brew "python-tk@3.13"
 # Python interface to Tcl/Tk
 brew "python-tk@3.14"
+# Tools for and transforming and inspecting PDF files
+brew "qpdf"
 # Perl-powered file rename script with many helpful built-ins
 brew "rename", args: ["HEAD"]
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Powerful, clean, object-oriented scripting language
 brew "ruby", args: ["HEAD"]
+# Safe, concurrent, practical language
+brew "rust"
 # Autoformat shell script source code
 brew "shfmt", args: ["HEAD"]
 # Cross-shell prompt for astronauts
@@ -251,6 +273,8 @@ brew "toilet", args: ["HEAD"]
 brew "trash"
 # Parser generator tool
 brew "tree-sitter-cli"
+# Source code spell checker
+brew "typos-cli"
 # Extraction utility for .zip compressed archives
 brew "unzip"
 # Collection of Linux utilities
@@ -332,11 +356,11 @@ mas "Overlap", id: 1516950324
 mas "pwSafe", id: 520993579
 vscode "argylewolflabs.vscode-groovy"
 vscode "bierner.markdown-mermaid"
-vscode "dave-hagedorn.jenkins-runner"
 vscode "deerawan.vscode-dash"
 vscode "eamodio.gitlens"
-vscode "github.copilot"
+vscode "formulahendry.code-runner"
 vscode "github.copilot-chat"
+vscode "illixion.vscode-vibrancy-continued"
 vscode "ivory-lab.jenkinsfile-support"
 vscode "janjoerke.jenkins-pipeline-linter-connector"
 vscode "jdinhlife.gruvbox"
@@ -355,15 +379,16 @@ vscode "ms-vscode.cpptools-themes"
 vscode "nicolasvuillamy.vscode-groovy-lint"
 vscode "paulvarache.vscode-jenkins"
 vscode "redhat.java"
+vscode "rogalmic.bash-debug"
+vscode "ryuta46.multi-command"
 vscode "sainnhe.gruvbox-material"
 vscode "secanis.jenkinsfile-support"
 vscode "shan.code-settings-sync"
 vscode "tomsaunders.vscode-workspace-explorer"
 vscode "valiantsin.operatormonodarktheme"
-vscode "vscjava.vscode-gradle"
 vscode "vscjava.vscode-java-debug"
-vscode "vscjava.vscode-java-dependency"
 vscode "vscjava.vscode-java-pack"
 vscode "vscjava.vscode-java-test"
-vscode "vscjava.vscode-maven"
 vscode "vscodevim.vim"
+vscode "wowbox.code-debuger"
+cargo "cargo-cache"

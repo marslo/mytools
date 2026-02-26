@@ -9,10 +9,10 @@ tap "mkdryden/misc"
 brew "ack"
 # Color management engine supporting ICC profiles
 brew "little-cms2"
-# Image format providing lossless and lossy compression for web images
-brew "webp"
 # New file format for still image compression
 brew "jpeg-xl"
+# Image format providing lossless and lossy compression for web images
+brew "webp"
 # Automatic configure script builder
 brew "autoconf"
 # Bourne-Again SHell, a UNIX command interpreter
@@ -45,14 +45,14 @@ brew "node"
 brew "commitlint"
 # Tunnel SSH through HTTP proxies
 brew "corkscrew"
-# Tool for downloading RTMP streaming media
-brew "rtmpdump"
 # Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
 # Display user-friendly message boxes from shell scripts
 brew "dialog"
 # Good-lookin' diffs with diff-highlight and more
 brew "diff-so-fancy"
+# Diff that understands syntax
+brew "difftastic"
 # File comparison utilities
 brew "diffutils"
 # Convert text between DOS, UNIX, and Mac formats
@@ -63,15 +63,7 @@ brew "ed"
 brew "eza"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
-# Library to load and enumerate PKCS#11 modules
-brew "p11-kit"
-# Validating, recursive, caching DNS resolver
-brew "unbound"
-# GNU Transport Layer Security (TLS) Library
-brew "gnutls"
-# OpenType text shaping engine
-brew "harfbuzz"
-# Play, record, convert, and stream audio and video
+# Play, record, convert, and stream select audio and video codecs
 brew "ffmpeg"
 # Banner-like program prints strings as ASCII art
 brew "figlet"
@@ -79,6 +71,8 @@ brew "figlet"
 brew "file-formula"
 # Collection of GNU find, xargs, and locate
 brew "findutils"
+# OpenType text shaping engine
+brew "harfbuzz"
 # Command-line outline and bitmap font editor/converter
 brew "fontforge"
 # Infamous electronic fortune-cookie generator
@@ -95,6 +89,8 @@ brew "gcc"
 brew "gh"
 # Interpreter for PostScript and PDF
 brew "ghostscript"
+# Conversion library
+brew "libiconv"
 # Distributed revision control system
 brew "git"
 # Extensions to follow Vincent Driessen's branching model
@@ -109,12 +105,18 @@ brew "gnu-sed"
 brew "gnu-tar"
 # GNU implementation of which utility
 brew "gnu-which"
+# Library to load and enumerate PKCS#11 modules
+brew "p11-kit"
+# Validating, recursive, caching DNS resolver
+brew "unbound"
+# GNU Transport Layer Security (TLS) Library
+brew "gnutls"
 # Open source programming language to build simple/reliable/efficient software
 brew "go"
-# Open-source build automation tool based on the Groovy and Kotlin DSL
-brew "gradle"
 # Bash and Zsh completion for Gradle
 brew "gradle-completion"
+# Open-source build automation tool based on the Groovy and Kotlin DSL
+brew "gradle"
 # GNU grep, egrep and fgrep
 brew "grep"
 # Java-based scripting language
@@ -135,7 +137,7 @@ brew "icu4c@76"
 brew "ifstat"
 # ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
 brew "libheif"
-# Tools and libraries to manipulate images in many formats
+# Tools and libraries to manipulate images in select formats
 brew "imagemagick"
 # Command-line interface for interacting with the IoTeX blockchain
 brew "ioctl"
@@ -147,12 +149,14 @@ brew "iproute2mac"
 brew "jdtls"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
+# JSON parser and validator with a CLI
+brew "jsonlint"
+# Colorize your kubectl output
+brew "kubecolor"
 # Kubernetes command-line interface
 brew "kubernetes-cli"
 # Pager program similar to more
 brew "less"
-# Conversion library
-brew "libiconv"
 # Next-gen compiler infrastructure
 brew "llvm"
 # Utility to list open files
@@ -167,8 +171,6 @@ brew "mono"
 brew "moreutils"
 # NCurses Disk Usage
 brew "ncdu"
-# Incremental parsing library
-brew "tree-sitter"
 # Clean C library for processing UTF-8 Unicode data
 brew "utf8proc", args: ["HEAD"]
 # Ambitious Vim-fork focused on extensibility and agility
@@ -229,6 +231,8 @@ brew "rename"
 brew "renameutils"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Tool for downloading RTMP streaming media
+brew "rtmpdump"
 # Powerful, clean, object-oriented scripting language
 brew "ruby"
 # Safe, concurrent, practical language
@@ -255,6 +259,8 @@ brew "tmux"
 brew "toilet"
 # CLI tool that moves files or folder to the trash
 brew "trash", link: true
+# Incremental parsing library
+brew "tree-sitter"
 # Maintained ctags implementation
 brew "universal-ctags"
 # Extraction utility for .zip compressed archives
@@ -271,6 +277,8 @@ brew "watchman"
 brew "wdiff"
 # Internet file retriever
 brew "wget"
+# Extensible command-line tool to format YAML files
+brew "yamlfmt"
 # Linter for YAML files
 brew "yamllint"
 # C/C++ and Java libraries for Unicode and globalization
@@ -313,12 +321,10 @@ mas "Color Picker", id: 1545870783
 mas "GarageBand", id: 682658836
 mas "GIF Brewery 3", id: 1081413713
 mas "iMovie", id: 408981434
-mas "iShot", id: 1485844094
 mas "iShot Pro", id: 1611347086
 mas "Keynote", id: 409183694
 mas "Microsoft OneNote", id: 784801555
 mas "Moom Classic", id: 419330170
-mas "MSG Viewer for Outlook", id: 973213640
 mas "OpenChat", id: 6455304581
 mas "Overlap", id: 1516950324
 mas "Patterns", id: 429449079
@@ -326,12 +332,10 @@ mas "Plain Text Editor", id: 1572202501
 mas "pwSafe", id: 520993579
 mas "QQ", id: 451108668
 mas "QQMusic", id: 595615424
-mas "Record It", id: 1339001002
 mas "Record It Pro", id: 1340697163
 mas "RegExRX", id: 498370702
 mas "ShadowsocksX", id: 1295053131
 mas "Slack", id: 803453959
-mas "Spark", id: 1176895641
 mas "Speedtest", id: 1153157709
 mas "Visualize", id: 978980906
 mas "WeChat", id: 836500024
@@ -374,3 +378,5 @@ vscode "vscjava.vscode-java-debug"
 vscode "vscjava.vscode-java-pack"
 vscode "vscodevim.vim"
 go "github.com/hidetatz/kubecolor/cmd/kubecolor"
+cargo "amethyst_tools"
+cargo "fd-find"
