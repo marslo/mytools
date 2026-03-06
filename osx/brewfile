@@ -34,7 +34,7 @@ brew "coreutils"
 # Tunnel SSH through HTTP proxies
 brew "corkscrew"
 # Static analysis of C and C++ code
-brew "cppcheck", args: ["HEAD"]
+brew "cppcheck"
 # Shell script to build fancy DMGs
 brew "create-dmg"
 # Get a file from an HTTP, HTTPS or FTP server
@@ -243,6 +243,8 @@ brew "qpdf"
 brew "rename", args: ["HEAD"]
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Readline wrapper: adds readline support to tools that lack it
+brew "rlwrap"
 # Powerful, clean, object-oriented scripting language
 brew "ruby", args: ["HEAD"]
 # Safe, concurrent, practical language
@@ -281,6 +283,8 @@ brew "unzip"
 brew "util-linux"
 # Vim script Language Lint
 brew "vint"
+# Tool for creating isolated virtual python environments
+brew "virtualenv"
 # Simple terminal image viewer written in Rust
 brew "viu", args: ["HEAD"]
 # Console-based network traffic monitor
