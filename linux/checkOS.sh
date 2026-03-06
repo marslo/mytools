@@ -4,7 +4,7 @@
 #     FileName : checkOS.sh
 #       Author : marslo
 #      Created : 2024-06-11 14:15:47
-#   LastChange : 2025-09-19 01:54:16
+#   LastChange : 2026-03-05 17:02:18
 #=============================================================================
 
 set -euo pipefail
@@ -142,42 +142,58 @@ echo -en "\033[1;32m>> MEMORY OVERALL:\033[0m "
 sudo lshw -short | grep --color=never 'System Memory' | sed -E 's/.*\s([0-9]+[A-Za-z]+) System Memory/\1/'
 sudo dmidecode -t memory | awk -v RS="" '
 /^Handle [^\n]*\nMemory Device/ {
-  size=""; unit=""; type=""; sp="";
-  # Size: 16384 MB
-  if (match($0, /Size:[[:space:]]+[0-9]+[[:space:]]+(GB|MB)/)) {
-    seg = substr($0, RSTART, RLENGTH);
-    sub(/^Size:[[:space:]]+/, "", seg);
-    n = split(seg, f, /[[:space:]]+/);
-    size = f[1]; unit = f[2];
+  # Size and Unit
+  if (match($0, /Size: [0-9]+ [MG]B/)) {
+    s_part = substr($0, RSTART, RLENGTH);
+    split(s_part, f, " ");
+    size = f[2]; unit = f[3];
   } else next;
-  # Type: DDR4
-  if (match($0, /Type:[[:space:]]+DDR[0-9]+/)) {
-    seg = substr($0, RSTART, RLENGTH);
-    sub(/^Type:[[:space:]]+/, "", seg);
-    type = seg;
-  } else next;
-  # Speed or Configured Memory Speed
-  if (match($0, /Speed:[[:space:]]+[0-9]+[[:space:]]+MT\/s/)) {
-    seg = substr($0, RSTART, RLENGTH);
-    gsub(/[^0-9]/, "", seg); sp = seg;
-  } else if (match($0, /Configured Memory Speed:[[:space:]]+[0-9]+[[:space:]]+MT\/s/)) {
-    seg = substr($0, RSTART, RLENGTH);
-    gsub(/[^0-9]/, "", seg); sp = seg;
+
+  # Type
+  type = "Unknown";
+  if (match($0, /Type: [^\n]+/)) {
+    type = substr($0, RSTART+6, RLENGTH-6);
+    gsub(/[[:space:]]+$/, "", type);
   }
-  # to GB
-  szGB = (unit=="MB") ? int(size/1024) : size+0;
-  if (type != "" && szGB > 0) {
+
+  # Speed
+  sp = "";
+  if (match($0, /Configured Memory Speed: [0-9]+/)) {
+    m = substr($0, RSTART, RLENGTH);
+    split(m, f, ": "); sp = f[2];
+  } else if (match($0, /Speed: [0-9]+/)) {
+    m = substr($0, RSTART, RLENGTH);
+    split(m, f, ": "); sp = f[2];
+  }
+
+  # voltage (for predicted)
+  volt = 0;
+  if (match($0, /Configured Voltage: [0-9.]+/)) {
+    m = substr($0, RSTART, RLENGTH);
+    split(m, f, ": "); volt = f[2];
+  }
+
+  # smart correction of type (for other/unknown)
+  if (type == "Other" || type == "Unknown") {
+    if (volt == 1.2 || (sp >= 2133 && sp <= 3200)) type = "DDR4 (Predicted)";
+    else if (volt >= 1.35 || (sp >= 800 && sp < 2133)) type = "DDR3 (Predicted)";
+    else if (volt == 1.1 || sp >= 4800) type = "DDR5 (Predicted)";
+  }
+
+  # summary
+  szGB = (unit == "MB") ? int(size/1024) : size+0;
+  if (szGB > 0) {
     key = szGB "GB|" type "|" sp;
     cnt[key]++; total += szGB;
   }
 } END {
   for (k in cnt) {
-    split(k, a, /\|/); # a[1]=sizeGB, a[2]=type, a[3]=speed
+    split(k, a, "|");  # a[1]=sizeGB, a[2]=type, a[3]=speed
     printf "• %dx%s %s", cnt[k], a[1], a[2];
     if (a[3] != "") printf " @ %s MT/s", a[3];
     print "";
   }
-  if (total>0) printf "Total: %d GB\n", total;
+  if (total > 0) printf "Total: %d GB\n", total;
 }'
 
 echo -e "\033[1;32m>> MEMORY USAGE:\033[0m"
