@@ -4,7 +4,7 @@
 #     FileName : checkOS.sh
 #       Author : marslo
 #      Created : 2024-06-11 14:15:47
-#   LastChange : 2026-03-05 17:02:18
+#   LastChange : 2026-03-06 19:27:48
 #=============================================================================
 
 set -euo pipefail
@@ -142,6 +142,11 @@ echo -en "\033[1;32m>> MEMORY OVERALL:\033[0m "
 sudo lshw -short | grep --color=never 'System Memory' | sed -E 's/.*\s([0-9]+[A-Za-z]+) System Memory/\1/'
 sudo dmidecode -t memory | awk -v RS="" '
 /^Handle [^\n]*\nMemory Device/ {
+  if (match($0, /Size: No Module Installed/)) {
+    empty_slots++;
+    next;
+  }
+
   # Size and Unit
   if (match($0, /Size: [0-9]+ [MG]B/)) {
     s_part = substr($0, RSTART, RLENGTH);
@@ -189,17 +194,60 @@ sudo dmidecode -t memory | awk -v RS="" '
 } END {
   for (k in cnt) {
     split(k, a, "|");  # a[1]=sizeGB, a[2]=type, a[3]=speed
-    printf "• %dx%s %s", cnt[k], a[1], a[2];
-    if (a[3] != "") printf " @ %s MT/s", a[3];
+    printf "• \033[1;35m%dx%s %s\033[0m", cnt[k], a[1], a[2];
+    if (a[3] != "") printf "\033[1;35m @ %s MT/s\033[0m", a[3];
     print "";
   }
-  if (total > 0) printf "Total: %d GB\n", total;
+
+  # empty slot summary
+  if (empty_slots > 0) {
+    printf "• \033[2;3;37m%dx<Empty Slots>\033[0m\n", empty_slots;
+  }
+  if (total > 0) printf "• Total: %d GB\n", total;
 }'
 
 echo -e "\033[1;32m>> MEMORY USAGE:\033[0m"
 free -h
 
-# echo -e "\033[1;32m>> memory details:\033[0m"
+echo -e "\033[1;32m>> MEMORY DETAILS:\033[0m"
+sudo dmidecode -t memory | awk -v RS="" -v FS="\n" '
+/^Handle [^\n]*\nMemory Device/ {
+  if (/Size: No Module Installed/ || /Size: Not Specified/) next;
+
+  delete info
+  for( i=1; i<=NF; i++ ) {
+    if (idx = index($i, ":")) {
+      k = substr($i, 1, idx-1); sub(/^[ \t]+/, "", k)
+      v = substr($i, idx+1);    sub(/^[ \t]+/, "", v)
+      info[k] = v
+    }
+  }
+
+  # grouping items
+  key = info["Size"] "|" info["Type"] "|" info["Type Detail"] "|" info["Memory Technology"] "|" info["Configured Memory Speed"] "|" info["Manufacturer"] "|" info["Part Number"]
+  count[key]++
+
+  # sn
+  sn = info["Serial Number"]
+  if ( sn != "" && sn != "Unknown" && sn != "Not Specified" ) {
+    if ( sns[key] == "" ) sns[key] = sn
+    else sns[key] = sns[key] ", " sn
+  }
+}
+END {
+  for ( k in count ) {
+    split( k, f, "|" )
+    print "•  Quantity         \t" count[k]
+    print "•  Size             \t" f[1]
+    print "•  Type             \t" f[2]
+    print "•  Type Detail      \t" f[3]
+    print "•  Memory Technology\t" f[4]
+    print "•  Configured Speed \t" f[5]
+    print "•  Manufacturer     \t" f[6]
+    print "•  Part Number      \t" f[7]
+    print "•  Serial Number(s) \t" (sns[k] ? sns[k] : "N/A")
+  }
+}'
 # sudo dmidecode -t memory | grep -E '(^Memory Device|^\s+(Size:|Type:|Type Detail:|Serial Number:|Part Number:|Memory Technology:|Configured Memory Speed:|Manufacturer))' --color=never | grep -v -E 'Not Specified|No Module|Unknow|None|Memory Technology: <OUT OF SPEC>'
 
 echo -e "\033[1;32m>> CPU INFO:\033[0m"
@@ -215,84 +263,89 @@ sudo dmidecode -s system-serial-number
 echo -ne "\033[1;32m>> RAID INFO:\033[0m "
 type -P mdadm >/dev/null 2>&1 || { echo -e "\n.. install mdadm via \`sudo apt install -y mdadm\` first"; exit 0; }
 printf "\033[38;5;245;3m%s\033[0m\n" "$(checkRAID)"
-type -P smartctl >/dev/null 2>&1 && { sudo smartctl --scan | awk '{print "• ", $0}'; } || echo ".. install smartctl via \`sudo apt install -y smartmontools\` first"
+type -P smartctl >/dev/null 2>&1 || {
+  echo -e "\033[2;3;37m.. install smartctl via \`sudo apt install -y smartmontools\` first ..\033[0m";
+  sudo apt update -y && sudo apt install -y smartmontools;
+}
+type -P smartctl >/dev/null 2>&1 && { sudo smartctl --scan | awk '{print "• ", $0}'; } || echo -e "\033[0;3;32m.. smartctl not found, cannot scan for RAID devices ..\033[0m"
 
-echo -e "\033[38;5;241;3m# ROTA: 0 - SSD; 1 - HDD; 7 - CD/DVD\033[0m"
+echo -e "\033[38;5;241;3m# ROTA: 0 (SSD); 1 (HDD); 7 (CD/DVD)\033[0m"
 echo -en "\033[1;32m>> SSD/HHD INFO:\033[0m "
 lsblk -d -e 7 -o NAME,ROTA,DISC-MAX,MODEL,TYPE | awk '
-NR == 1 {
-  line = $0
-  sub(/[[:space:]]+TYPE$/, "", line)
-  header = "  " line
-  next
-}
-$5 != "disk" { next }
+  NR == 1 {
+    line = $0
+    sub(/[[:space:]]+TYPE$/, "", line)
+    header = "  " line
+    next
+  }
+  $5 != "disk" { next }
 
-{
-  line = $0
-  sub(/[[:space:]]+disk$/, "", line)
+  {
+    line = $0
+    sub(/[[:space:]]+disk$/, "", line)
 
-  lines[++i] = "• " line
-  if ($2 == 1) hasHHD = 1
-  if ($2 == 0) hasSSD = 1
-}
-END {
-  if (hasHHD && hasSSD) print "MIXED"
-  else if (hasHHD)      print "HDD"
-  else if (hasSSD)      print "SSD"
+    lines[++i] = "• " line
+    if ( $2 == 1 ) hasHHD = 1
+    if ( $2 == 0 ) hasSSD = 1
+  } END {
+    if ( hasHHD && hasSSD ) print "MIXED"
+    else if ( hasHHD )      print "HDD"
+    else if ( hasSSD )      print "SSD"
 
-  print header
-  for (j = 1; j <= i; ++j) print lines[j]
-}'
+    print header
+    for ( j = 1; j <= i; ++j ) print lines[j]
+  }
+'
 
 echo -en "\033[1;32m>> DISK INFO:\033[0m "
 sudo fdisk -l | awk '
-/^Disk \/dev\/(sd[a-z]|nvme[0-9]+n[0-9]+|vd[a-z]|xvd[a-z]|hd[a-z]|mmcblk[0-9]+):/ {
-  device = $2
-  size   = $3
-  unit   = $4
+  /^Disk \/dev\/(sd[a-z]|nvme[0-9]+n[0-9]+|vd[a-z]|xvd[a-z]|hd[a-z]|mmcblk[0-9]+):/ {
+    device = $2
+    size   = $3
+    unit   = $4
 
-  sub(/:$/, "", device)
-  sub(/,?$/, "", unit)
+    sub( /:$/, "", device )
+    sub( /,?$/, "", unit )
 
-  if      (unit ~ /^GiB$/) gib = size + 0
-  else if (unit ~ /^MiB$/) gib = size / 1024
-  else if (unit ~ /^TiB$/) gib = size * 1024
-  else if (unit ~ /^GB$/)  gib = size * 0.931322575
-  else if (unit ~ /^MB$/)  gib = size * 0.000931322575
-  else if (unit ~ /^TB$/)  gib = size * 931.322575
-  else                     gib = 0
+    if      ( unit ~ /^GiB$/ ) gib = size + 0
+    else if ( unit ~ /^MiB$/ ) gib = size / 1024
+    else if ( unit ~ /^TiB$/ ) gib = size * 1024
+    else if ( unit ~ /^GB$/ )  gib = size * 0.931322575
+    else if ( unit ~ /^MB$/ )  gib = size * 0.000931322575
+    else if ( unit ~ /^TB$/ )  gib = size * 931.322575
+    else                       gib = 0
 
-  total += gib
-  lines[++i] = sprintf("• %-14s : %.2f %s", device, size, unit)
-}
-END {
-  printf "%.0f GiB\n", total
-  for (j = 1; j <= i; j++) print lines[j]
-}'
+    total += gib
+    lines[++i] = sprintf("• %-14s : %.2f %s", device, size, unit)
+  } END {
+    printf "%.0f GiB\n", total
+    for ( j = 1; j <= i; j++ ) print lines[j]
+  }
+'
 # sudo fdisk -l \
 #   | awk '/^Disk \/dev\/nvme/ {print $2, $3, $4}' \
 #   | sed 's/,$//'
 
 echo -en "\033[1;32m>> DISK LVM INFO:\033[0m "
 lsblk -b -o TYPE,SIZE | awk '
-BEGIN  { flag = 0; size = 0;   }
-/^lvm/ { flag = 1; size += $2; }
-END    {
-  print ( flag ? "true" : "false" )
-  printf "• LVM : %.0f GiB\n", size / 1024 / 1024 / 1024
-  if (flag) {
-    # system("sudo vgs")
-    while (( "sudo vgs --noheadings --units g -o vg_free,vg_size" | getline ) > 0 ) {
-      gsub(/[ \t]+/, " "); gsub(/^ /, "")
-      split($0, arr, " ")
-      free = arr[1]; total = arr[2]
-      gsub(/[gG]$/, "", free)
-      gsub(/[gG]$/, "", total)
-      printf "• VGS : %.0fGB/%.0fGB\n", total - free, total
+  BEGIN  { flag = 0; size = 0;   }
+  /^lvm/ { flag = 1; size += $2; }
+  END    {
+    print ( flag ? "\033[1;36mtrue\033[0m" : "\033[1;31mfalse\033[0m" )
+    printf "• LVM : %.0f GiB\n", size / 1024 / 1024 / 1024
+    if ( flag ) {
+      # system( "sudo vgs" )
+      while ( ( "sudo vgs --noheadings --units g -o vg_free,vg_size" | getline ) > 0  ) {
+        gsub( /[ \t]+/, " " ); gsub(/^ /, "")
+        split( $0, arr, " " )
+        free = arr[1]; total = arr[2]
+        gsub( /[gG]$/, "", free  )
+        gsub( /[gG]$/, "", total )
+        printf "• VGS : %.0fGB/%.0fGB\n", total - free, total
+      }
     }
   }
-}'
+'
 
 # deprecated
 function raidScan(){

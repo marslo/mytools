@@ -25,6 +25,7 @@ OPTIONS
 EXAMPLE
   \033[2;3;37m# remove image with knrun/rrun tool\033[0m
   \033[1;36m\$ knrun \033[0;3;35m-f ${ME} -v \033[0;3;34m-- \033[0;3;32m-t '4.1.1' -s\033[0m
+  \033[1;36m\$ rrun  \033[0;3;35m-f ${ME} -v \033[0;3;34m-- \033[0;3;32m-t '4.1.1' -s\033[0m
 """
 
 while [[ $# -gt 0 ]]; do
