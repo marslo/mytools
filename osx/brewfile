@@ -103,6 +103,8 @@ brew "git-lfs"
 brew "pydantic"
 # Alternative to top/htop
 brew "glances"
+# Render markdown on the CLI
+brew "glow"
 # Command-line option parsing utility
 brew "gnu-getopt"
 # C code prettifier
@@ -149,6 +151,8 @@ brew "imagemagick"
 brew "inetutils"
 # Calculate various network masks, etc. from a given IP address
 brew "ipcalc"
+# Utility for IPMI control with kernel driver or LAN interface
+brew "ipmitool"
 # CLI wrapper for basic network utilities on macOS - ip command
 brew "iproute2mac"
 # Command-line interface for JFrog products
@@ -171,6 +175,8 @@ brew "libxml2"
 brew "z3"
 # Next-gen compiler infrastructure
 brew "llvm"
+# Rainbows and unicorns in your console!
+brew "lolcat"
 # Utility to list open files
 brew "lsof"
 # Text-based web browser
@@ -250,7 +256,7 @@ brew "ruby", args: ["HEAD"]
 # Safe, concurrent, practical language
 brew "rust"
 # Autoformat shell script source code
-brew "shfmt", args: ["HEAD"]
+brew "shfmt"
 # Cross-shell prompt for astronauts
 brew "starship"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
@@ -324,6 +330,8 @@ cask "chatbox"
 cask "cherry-studio"
 # Tool to remove unnecessary files and folders from disk
 cask "cleanmymac"
+# Brings the power of Copilot coding agent directly to your terminal
+cask "copilot-cli"
 # API documentation browser and code snippet manager
 cask "dash"
 # Web browser
@@ -355,8 +363,6 @@ cask "warp"
 # Free messaging and calling application
 cask "wechat"
 mas "iShot Pro", id: 1611347086
-mas "Numbers", id: 409203825
-mas "Overlap", id: 1516950324
 mas "pwSafe", id: 520993579
 vscode "argylewolflabs.vscode-groovy"
 vscode "bierner.markdown-mermaid"
