@@ -287,6 +287,8 @@ brew "typos-cli"
 brew "unzip"
 # Collection of Linux utilities
 brew "util-linux"
+# Your CLI home video recorder
+brew "vhs"
 # Vim script Language Lint
 brew "vint"
 # Tool for creating isolated virtual python environments
@@ -363,6 +365,8 @@ cask "warp"
 # Free messaging and calling application
 cask "wechat"
 mas "iShot Pro", id: 1611347086
+mas "Numbers", id: 409203825
+mas "Overlap", id: 1516950324
 mas "pwSafe", id: 520993579
 vscode "argylewolflabs.vscode-groovy"
 vscode "bierner.markdown-mermaid"
