@@ -2,6 +2,8 @@ tap "buo/cask-upgrade"
 tap "carlocab/personal"
 tap "hashicorp/tap"
 tap "homebrew/command-not-found"
+tap "laishulu/homebrew"
+tap "riodelphino/tap"
 tap "vitorgalvao/tiny-scripts"
 # Search tool like grep, but optimized for programmers
 brew "ack"
@@ -23,6 +25,8 @@ brew "bash-completion@2"
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
 brew "bat-extras"
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop", args: ["HEAD"]
 # Versatile and fast Unicode/ASCII/ANSI graphics renderer
 brew "chafa"
 # Create and view interactive cheat sheets for *nix commands
@@ -89,8 +93,6 @@ brew "gemini-cli"
 brew "gh"
 # Interpreter for PostScript and PDF
 brew "ghostscript"
-# Conversion library
-brew "libiconv"
 # Distributed revision control system
 brew "git", args: ["HEAD"]
 # Small git utilities
@@ -169,6 +171,8 @@ brew "kubernetes-cli", args: ["HEAD"]
 brew "less"
 # Sophisticated file transfer program
 brew "lftp"
+# Conversion library
+brew "libiconv"
 # GNOME XML library
 brew "libxml2"
 # High-performance theorem prover
@@ -255,6 +259,8 @@ brew "rlwrap"
 brew "ruby", args: ["HEAD"]
 # Safe, concurrent, practical language
 brew "rust"
+# 7-Zip is a file archiver with a high compression ratio
+brew "sevenzip"
 # Autoformat shell script source code
 brew "shfmt"
 # Cross-shell prompt for astronauts
@@ -277,12 +283,18 @@ brew "tlrc", args: ["HEAD"]
 brew "tmux"
 # Color-based alternative to figlet (uses libcaca)
 brew "toilet", args: ["HEAD"]
+# TOML formatter, linter and language server
+brew "tombi"
 # CLI tool that moves files or folder to the trash
 brew "trash"
 # Parser generator tool
 brew "tree-sitter-cli"
+# Auto-hinter for TrueType fonts
+brew "ttfautohint"
 # Source code spell checker
 brew "typos-cli"
+# Maintained ctags implementation
+brew "universal-ctags"
 # Extraction utility for .zip compressed archives
 brew "unzip"
 # Collection of Linux utilities
@@ -321,6 +333,8 @@ brew "zopfli"
 brew "carlocab/personal/unrar"
 # Vault
 brew "hashicorp/tap/vault"
+# Fast IME switcher for macOS
+brew "riodelphino/tap/macime"
 # Application launcher and productivity software
 cask "alfred"
 cask "baiduinput"
@@ -336,10 +350,16 @@ cask "cleanmymac"
 cask "copilot-cli"
 # API documentation browser and code snippet manager
 cask "dash"
+# App to build and share containerised applications and microservices
+cask "docker-desktop"
 # Web browser
 cask "google-chrome@canary"
+# Desktop automation application
+cask "hammerspoon"
 # System monitoring app
 cask "istat-menus"
+# Terminal emulator as alternative to Apple's Terminal app
+cask "iterm2@nightly", args: { appdir: "~/Applications" }
 # Keep your computer awake
 cask "jiggler"
 # Open-source keystroke visualiser
