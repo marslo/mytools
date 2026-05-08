@@ -168,7 +168,7 @@
 	"feature:show-names": true,
 	"feature:show-open-prs-of-forks": true,
 	"feature:show-user-top-repositories": true,
-	"feature:show-whitespace": false,
+	"feature:show-whitespace": true,
 	"feature:sidebar-focus-file": true,
 	"feature:small-user-avatars": true,
 	"feature:sort-conversations-by-update-time": true,

@@ -1,0 +1,74 @@
+/* ── main layout ─────────────────────────────────────────────── */
+[class*="PageLayoutRoot"] {
+  max-width: min(85vw, 100%) !important;
+  min-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+[data-width="large"] {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+[class*="PageLayoutRoot"] .container-lg,
+[class*="PageLayoutRoot"] .container-xl {
+  max-width: 100% !important;
+}
+
+/* ── PR / Issue list ─────────────────────────────────────────── */
+.js-check-all-container.container-xl {
+  max-width: min(85vw, 100%) !important;
+  width: 100% !important;
+}
+
+/* ── PR Conversation tab only: widen beyond container-xl 1280px ─ */
+#diff-comparison-viewer-container:has([class*="Conversations-module"]) {
+  max-width: min(80vw, 100%) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ── PR other tabs (Files changed, Commits, Checks): default ──── */
+#diff-comparison-viewer-container:not(:has([class*="Conversations-module"])) [class*="PageLayoutRoot"] {
+  max-width: revert !important;
+  min-width: revert !important;
+  width: revert !important;
+  margin-left: revert !important;
+  margin-right: revert !important;
+}
+
+/* ── Releases page ───────────────────────────────────────────── */
+.col-md-2.flex-md-column {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  max-width: 200px !important;
+}
+
+/* ── Refined GitHub: suppress token-limit warning flash ──────── */
+[class*="rgh-"] .flash.flash-error {
+  display: none !important;
+}
+
+/* ── PR list: fix metadata row layout ────────────────────────── */
+.js-check-all-container div[style*="word-break: break-all"] {
+  word-break: normal !important;
+  flex-wrap: nowrap !important;
+}
+.js-check-all-container .opened-by {
+  flex: 0 1 auto !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  min-width: 0 !important;
+}
+.js-check-all-container .d-none.d-md-inline-flex {
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+}
+.js-check-all-container .d-none.d-md-inline-flex .d-inline-block.ml-1 {
+  white-space: nowrap !important;
+}
+
+/* ── Whitespace markers: hide ONLY space dots on non-PR pages ── */
+body:not(:has(#diff-comparison-viewer-container)) [data-rgh-whitespace="space"] {
+  background-image: none !important;
+}
+/* ─── tailing space background color handled by Tampermonkey ─── */
