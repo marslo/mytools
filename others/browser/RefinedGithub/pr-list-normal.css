@@ -1,0 +1,81 @@
+/* ── main layout ─────────────────────────────────────────────── */
+/* constrain and center the main page layout to 85 vw             */
+[class*="PageLayoutRoot"] {
+  max-width: min(85vw, 100%) !important;
+  min-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+/* expand inner content wrappers tagged as "large" to fill the    */
+/* constrained pagelayoutroot (e.g. repo file view, wiki)         */
+[data-width="large"] {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+/* expand markdown / README containers scoped inside PageLayoutRoot */
+[class*="PageLayoutRoot"] .container-lg,
+[class*="PageLayoutRoot"] .container-xl {
+  max-width: 100% !important;
+}
+
+/* ── PR / Issue list ─────────────────────────────────────────── */
+/* The list sits outside PageLayoutRoot, so widen it separately   */
+.js-check-all-container.container-xl {
+  max-width: min(85vw, 100%) !important;
+  width: 100% !important;
+}
+
+/* ── PR Files changed tab: restore default layout ────────────── */
+/* #diff-comparison-viewer-container[data-side-panel-open] exists */
+/* on all PR tabs, but the side-panel attribute is unique to the  */
+/* diff viewer — revert wide overrides to avoid stretching diffs  */
+body:has(#diff-comparison-viewer-container[data-side-panel-open]) [class*="PageLayoutRoot"] {
+  max-width: revert !important;
+  min-width: revert !important;
+  width: revert !important;
+  margin-left: revert !important;
+  margin-right: revert !important;
+}
+
+/* ── Releases page: keep left metadata column narrow ─────────── */
+.col-md-2.flex-md-column {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  max-width: 200px !important;
+}
+
+/* ── Refined GitHub: suppress token-limit warning flash ──────── */
+[class*="rgh-"] .flash.flash-error {
+  display: none !important;
+}
+
+/* ── PR list: fix metadata row layout ────────────────────────── */
+/* GitHub dynamically injects style="word-break: break-all" on    */
+/* the metadata row; override it and prevent flex children from   */
+/* wrapping (Refined GitHub also sets flex-basis: 100% on this    */
+/* row via its align-issue-labels feature)                        */
+.js-check-all-container div[style*="word-break: break-all"] {
+  word-break: normal !important;
+  flex-wrap: nowrap !important;
+}
+
+/* author / opened-by: shrinks to make room for metadata,         */
+/* but never grows — overflow is hidden to truncate long names    */
+.js-check-all-container .opened-by {
+  flex: 0 1 auto !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  min-width: 0 !important;
+}
+
+/* metadata badge group: fixed natural width, never shrinks,      */
+/* children (• Review required / ⊙ updated / ↑↓ To) stay inline   */
+.js-check-all-container .d-none.d-md-inline-flex {
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+}
+
+/* keep "• Review required" on a single line within its container */
+.js-check-all-container .d-none.d-md-inline-flex .d-inline-block.ml-1 {
+  white-space: nowrap !important;
+}
