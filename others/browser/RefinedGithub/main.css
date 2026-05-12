@@ -1,6 +1,6 @@
-/* ╔════════════════════════════════════════════════════════════════════════╗ */
-/* ║                                 GITHUB                                 ║ */
-/* ╚════════════════════════════════════════════════════════════════════════╝ */
+/* ╔════════════════════════════════════════════════════════════╗ */
+/* ║                           GITHUB                           ║ */
+/* ╚════════════════════════════════════════════════════════════╝ */
 /* ── main layout ─────────────────────────────────────────────── */
 [class*="PageLayoutRoot"] {
   max-width: min(85vw, 100%) !important;
@@ -19,26 +19,49 @@
   max-width: 100% !important;
 }
 
+/* ── Commit history page only: widen ─────────────────────────── */
+[class*="PageLayoutWrapper"][data-width="xlarge"]:has([id*="commits"]) {
+  max-width: min(85vw, 100%) !important;
+  width: 100% !important;
+}
+
 /* ── PR / Issue list ─────────────────────────────────────────── */
 .js-check-all-container.container-xl {
   max-width: min(85vw, 100%) !important;
   width: 100% !important;
 }
 
-/* ── PR Conversation tab only: widen beyond container-xl 1280px ─ */
-#diff-comparison-viewer-container:has([class*="Conversations-module"]) {
-  max-width: min(80vw, 100%) !important;
+/* ── PR Conversation: widen beyond container-xl 1280px ─ */
+#diff-comparison-viewer-container:has([class*="Conversations-module"]),
+#diff-comparison-viewer-container:has(#commits_bucket),
+#diff-comparison-viewer-container:has([data-testid="commits-list"]),
+#diff-comparison-viewer-container:has([class*="CommitsList-module"]) {
+  max-width: min(85vw, 100%) !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
+#diff-comparison-viewer-container:has([class*="Conversations-module"], #commits_bucket, [data-testid="commits-list"], [class*="CommitsList-module"]) [class*="PageLayoutRoot"] {
+  max-width: 100% !important;
+  width: 100% !important;
+}
 
 /* ── PR other tabs (Files changed, Commits, Checks): default ──── */
-#diff-comparison-viewer-container:not(:has([class*="Conversations-module"])) [class*="PageLayoutRoot"] {
+#diff-comparison-viewer-container:not(:has([class*="Conversations-module"])):not(:has(#commits_bucket)):not(:has([data-testid="commits-list"])):not(:has([class*="CommitsList-module"])) [class*="PageLayoutRoot"] {
   max-width: revert !important;
   min-width: revert !important;
   width: revert !important;
   margin-left: revert !important;
   margin-right: revert !important;
+}
+
+/* ── PR merge box: fix commit title input truncation ─────────── */
+[class*="MergeBox-module"] span[class*="TextInputWrapper"] {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+[class*="MergeBox-module"] input[class*="Input"] {
+  width: 100% !important;
+  min-width: 0 !important;
 }
 
 /* ── Releases page ───────────────────────────────────────────── */
@@ -77,12 +100,34 @@ body:not(:has(#diff-comparison-viewer-container)) [data-rgh-whitespace="space"] 
   background-image: none !important;
 }
 /* ─── tailing space background color handled by Tampermonkey ─── */
-/* ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Copilot inline comment: widen suggestion diff ───────────── */
+[class*="__markersWrapper__"] {
+  max-width: 45vw !important;
+  width: 45vw !important;
+}
+[class*="AutomatedReviewDiffEntry"] {
+  max-width: 45vw !important;
+}
+[class*="StaticDiffPreview"] {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* ── New GitHub Issues/PR layout (React-based) ───────────────── */
+[class*="ContentWrapper-module__contentContainer"] {
+  max-width: min(85vw, 100%) !important;
+  width: min(85vw, 100%) !important;
+}
+[class*="ThreePanesLayoutMiddleOnlyPane"] {
+  max-width: min(85vw, 100%) !important;
+}
+/* ══════════════════════════════════════════════════════════════ */
 
 
-/* ╔════════════════════════════════════════════════════════════════════════╗ */
-/* ║                                  GIST                                  ║ */
-/* ╚════════════════════════════════════════════════════════════════════════╝ */
+/* ╔════════════════════════════════════════════════════════════╗ */
+/* ║                            GIST                            ║ */
+/* ╚════════════════════════════════════════════════════════════╝ */
 /* ── Gist pages: widen to 85vw ───────────────────────────────── */
 .container-lg:has(.gist-content),
 #gist-pjax-container .container-xl {
@@ -94,4 +139,4 @@ body:not(:has(#diff-comparison-viewer-container)) [data-rgh-whitespace="space"] 
   flex: 0 0 300px !important;
   max-width: 300px !important;
 }
-/* ══════════════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════ */
