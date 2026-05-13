@@ -122,6 +122,38 @@ body:not(:has(#diff-comparison-viewer-container)) [data-rgh-whitespace="space"] 
 [class*="ThreePanesLayoutMiddleOnlyPane"] {
   max-width: min(85vw, 100%) !important;
 }
+
+/* ── main layout / Profile / Dashboard ───────────────────────── */
+.container-xl,
+.container-lg,
+[class*="PageLayoutRoot"] {
+  max-width: min(85vw, 100%) !important;
+  min-width: 900px !important; /* keep a minimum width to prevent pinching */
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+[class*="PageLayoutRoot"] .container-lg,
+[class*="PageLayoutRoot"] .container-xl {
+  max-width: 100% !important;
+}
+
+/* ── Settings / Centered Layouts ─────────────────────────────── */
+[class*="PageLayoutRoot"] [class*="Layout-main-centered"] {
+  max-width: 100% !important;
+}
+[class*="Layout-main-centered-md"],
+[class*="Layout-main-centered-lg"],
+[class*="Layout-main-centered-xl"] {
+  max-width: 100% !important;
+}
+[class*="Layout-main-centered"] [class*="container-"] {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+.Layout-main-centered-md .container-md,
+.Layout-main-centered-lg .container-lg {
+  max-width: 100% !important;
+}
 /* ══════════════════════════════════════════════════════════════ */
 
 
