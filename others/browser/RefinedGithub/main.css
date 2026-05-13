@@ -1,82 +1,86 @@
 /* ╔════════════════════════════════════════════════════════════╗ */
-/* ║                           GITHUB                           ║ */
+/* ║                   GITHUB OPTIMIZED LAYOUT                  ║ */
 /* ╚════════════════════════════════════════════════════════════╝ */
-/* ── main layout ─────────────────────────────────────────────── */
-[class*="PageLayoutRoot"] {
-  max-width: min(85vw, 100%) !important;
-  min-width: 900px !important;
+
+/* centralized management */
+:root {
+  --gh-custom-width: min(85vw, 100%);
+  --gh-min-width: 900px;
+}
+
+/* ── 1. Basic layouts: Set the 85vw limit by default ─────────── */
+/* NOTE: turbo-frame is intentionally excluded — it is a navigation wrapper,
+   not a layout container. Constraining it breaks full-width pages like
+   Actions and Security that have no PageLayoutRoot / container-xl inside. */
+[class*="PageLayoutRoot"],
+[class*="ContentWrapper-module__contentContainer"],
+.container-xl,
+.container-lg,
+.js-check-all-container.container-xl,
+#gist-pjax-container .container-xl,
+.container-lg:has(.gist-content),
+/* Issue create pane (no PageLayoutRoot, previously relied on turbo-frame cap) */
+[class*="IssueCreatePage-module__createPane"],
+[class*="IssueCreatePage-module__createPaneContainer"],
+[class*="IssueCreatePane-module__createPane"],
+[class*="IssueCreatePane-module__createPaneContainer"] {
+  max-width: var(--gh-custom-width) !important;
+  min-width: var(--gh-min-width) !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
-[data-width="large"] {
+/* ── 2. Force FULL WIDTH for Detail Pages (Diffs/Commits/Code) ─ */
+/* Only target pages with commit-detail or diff-specific elements.
+   Broad selectors like :has([data-width="full"]) are avoided because
+   the code page also carries that attribute and should stay at 85vw. */
+[class*="PageLayoutRoot"]:has([id^="diff-"]),
+[class*="PageLayoutRoot"]:has([data-testid="commit-header"]),
+[class*="PageLayoutRoot"]:has([class*="CommitHeader-module"]),
+react-app[app-name="commit"] [class*="PageLayoutRoot"],
+/* PR Checks: diff-comparison-viewer-container wraps PageLayoutRoot (not inside it) */
+#diff-comparison-viewer-container [class*="PageLayoutRoot"],
+[class*="DiffComparisonViewer-module"] [class*="PageLayoutRoot"],
+/* Repository file browser (tree & blob view) */
+[class*="PageLayoutRoot"]:has([class*="ReposFileTree"]) {
   max-width: 100% !important;
   width: 100% !important;
 }
 
+/* ── 3. Inner containers: Stretch to fill the parent ─────────── */
 [class*="PageLayoutRoot"] .container-lg,
-[class*="PageLayoutRoot"] .container-xl {
-  max-width: 100% !important;
-}
-
-/* ── Commit history page only: widen ─────────────────────────── */
-[class*="PageLayoutWrapper"][data-width="xlarge"]:has([id*="commits"]) {
-  max-width: min(85vw, 100%) !important;
-  width: 100% !important;
-}
-
-/* ── PR / Issue list ─────────────────────────────────────────── */
-.js-check-all-container.container-xl {
-  max-width: min(85vw, 100%) !important;
-  width: 100% !important;
-}
-
-/* ── PR Conversation: widen beyond container-xl 1280px ─ */
-#diff-comparison-viewer-container:has([class*="Conversations-module"]),
-#diff-comparison-viewer-container:has(#commits_bucket),
-#diff-comparison-viewer-container:has([data-testid="commits-list"]),
-#diff-comparison-viewer-container:has([class*="CommitsList-module"]) {
-  max-width: min(85vw, 100%) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-#diff-comparison-viewer-container:has([class*="Conversations-module"], #commits_bucket, [data-testid="commits-list"], [class*="CommitsList-module"]) [class*="PageLayoutRoot"] {
+[class*="PageLayoutRoot"] .container-xl,
+[class*="PageLayoutRoot"] [class*="PageLayout-"]:not([class*="Pane"]),
+[class*="PageLayoutRoot"] [class*="PageLayoutWrapper"],
+[class*="PageLayoutRoot"] [class*="ThreePanesLayout"],
+[class*="PageLayoutRoot"] [data-width="large"],
+[class*="PageLayoutRoot"] [data-width="xlarge"],
+[class*="PageLayoutRoot"] [data-width="full"],
+[class*="Layout-main-centered"] {
   max-width: 100% !important;
   width: 100% !important;
 }
 
-/* ── PR other tabs (Files changed, Commits, Checks): default ──── */
-#diff-comparison-viewer-container:not(:has([class*="Conversations-module"])):not(:has(#commits_bucket)):not(:has([data-testid="commits-list"])):not(:has([class*="CommitsList-module"])) [class*="PageLayoutRoot"] {
-  max-width: revert !important;
-  min-width: revert !important;
-  width: revert !important;
-  margin-left: revert !important;
-  margin-right: revert !important;
-}
-
-/* ── PR merge box: fix commit title input truncation ─────────── */
-[class*="MergeBox-module"] span[class*="TextInputWrapper"] {
+/* Deep-dive structure fixes */
+:is([class*="IssueCreatePage-module"], [class*="IssueCreatePane-module"], [class*="ThreePanesLayout"]) > div {
+  max-width: 100% !important;
   width: 100% !important;
-  min-width: 0 !important;
 }
-[class*="MergeBox-module"] input[class*="Input"] {
+
+/* PR Conversation specific fix */
+[class*="Conversations-module__wrapper"] {
+  max-width: 100% !important;
   width: 100% !important;
-  min-width: 0 !important;
 }
 
-/* ── Releases page ───────────────────────────────────────────── */
-.col-md-2.flex-md-column {
-  flex: 0 0 auto !important;
-  width: auto !important;
-  max-width: 200px !important;
+/* ── 4. Settings & Centered Layout ───────────────────────────── */
+[class*="Layout-main-centered"] [class*="container-"] {
+  max-width: 100% !important;
+  width: 100% !important;
 }
 
-/* ── Refined GitHub: suppress token-limit warning flash ──────── */
-[class*="rgh-"] .flash.flash-error {
-  display: none !important;
-}
-
-/* ── PR list: fix metadata row layout ────────────────────────── */
+/* ── 5. Component fine-tuning ────────────────────────────────── */
+/* PR list metadata line layout fix */
 .js-check-all-container div[style*="word-break: break-all"] {
   word-break: normal !important;
   flex-wrap: nowrap !important;
@@ -85,90 +89,23 @@
   flex: 0 1 auto !important;
   overflow: hidden !important;
   white-space: nowrap !important;
+}
+
+/* PR merge input box width */
+[class*="MergeBox-module"] :is(span[class*="TextInputWrapper"], input[class*="Input"]) {
+  width: 100% !important;
   min-width: 0 !important;
 }
-.js-check-all-container .d-none.d-md-inline-flex {
-  flex: 0 0 auto !important;
-  flex-wrap: nowrap !important;
-}
-.js-check-all-container .d-none.d-md-inline-flex .d-inline-block.ml-1 {
-  white-space: nowrap !important;
-}
 
-/* ── Whitespace markers: hide ONLY space dots on non-PR pages ── */
-body:not(:has(#diff-comparison-viewer-container)) [data-rgh-whitespace="space"] {
-  background-image: none !important;
-}
-/* ─── tailing space background color handled by Tampermonkey ─── */
+/* Copilot / Releases / Gist Sidebars */
+[class*="__markersWrapper__"], [class*="AutomatedReviewDiffEntry"] { max-width: 45vw !important; width: 45vw !important; }
+.col-md-2.flex-md-column { flex: 0 0 auto !important; max-width: 200px !important; }
+.gistsearch-aside, #gist-pjax-container .h-card { flex: 0 0 300px !important; max-width: 300px !important; }
+.container-xl .col-3:has(experimental-action-list) { flex: 0 0 auto !important; max-width: 300px !important; }
 
-/* ── Copilot inline comment: widen suggestion diff ───────────── */
-[class*="__markersWrapper__"] {
-  max-width: 45vw !important;
-  width: 45vw !important;
-}
-[class*="AutomatedReviewDiffEntry"] {
-  max-width: 45vw !important;
-}
-[class*="StaticDiffPreview"] {
-  max-width: 100% !important;
-  width: 100% !important;
-}
-
-/* ── New GitHub Issues/PR layout (React-based) ───────────────── */
-[class*="ContentWrapper-module__contentContainer"] {
-  max-width: min(85vw, 100%) !important;
-  width: min(85vw, 100%) !important;
-}
-[class*="ThreePanesLayoutMiddleOnlyPane"] {
-  max-width: min(85vw, 100%) !important;
-}
-
-/* ── main layout / Profile / Dashboard ───────────────────────── */
-.container-xl,
-.container-lg,
-[class*="PageLayoutRoot"] {
-  max-width: min(85vw, 100%) !important;
-  min-width: 900px !important; /* keep a minimum width to prevent pinching */
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-[class*="PageLayoutRoot"] .container-lg,
-[class*="PageLayoutRoot"] .container-xl {
-  max-width: 100% !important;
-}
-
-/* ── Settings / Centered Layouts ─────────────────────────────── */
-[class*="PageLayoutRoot"] [class*="Layout-main-centered"] {
-  max-width: 100% !important;
-}
-[class*="Layout-main-centered-md"],
-[class*="Layout-main-centered-lg"],
-[class*="Layout-main-centered-xl"] {
-  max-width: 100% !important;
-}
-[class*="Layout-main-centered"] [class*="container-"] {
-  max-width: 100% !important;
-  width: 100% !important;
-}
-.Layout-main-centered-md .container-md,
-.Layout-main-centered-lg .container-lg {
-  max-width: 100% !important;
-}
-/* ══════════════════════════════════════════════════════════════ */
-
-
-/* ╔════════════════════════════════════════════════════════════╗ */
-/* ║                            GIST                            ║ */
-/* ╚════════════════════════════════════════════════════════════╝ */
-/* ── Gist pages: widen to 85vw ───────────────────────────────── */
-.container-lg:has(.gist-content),
-#gist-pjax-container .container-xl {
-  max-width: min(85vw, 100%) !important;
-}
-/* ── Gist list: keep language sidebar compact ────────────────── */
-.gistsearch-aside,
-#gist-pjax-container .h-card {
-  flex: 0 0 300px !important;
-  max-width: 300px !important;
-}
-/* ══════════════════════════════════════════════════════════════ */
+/* ── 6. Accessibility ────────────────────────────────────────── */
+[class*="rgh-"] .flash.flash-error { display: none !important; }
+/* Hide RGH whitespace markers on non-diff pages */
+/* csslint ignore:start */
+body:not(:has(#diff-comparison-viewer-container)) [data-rgh-whitespace="space"] { background-image: none !important; }
+/* csslint ignore:end */
