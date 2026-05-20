@@ -28,7 +28,7 @@ brew "bat-extras"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop", args: ["HEAD"]
 # Versatile and fast Unicode/ASCII/ANSI graphics renderer
-brew "chafa"
+brew "chafa", args: ["HEAD"]
 # Create and view interactive cheat sheets for *nix commands
 brew "cheat", args: ["HEAD"]
 # Color-highlighted diff(1) output
@@ -227,6 +227,8 @@ brew "tree"
 brew "pass", args: ["HEAD"]
 # Pass extension for managing one-time-password tokens
 brew "pass-otp"
+# Command-line tool to generate, analyze, convert and manipulate colors
+brew "pastel", args: ["HEAD"]
 # PDF processor written in Go
 brew "pdfcpu"
 # Pinentry for GPG on Mac
@@ -426,3 +428,17 @@ vscode "vscjava.vscode-java-test"
 vscode "vscodevim.vim"
 vscode "wowbox.code-debuger"
 cargo "cargo-cache"
+npm "@commitlint/cli"
+npm "@commitlint/config-conventional"
+npm "@pnp/cli-microsoft365"
+npm "@semantic-release/changelog"
+npm "@semantic-release/commit-analyzer"
+npm "@semantic-release/exec"
+npm "@semantic-release/git"
+npm "@semantic-release/github"
+npm "@semantic-release/release-notes-generator"
+npm "conventional-changelog-conventionalcommits"
+npm "neovim"
+npm "npm-groovy-lint"
+npm "semantic-release"
+npm "vscode-langservers-extracted"
