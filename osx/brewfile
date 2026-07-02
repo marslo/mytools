@@ -1,10 +1,10 @@
-tap "buo/cask-upgrade"
-tap "carlocab/personal"
-tap "hashicorp/tap"
+tap "buo/cask-upgrade", trusted: true
+tap "carlocab/personal", trusted: true
+tap "hashicorp/tap", trusted: true
 tap "homebrew/command-not-found"
-tap "laishulu/homebrew"
-tap "riodelphino/tap"
-tap "vitorgalvao/tiny-scripts"
+tap "laishulu/homebrew", trusted: true
+tap "riodelphino/tap", trusted: true
+tap "vitorgalvao/tiny-scripts", trusted: true
 # Search tool like grep, but optimized for programmers
 brew "ack"
 # Static analysis and lint tool, for (ba)sh scripts
@@ -124,7 +124,7 @@ brew "go"
 # Bash and Zsh completion for Gradle
 brew "gradle-completion"
 # Development kit for the Java programming language
-brew "openjdk"
+brew "openjdk", link: true
 # Open-source build automation tool based on the Groovy and Kotlin DSL
 brew "gradle"
 # GNU grep, egrep and fgrep
@@ -258,7 +258,7 @@ brew "ripgrep"
 # Readline wrapper: adds readline support to tools that lack it
 brew "rlwrap"
 # Powerful, clean, object-oriented scripting language
-brew "ruby", args: ["HEAD"]
+brew "ruby", args: ["HEAD"], link: false
 # Safe, concurrent, practical language
 brew "rust"
 # 7-Zip is a file archiver with a high compression ratio
@@ -325,6 +325,8 @@ brew "whois", args: ["HEAD"]
 brew "yamlfmt"
 # Linter for YAML files
 brew "yamllint", args: ["HEAD"]
+# Process YAML, JSON, XML, CSV and properties documents from the CLI
+brew "yq", args: ["HEAD"]
 # GTK+ dialog boxes for the command-line
 brew "zenity"
 # Compression and file packaging/archive utility
@@ -334,7 +336,7 @@ brew "zopfli"
 # Extract, view, and test RAR archives
 brew "carlocab/personal/unrar"
 # Vault
-brew "hashicorp/tap/vault"
+brew "hashicorp/tap/vault", trusted: true
 # Fast IME switcher for macOS
 brew "riodelphino/tap/macime"
 # Application launcher and productivity software
@@ -354,6 +356,8 @@ cask "copilot-cli"
 cask "dash"
 # App to build and share containerised applications and microservices
 cask "docker-desktop"
+# Online diagram software
+cask "drawio"
 # Web browser
 cask "google-chrome@canary"
 # Desktop automation application
@@ -372,8 +376,6 @@ cask "macvim-app"
 cask "moom"
 # Image editor
 cask "paintbrush"
-# Instant messaging tool
-cask "qq"
 # Screenshot measurement and annotation tool
 cask "shottr"
 # Collect, organise & share colours
