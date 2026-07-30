@@ -127,6 +127,8 @@ brew "gradle-completion"
 brew "openjdk", link: true
 # Open-source build automation tool based on the Groovy and Kotlin DSL
 brew "gradle"
+# Graph visualization software from AT&T and Bell Labs
+brew "graphviz"
 # GNU grep, egrep and fgrep
 brew "grep"
 # Java-based scripting language
@@ -185,6 +187,10 @@ brew "lolcat"
 brew "lsof"
 # Text-based web browser
 brew "lynx"
+# Sudoless performance monitoring for Apple Silicon processors
+brew "macmon", args: ["HEAD"]
+# Fast, flexible, config-based cli for linting Markdown/CommonMark files
+brew "markdownlint-cli2"
 # Mac App Store command-line interface
 brew "mas", args: ["HEAD"]
 # Like sed, awk, cut, join & sort for name-indexed data such as CSV
@@ -233,6 +239,8 @@ brew "pastel", args: ["HEAD"]
 brew "pdfcpu"
 # Pinentry for GPG on Mac
 brew "pinentry-mac", args: ["HEAD"]
+# Draw UML diagrams
+brew "plantuml"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Code formatter for JavaScript, CSS, JSON, GraphQL, Markdown, YAML
@@ -258,7 +266,7 @@ brew "ripgrep"
 # Readline wrapper: adds readline support to tools that lack it
 brew "rlwrap"
 # Powerful, clean, object-oriented scripting language
-brew "ruby", args: ["HEAD"], link: false
+brew "ruby", args: ["HEAD"]
 # Safe, concurrent, practical language
 brew "rust"
 # 7-Zip is a file archiver with a high compression ratio
@@ -397,7 +405,6 @@ vscode "bierner.markdown-mermaid"
 vscode "deerawan.vscode-dash"
 vscode "eamodio.gitlens"
 vscode "formulahendry.code-runner"
-vscode "github.copilot-chat"
 vscode "illixion.vscode-vibrancy-continued"
 vscode "ivory-lab.jenkinsfile-support"
 vscode "janjoerke.jenkins-pipeline-linter-connector"
