@@ -1,0 +1,17 @@
+diff --git a/build/index.js b/build/index.js
+index 61f9b0dd..49329e72 100644
+--- a/build/index.js
++++ b/build/index.js
+@@ -120483,10 +120483,9 @@ var init_completion$1 = __esmMin((() => {
+ 					"commitCharacters",
+ 					"editRange",
+ 					"insertTextFormat",
+-					"insertTextMode",
+-					"data"
++					"insertTextMode"
+ 				],
+-				applyKindSupport: true
++				applyKindSupport: false
+ 			};
+ 		}
+ 		initialize(capabilities, documentSelector) {
