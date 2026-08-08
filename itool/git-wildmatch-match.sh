@@ -29,6 +29,7 @@ declare -a PATS=(
   '*github.com?marslo/**'
   '**/marslo/**'
   '**:marslo/**'
+  '**?marslo/**'
   '**/*github*.com/marslo/**'
   '*github*.com?marslo/**'
 )
