@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#=============================================================================
+#     FileName : pre-commit
+#       Author : marslo
+#      Created : 2026-05-13 14:20:00
+#   LastChange : 2026-05-13 15:36:21
+#  Description : wrapper of official pre-commit for custom subcommands
+#=============================================================================
+
+set -euo pipefail
+
+# shellcheck disable=SC2155
+declare -r ME="$( basename "${BASH_SOURCE[0]:-$0}" )"
+# shellcheck disable=SC2155
+declare -r HERE="$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )" && pwd )"
+
+function die() { echo >&2 "error: $*"; exit 1; }
+function backer() {
+  local _path
+  _path=$(echo "${PATH}" | awk -v RS=: -v ORS=: -v skip="${HERE}" '$1 != skip' | sed 's/:$//')
+  PATH="${_path}" command -v "${ME}" || { die "the official ${ME} not found in PATH"; }
+}
+
+export _REAL_PRECOMMIT
+_REAL_PRECOMMIT="$(backer)"
+
+declare SUBCOMMAND="${1:-}"; shift 2>/dev/null || true
+case "${SUBCOMMAND}" in
+  autoupdate ) SCRIPT_PATH="${HERE}/${ME}-${SUBCOMMAND}"
+               if [[ -f "${SCRIPT_PATH}" ]]; then
+                 exec bash "${SCRIPT_PATH}" "$@"
+               else
+                 exec "${_REAL_PRECOMMIT}" "${SUBCOMMAND}" "$@"
+               fi ;;
+  *          ) exec "${_REAL_PRECOMMIT}" ${SUBCOMMAND:+"${SUBCOMMAND}"} "$@" ;;
+esac
+
+# vim:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:filetype=sh:
