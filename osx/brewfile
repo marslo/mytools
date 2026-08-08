@@ -51,8 +51,6 @@ brew "diff-so-fancy", args: ["HEAD"]
 brew "difftastic"
 # File comparison utilities
 brew "diffutils"
-# Bash, Zsh and Fish completion for Docker
-brew "docker-completion"
 # Convert text between DOS, UNIX, and Mac formats
 brew "dos2unix"
 # AST-based pattern checker for JavaScript
@@ -254,8 +252,6 @@ brew "pv"
 # Python version management
 brew "pyenv"
 # Python interface to Tcl/Tk
-brew "python-tk@3.13"
-# Python interface to Tcl/Tk
 brew "python-tk@3.14"
 # Tools for and transforming and inspecting PDF files
 brew "qpdf"
@@ -382,8 +378,6 @@ cask "keycastr"
 cask "macvim-app"
 # Utility to move and zoom windows—on one display
 cask "moom"
-# Image editor
-cask "paintbrush"
 # Screenshot measurement and annotation tool
 cask "shottr"
 # Collect, organise & share colours
