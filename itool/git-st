@@ -1,16 +1,100 @@
 #!/usr/bin/env bash
+# shellcheck source=/dev/null disable=SC2155,SC2015
 #=============================================================================
 #     FileName : git-st
 #       Author : marslo.jiao@gmail.com
 #      Created : 2024-02-01 03:39:19
-#   LastChange : 2024-04-04 19:41:58
+#   LastChange : 2026-03-25 15:59:57
 #   references : https://stackoverflow.com/q/77919418/2940319
 #=============================================================================
 
-declare gdiff
-gdiff=$(git --no-pager diff --stat --relative | head -n-1)
-awk 'FNR==NR { k=$1; $1=""; map[k]=$0; next } { print $0 map[$2] }' \
-    <(echo -e "${gdiff}") <(git status -sb)
-# | column -t -s '|' -o '|' | sed -e '1 s/|$//'
+declare -r ME="$( basename "${BASH_SOURCE[0]:-$0}" | tr '-' ' ' )"
+declare -r HERE="$( dirname "${BASH_SOURCE[0]:-$0}" )"
+# @credit: https://github.com/ppo/bash-colors
+# @usage:  or copy & paste the `c()` function from:
+#          https://github.com/ppo/bash-colors/blob/master/bash-colors.sh#L3
+test -f "${HERE}/bash-colors.sh" && source "${HERE}/bash-colors.sh" || { c() { :; }; }
+test -f "${HERE}/ig.sh"          && source "${HERE}/ig.sh" || { git_color_gpg() { :; }; }
 
-# vim:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:filetype=sh
+declare gdiff=''
+declare branch=''
+declare rlog=false
+declare emptyRepo=false
+git rev-parse --abbrev-ref HEAD >/dev/null 2>&1 || emptyRepo=true
+
+function showLog() {
+  branch="${1:-"$(git symbolic-ref -q HEAD)"}"
+  local format='%C(#678963)%h%C(reset) %C(dim white)-%C(reset)%C(auto)%d%C(reset) %C(dim white)%s%C(reset) %C(green)(%cr) %C(italic blue)<%an>%C(reset) GPG_STATUS_%G?'
+  local -a cmd=( git --no-pager log
+                     --color=always
+                     --graph
+                     --decorate=auto
+                     --pretty=tformat:"${format}"
+                     --abbrev-commit
+                     --date=relative
+                     --max-count=3
+                )
+
+  printf "\n$(c Wdi)~~>$(c) $(c Ysi)%s$(c) $(c Wdi):$(c)\n" "${branch}"
+  "${cmd[@]}" "${branch}" | git_color_gpg
+}
+
+function showStatus() {
+  local gdir=$(git rev-parse --git-path . 2>/dev/null)
+  local marker
+
+  # find the first special file
+  marker=$(find "${gdir}" -maxdepth 1 \( -name "rebase-merge"     \
+                                      -o -name "rebase-apply"     \
+                                      -o -name "MERGE_HEAD"       \
+                                      -o -name "CHERRY_PICK_HEAD" \
+                                      -o -name "REVERT_HEAD"      \
+                                      -o -name "BISECT_LOG"       \
+                                      \) \
+                          -print 2>/dev/null |
+           head -n 1
+         )
+
+  case "${marker##*/}" in
+    rebase-*         ) echo "REBASING"       ;;
+    MERGE_HEAD       ) echo "MERGING"        ;;
+    CHERRY_PICK_HEAD ) echo "CHERRY-PICKING" ;;
+    REVERT_HEAD      ) echo "REVERTING"      ;;
+    BISECT_LOG       ) echo "BISECTING"      ;;
+    *                ) git symbolic-ref -q HEAD >/dev/null || echo "DETACHED-HEAD" ;;
+  esac
+}
+
+# declare insideRepo='false'
+# if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then insideRepo='true'; fi
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -r | --remote-log ) rlog=true; shift ;;
+    *                 ) echo "USAGE: ${ME} [-r|--remote-log]" >&2; exit 1 ;;
+  esac
+done
+
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 || {
+  echo "fatal: not a git repository (or any of the parent directories): .git" >&2;
+  exit 128
+}
+
+declare REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+"${emptyRepo}" && { git status -sb; exit 0; }
+  # COLUMNS='128'
+gdiff=$( COLUMNS="$(( $(tput cols) - 2 ))" git --no-pager -C "${REPO_ROOT}" diff --stat --relative | head -n -1 )
+awk '
+  FNR==NR { match($0, /[ \t]*\|.*/); map[$1] = substr($0, RSTART); next; }
+  { print $0 map[$2] }
+' <(echo -e "${gdiff}") <(git -C "${REPO_ROOT}" status -sb)
+
+if [[ -z "${gdiff}" ]]; then
+  if _ref=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null) && [[ 'HEAD' != "${_ref}" ]]; then
+    showLog "$(git symbolic-ref -q HEAD)"
+    "${rlog}" && showLog refs/remotes/origin/"${_ref}" || true
+  fi
+fi
+
+# vim:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:filetype=sh:

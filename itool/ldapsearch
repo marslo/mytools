@@ -1,68 +1,106 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1078,SC1079
+# shellcheck source=/dev/null disable=SC1078,SC1079
+#=============================================================================
+#     FileName : ldapsearch
+#       Author : marslo
+#      Created : 2023-01-06 21:49:44
+#   LastChange : 2026-02-20 15:28:39
+#=============================================================================
 
 shopt -s extglob
 
-c() {
-  # shellcheck disable=SC1009,SC2015,SC2028
-  [ $# -eq 0 ] && echo "\033[0m" || echo "$1" | sed -E "s/(.)/‹\1›/g;s/([KRGYBMCW])/3\1/g;s/([krgybmcw])/4\1/g;s/S/22/;y/sufnKRGYBMCWkrgybmcw›/14570123456701234567m/;s/‹/\\\033[/g";
+# shellcheck disable=SC2155
+declare -r HERE="$( dirname "${BASH_SOURCE[0]:-$0}" )"
+# @credit: https://github.com/ppo/bash-colors
+# @usage:  or copy & paste the `c()` function from:
+#          https://github.com/ppo/bash-colors/blob/master/bash-colors.sh#L3
+# shellcheck disable=SC2015
+test -f "${HERE}/bash-colors.sh" && source "${HERE}/bash-colors.sh" || { c() { :; }; }
+
+usage="""SYNOPSIS
+  $(c Ys)\$ ldapsearch $(c 0Mi)<USER_ID> $(c 0Wd)[ $(c 0Ci)FIELD $(c 0Wd)[ $(c 0Ci)FIELD $(c 0Wd)[ $(c 0Ci)FIELD $(c 0Wd)] ] ] [ $(c 0G)OPTION $(c 0Wd)]$(c)
+
+OPTIONS
+  $(c G)-h, --help$(c)    Show this help message and exit.
+
+EXAMPLE
+  $(c Wdi)# get help$(c)
+  $(c Y)\$ ldapsearch $(c 0G)-h$(c)
+
+  $(c Wdi)# get all information for $(c 0Wi)<USER_ID>$(c)
+  $(c Y)\$ ldapsearch $(c 0Mi)<USER_ID>$(c)
+
+  $(c Wdi)# get only DN for $(c 0Wi)<USER_ID>$(c)
+  $(c Y)\$ ldapsearch $(c 0Mi)<USER_ID> $(c 0Ci)dn$(c)
+
+  $(c Wdi)# get multiple FIELD for $(c 0Wi)marslo$(c)
+  $(c Y)\$ ldapsearch $(c 0Mi)marslo $(c 0Ci)dn memberOf displayName givenName sAMAccountName$(c)
+
+TIPS
+  $(c Gi)\`\`\`bash
+  $(c 0Wdi)# for macOS users$(c 0Gi)
+  \$ brew install gun-sed openldap
+  \`\`\`$(c)"""
+
+# shellcheck disable=SC2181
+function exitOnError() { if [ $? -ne 0 ]; then echo -e "$1.\nExiting."; exit 1; fi; }
+function help() { echo -e "${usage}"; exit 0; }
+function passToken() { pass show "${1}" | head -n1; }
+function escape_ere() { "${SED}" -E 's/[][(){}.^$*+?|\\]/\\&/g'; }
+# shellcheck disable=SC2155
+buildAttr() {
+  local -a _in=( "${@}" )
+  local _attr="$( printf '%s\n' "${_in[@]}" | escape_ere | paste -sd'|' - )"
+  printf '%s' "${_attr}"
 }
 
-usage="""TO SEARCH IN LDAP
-\nSYNOPSIS:
-\n\t$(c sY)\$ ldapsearch <userId> [ field [ field [ field ] ] ] [ -h | help ]$(c)
-\nExample:
-\n\tget help
-\n\t\t$(c G)\$ ldapsearch help$(c)
-\n\tget all information for <userId>
-\n\t\t$(c G)\$ ldapsearch <userId>$(c)
-\n\tget only DN for <userId>
-\n\t\t$(c G)\$ ldapsearch <userId> dn$(c)
-\n\tget both DN and memberOf for <userId>
-\n\t\t$(c G)\$ ldapsearch <userId> dn memberOf$(c)
-"""
+[[ 'Darwin' = "$(uname)" ]] && SED="$(brew --prefix gnu-sed)/libexec/gnubin/sed"     || SED='/usr/bin/sed'
+[[ 'Darwin' = "$(uname)" ]] && LDAPSEARCH="$(brew --prefix openldap)/bin/ldapsearch" || LDAPSEARCH='/usr/bin/ldapsearch'
 
-function exitOnError() {
-  # shellcheck disable=SC2181
-  if [ $? -ne 0 ]; then
-    echo -e "$1.\nExiting."
-    exit 1
-  fi
-}
+test -f "${SED}"        || { echo -e "$(c Rs)Error$(c 0Ri): $(c 0Gi)\`${SED}\` $(c 0Ri)not found.$(c)"; exit 1; }
+test -f "${LDAPSEARCH}" || { echo -e "$(c Rs)Error$(c 0Ri): $(c 0Gi)\`${LDAPSEARCH}\` $(c 0Ri)not found.$(c)"; exit 1; }
 
-function help() {
-  echo -e "${usage}"
-  exit 0
-}
-
-userId="$1"
-attributes=''
-# for mac
-SED='/usr/local/opt/gnu-sed/libexec/gnubin/sed'
-LDAPSEARCH='/usr/local/opt/openldap/bin/ldapsearch'
-sedOpt="${SED} -r '/^(#.*)$/d;/^\s*$/d'"
-
-if [[ $# -gt 1 ]]; then
-  attributes="$(echo "${@: -$(( $#-1 ))}" | cut -d' ' -f1-)"
-fi
-
-if [[ -n ${attributes} ]]; then
-  attr=${attributes//+( )/|}
-  sedOpt="${SED} -rn 's/^((${attr}):.*)$/\1/p'"
-fi
-
-if [ $# -eq 0 ] || [ "$1" = "help" ] || [ "$1" = '-h' ]; then
+if [ $# -eq 0 ] || [ "$1" = "--help" ]|| [ "$1" = "help" ] || [ "$1" = '-h' ]; then
   help
-else
-  command="""
-    ${LDAPSEARCH} -LLL \
-                  -o ldif-wrap=no \
-                  -x \
-                  -H ldaps://ldaps.domain.com:636 \
-                  -b 'dc=domain,dc=com' \
-                  -D <account> \
-                  -w <password> \
-                  CN=${userId} ${attributes} | ${sedOpt}
-  """
-  eval "${command}"
 fi
+
+declare userId=''
+declare -a attributes=()
+declare -a SED_OPT=( "${SED}" -r '/^(#.*)$/d;/^\s*$/d' )
+declare -a command=()
+declare -r account='account'
+declare -r ldasphost='ldaps://sldap.domain.com:636'
+declare -r basedn='dc=domain,dc=com'
+# shellcheck disable=SC2155
+declare -r password="$(passToken "devops/srvs/${account}")"
+
+[[ $# -eq 0 ]] && help
+while test -n "$1"; do
+  case "$1" in
+    -h | --help | help ) help ;;
+    -*                 ) echo -e "Error: Invalid option '$1'."; exit 1 ;;
+    *                  ) userId="$1"; shift;
+                         attributes+=( "${@}" ); break ;;
+  esac
+done
+
+[[ -z "${userId}" ]] && echo -e "Error: Missing required argument <userId>." && exit 1
+
+command+=( "${LDAPSEARCH}" -LLL )
+command+=( -o ldif-wrap=no )
+command+=( -x )
+command+=( -H "${ldasphost}" )
+command+=( -b "${basedn}" )
+command+=( -D "${account}" )
+command+=( -w "${password}" )
+command+=( CN="${userId}" )
+
+if [[ ${#attributes[@]} -gt 0 ]]; then
+  attr="$(buildAttr "${attributes[@]}")"
+  SED_OPT=( "${SED}" -rn "s/^((${attr}):.*)$/\1/p" )
+  command+=( "${attributes[@]}" )
+fi
+
+"${command[@]}" | "${SED_OPT[@]}"
+
+# vim:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:filetype=sh:
