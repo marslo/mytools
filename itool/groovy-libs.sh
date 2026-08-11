@@ -4,7 +4,7 @@
 #      FileName : groovy-libs.sh
 #        Author : marslo
 #       Created : 2026-05-29 23:20:19
-#    LastChange : 2026-08-11 01:42:06
+#    LastChange : 2026-08-11 02:10:17
 #         Usage : curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --groovy --with-libs --with-bin
 #                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --help
 # =============================================================================
@@ -12,7 +12,7 @@
 #   target                 | binary (.jar)        | -sources / -javadoc | version selection
 #   -----------------------+----------------------+---------------------+----------------------------------------
 #   --groovy / --with-libs | only with --with-bin | always              | latest stable; --pre adds alpha/beta/rc
-#   -e extensions          | always               | always              | latest release (maven-metadata)
+#   -e extensions          | always               | always              | latest release; jenkins-core: weekly (X.Y), --extension-lts picks LTS (X.Y.Z)
 # note: jenkins-libs.sh also ships -e/--extensions; the duplicated feature is intentional (standalone use)
 # =============================================================================
 
@@ -31,9 +31,15 @@ declare WITH_LIBS=false
 declare WITH_BIN=false
 # --pre: resolve the newest groovy version including alpha/beta/rc (default: stable only)
 declare PRE=false
-# -e/--extensions: jenkins/cloudbees maven artifacts (com/cloudbees), fetched with bin+sources+javadoc
-# default list; merged with any -e artifacts, deduped
-declare -a EXTENSIONS=( groovy-cps )
+# --extension-lts: for jenkins-style extensions, pick the latest LTS (X.Y.Z) instead of the latest weekly (X.Y)
+declare EXT_LTS=false
+# -e/--extensions: maven artifacts fetched with bin+sources+javadoc; default list, merged with -e, deduped
+declare -a EXTENSIONS=( groovy-cps jenkins-core )
+# per-extension overrides; anything not listed defaults to ${MAVEN_BASE} + group 'com/cloudbees'
+declare -rA EXTENSION_REPO=(  [jenkins-core]='https://repo.jenkins-ci.org/public' )
+declare -rA EXTENSION_GROUP=( [jenkins-core]='org/jenkins-ci/main' )
+# extensions following jenkins weekly/lts versioning: default latest weekly (X.Y); --extension-lts picks latest LTS (X.Y.Z)
+declare -rA EXTENSION_LTS=( [jenkins-core]=1 )
 declare ME; ME="$( basename "${BASH_SOURCE[0]:-$0}" )"
 { test 'bash' = "${ME}" || test -z "${ME}" ; } && ME='groovy-libs.sh'
 readonly ME
@@ -49,7 +55,8 @@ OPTIONS
   $(c 0G)-l$(c), $(c 0G)--with-libs$(c)             download the Groovy standard library modules
       $(c 0G)--with-bin$(c)              also fetch the compiled groovy '.jar' $(c 0Wi)(default: only -sources/-javadoc, since your launcher already ships the binaries)$(c)
       $(c 0G)--pre$(c)                   resolve the newest groovy version including alpha/beta/rc $(c 0Wi)(default: stable only)$(c)
-  $(c 0G)-e$(c), $(c 0G)--extensions $(c 0Mi)ARTIFACT$(c)   download a Jenkins/cloudbees extension jar with bin+sources+javadoc $(c 0Wi)(repeatable; default list [${EXTENSIONS[*]}], deduped)$(c)
+  $(c 0G)-e$(c), $(c 0G)--extensions $(c 0Mi)ARTIFACT$(c)   download a Jenkins/cloudbees extension jar with bin+sources+javadoc $(c 0Wi)(repeatable; default list [$(c 0Mi)${EXTENSIONS[*]}$(c 0Wi)], deduped)$(c)
+      $(c 0G)--extension-lts$(c)         for jenkins-style extensions (jenkins-core), pick the latest LTS $(c 0Mi)X.Y.Z$(c 0Wi) instead of the latest weekly $(c 0Mi)X.Y$(c)
   $(c 0G)-p, $(c 0G)--path $(c 0Mi)DESTINATION$(c)      specify the destination directory $(c 0Wi)(default: ${_DEFAULT_DESTINATION})$(c)
   $(c 0G)-h, $(c 0G)--help$(c)                  show this help message and exit
 
@@ -180,15 +187,24 @@ function groovylibs() {
   [[ ${#_modules[@]} -gt 0 ]] && { extensions _modules "${target}" "${group}" "${version}" "${WITH_BIN}"; linkLatest "${GROOVY_DIR}" "${version}"; }
 }
 
-# download one jenkins/cloudbees extension (bin+sources+javadoc) into <EXTENSIONS_DIR>/<artifact>/<version>,
+# download one maven extension (bin+sources+javadoc) into <EXTENSIONS_DIR>/<artifact>/<version>,
 # then (re)point <artifact>/latest at it. version resolved from maven-metadata.xml.
+# repo/group default to maven central + com/cloudbees; override per artifact via EXTENSION_REPO/EXTENSION_GROUP.
 function installExtension() {
   local artifact="${1:?artifact is required}"
-  local group="${2:-com/cloudbees}"
+  local repo="${EXTENSION_REPO[${artifact}]:-${MAVEN_BASE}}"
+  local group="${EXTENSION_GROUP[${artifact}]:-com/cloudbees}"
   local base="${EXTENSIONS_DIR}/${artifact}"
-  local url="${MAVEN_BASE}/${group}/${artifact}"
+  local url="${repo}/${group}/${artifact}"
   local version
-  version="$(getVersion "${url}/maven-metadata.xml")"
+  if test -n "${EXTENSION_LTS[${artifact}]:-}"; then
+    # jenkins-style weekly/lts: default latest weekly (X.Y); --extension-lts picks latest LTS (X.Y.Z)
+    local pat='^[0-9]+\.[0-9]+$'
+    "${EXT_LTS}" && pat='^[0-9]+\.[0-9]+\.[0-9]+$'
+    version="$( command curl -fsSL "${url}/maven-metadata.xml" 2>/dev/null | sed -nE 's:.*<version>(.*)</version>.*:\1:p' | command grep -E "${pat}" | tail -1 )"
+  else
+    version="$(getVersion "${url}/maven-metadata.xml")"
+  fi
   test -n "${version}" || { echo -e "$(show --bg --error 'ERROR') $(c 0i)failed to get the latest version of $(c 0G)${artifact} $(c 0i)from $(c 0Bui)${url}$(c 0i) ..."; exit 1; }
   local target="${base}/${version}"
   local -a types=()
@@ -275,6 +291,7 @@ while [[ $# -gt 0 ]]; do
     -l | --with-libs  ) WITH_LIBS=true      ; shift   ;;
     --with-bin        ) WITH_BIN=true       ; shift   ;;
     --pre             ) PRE=true            ; shift   ;;
+    --extension-lts   ) EXT_LTS=true        ; shift   ;;
     -e | --extensions ) EXTENSIONS+=("$2")  ; shift 2 ;;
     -p | --path       ) DESTINATION="$2"    ; shift 2 ;;
     -h | --help       ) echo -e "${USAGE}" >&2; exit 0 ;;
