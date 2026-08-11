@@ -4,16 +4,14 @@
 #      FileName : groovy-libs.sh
 #        Author : marslo
 #       Created : 2026-05-29 23:20:19
-#    LastChange : 2026-08-10 23:08:59
-#         Usage : curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --groovy --jenkins --groovy-libs
+#    LastChange : 2026-08-11 01:19:13
+#         Usage : curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --groovy --with-libs
 #                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --help
 # =============================================================================
 # download matrix:
-#   target                   | binary (.jar) | -sources / -javadoc | affected by --with-jar
-#   -------------------------+---------------+---------------------+-----------------------
-#   --groovy / --groovy-libs | skip default  | always              | yes: --with-jar adds binary
-#   --jenkins                | always        | always              | no (CLI needs it; nowhere else)
-#   -e extensions            | always        | always              | no
+#   target                 | binary (.jar)        | -sources / -javadoc | version selection
+#   -----------------------+----------------------+---------------------+----------------------------------------
+#   --groovy / --with-libs | only with --with-bin | always              | latest stable; --pre adds alpha/beta/rc
 # =============================================================================
 
 # @credit: https://github.com/ppo/bash-colors
@@ -22,43 +20,42 @@ c() { [ $# == 0 ] && printf "\033[0m" || printf "$1" | sed 's/\(.\)/\1;/g;s/\([S
 
 readonly MAVEN_BASE="https://repo1.maven.org/maven2"
 # base dir; default destination is <base>/libs unless overridden by --path
-declare _DEFAULT_PATH='/opt/groovy'
-declare _DEFAULT_DESTINATION="${_DEFAULT_PATH}/libs"
-# pinned fallbacks used only when the online lookup fails
+declare _DEFAULT_DESTINATION='/opt/groovy'
+# pinned fallback used only when the online lookup fails
 declare _GROOVY_FALLBACK='5.0.8'
-declare _JENKINS_FALLBACK='2.568.2'
 declare -a CURL=( 'curl' '-sSLfO' )
-declare GROOVYLIBS=false
+declare WITH_LIBS=false
 # groovy binaries default off (the launcher already ships them); -sources/-javadoc always download
-declare WITH_JAR=false
+declare WITH_BIN=false
+# --pre: resolve the newest groovy version including alpha/beta/rc (default: stable only)
+declare PRE=false
 declare ME; ME="$( basename "${BASH_SOURCE[0]:-$0}" )"
 { test 'bash' = "${ME}" || test -z "${ME}" ; } && ME='groovy-libs.sh'
 readonly ME
 # shellcheck disable=SC2155
 declare -r USAGE="NAME
-  $(c 0Ys)${ME}$(c) - Download Groovy and Jenkins Core libraries and their sources and javadocs
+  $(c 0Ys)${ME}$(c) - Download Groovy core and standard library modules with their sources and javadocs
 
 USAGE
   $(c 0Ys)\$ ${ME}$(c) [OPTIONS]
 
 OPTIONS
   $(c 0G)--groovy $(c Mi)VERSION$(c)            download the Groovy library. Optionally specify the version $(c 0Wi)(default: latest stable, fallback $(c 0Mi)${_GROOVY_FALLBACK}$(c 0Wi))$(c)
-  $(c 0G)--jenkins $(c Mi)VERSION$(c)           download the Jenkins Core library. Optionally specify the version $(c 0Wi)(default: latest LTS, fallback $(c 0Mi)${_JENKINS_FALLBACK}$(c 0Wi))$(c)
-  $(c 0G)-l$(c), $(c 0G)--groovy-libs$(c)           download the Groovy libraries
-  $(c 0G)-e$(c), $(c 0G)--extensions $(c 0Mi)ARTIFACT$(c)   download the specified Jenkins/cloudbees extension library $(c 0Wi)(e.g., groovy-cps)$(c)
-      $(c 0G)--with-jar$(c)              also fetch the compiled groovy '.jar' $(c 0Wi)(default: only -sources/-javadoc, since your launcher already ships the binaries)$(c)
+  $(c 0G)-l$(c), $(c 0G)--with-libs$(c)             download the Groovy standard library modules
+      $(c 0G)--with-bin$(c)              also fetch the compiled groovy '.jar' $(c 0Wi)(default: only -sources/-javadoc, since your launcher already ships the binaries)$(c)
+      $(c 0G)--pre$(c)                   resolve the newest groovy version including alpha/beta/rc $(c 0Wi)(default: stable only)$(c)
   $(c 0G)-p, $(c 0G)--path $(c 0Mi)DESTINATION$(c)      specify the destination directory $(c 0Wi)(default: ${_DEFAULT_DESTINATION})$(c)
   $(c 0G)-h, $(c 0G)--help$(c)                  show this help message and exit
 
 EXAMPLE
-  $(c 0Wdi)# download groovy 6.0.1, jenkins 2.566 jar files and groovy libs$(c)
-  $(c 0Y)\$ ${ME} $(c 0Gi)--groovy $(c 0Mi)6.0.1 $(c 0Gi)--jenkins $(c 0Mi)2.566 $(c 0Gi)--groovy-libs$(c)
+  $(c 0Wdi)# download groovy 6.0.1 jar files and groovy libs$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--groovy $(c 0Mi)6.0.1 $(c 0Gi)--with-libs$(c)
 
-  $(c 0Wdi)# download groovy and jenkins jar files with the latest version to path '/tmp/libs'$(c)
-  $(c 0Y)\$ ${ME} $(c 0Gi)--groovy --jenkins --path $(c 0Mi)/tmp/libs$(c)
+  $(c 0Wdi)# download groovy (latest) to path '/tmp/libs'$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--groovy --path $(c 0Mi)/tmp/libs$(c)
 
-  $(c 0Wdi)# download groovy and jenkins jar files with the latest version to path '/tmp/libs'$(c)
-  $(c 0Y)\$ ${ME} $(c 0Gi)--groovy --jenkins --groovy-libs --with-jar$(c)
+  $(c 0Wdi)# download groovy + groovy libs including the compiled jars$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--groovy --with-libs --with-bin$(c)
 "
 
 function show() {
@@ -85,14 +82,15 @@ function getVersion() {
   command curl -fsSL "${metadataUrl}" 2>/dev/null | sed -n 's/.*<release>\(.*\)<\/release>.*/\1/p'
 }
 
-# latest stable groovy from maven central (skip alpha/beta/rc)
+# latest groovy from maven central; skips alpha/beta/rc unless --pre is set
+# BSD/GNU-portable: extract all <version> entries (ascending), optionally drop pre-releases, take the last
 function latestGroovy() {
-  command curl -fsSL "${MAVEN_BASE}/org/apache/groovy/groovy/maven-metadata.xml" 2>/dev/null | sed -nE '/<version>/{/alpha|beta|rc/!s/.*<version>(.*)<\/version>.*/\1/p}' | tail -1
-}
-
-# latest jenkins LTS core version
-function latestJenkins() {
-  command curl -fsSL 'https://updates.jenkins.io/stable/latestCore.txt' 2>/dev/null | tr -d '[:space:]'
+  local xml
+  xml="$( command curl -fsSL "${MAVEN_BASE}/org/apache/groovy/groovy/maven-metadata.xml" 2>/dev/null )"
+  local versions
+  versions="$( printf '%s' "${xml}" | sed -nE 's/.*<version>(.*)<\/version>.*/\1/p' )"
+  "${PRE}" || versions="$( printf '%s\n' "${versions}" | command grep -viE 'alpha|beta|rc' )"
+  printf '%s\n' "${versions}" | tail -1
 }
 
 # resolve the default version on demand; fall back to the pinned constant on failure
@@ -100,8 +98,7 @@ function defaultVersion() {
   local kind="${1:?kind is required}"
   local version=''
   case "${kind}" in
-    groovy  ) version="$(latestGroovy)" ;  echo "${version:-${_GROOVY_FALLBACK}}"  ;;
-    jenkins ) version="$(latestJenkins)" ; echo "${version:-${_JENKINS_FALLBACK}}" ;;
+    groovy ) version="$(latestGroovy)" ; echo "${version:-${_GROOVY_FALLBACK}}" ;;
   esac
 }
 
@@ -155,7 +152,7 @@ function groovy() {
   local target="${GROOVY_DIR}/${version}"
   local repo="${MAVEN_BASE}/${group}/${artifact}/${version}"
   local -a types=()
-  fetchTypes "${WITH_JAR}" types
+  fetchTypes "${WITH_BIN}" types
 
   info "downloading $(c 0G)${artifact} v${version} $(c 0i)from $(c 0Bui)${repo}$(c 0i) ..."
   mkdir -p "${target}"
@@ -174,23 +171,7 @@ function groovylibs() {
   while read -r module _version; do
     _modules+=("${module}")
   done< <( /bin/ls --color=never -1 "${GROOVYH_HOME:-/opt/homebrew/opt/groovy/libexec}"/lib/groovy-*.jar | sed -nE 's:^.*/([^/]+.)-([0-9.]+)\.jar:\1 \2:p' )
-  [[ ${#_modules[@]} -gt 0 ]] && { extensions _modules "${target}" "${group}" "${version}" "${WITH_JAR}"; linkLatest "${GROOVY_DIR}" "${version}"; }
-}
-
-function jenkins() {
-  local version="${1:-${_JENKINS_FALLBACK}}"
-  local group='org/jenkins-ci/main'
-  local artifact='jenkins-core'
-  local target="${JENKINS_DIR}/${version}"
-  local repo="https://repo.jenkins-ci.org/public/${group}/${artifact}/${version}"
-
-  info "downloading $(c 0G)${artifact} v${version} $(c 0i)from $(c 0Bui)${repo}$(c 0i) ..."
-  mkdir -p "${target}"
-  cd "${target}" || exit
-  for type in "" "-sources" "-javadoc"; do
-    "${CURL[@]}" "${repo}/jenkins-core-${version}${type}.jar"
-  done
-  linkLatest "${JENKINS_DIR}" "${version}"
+  [[ ${#_modules[@]} -gt 0 ]] && { extensions _modules "${target}" "${group}" "${version}" "${WITH_BIN}"; linkLatest "${GROOVY_DIR}" "${version}"; }
 }
 
 function _parser() {
@@ -200,11 +181,11 @@ function _parser() {
   local argc="$3"
   local next="${4-}"
 
-  # --java --jenkins -> without version, resolve the latest on demand
+  # --groovy -> without version, resolve the latest on demand
   if [[ ${argc} -le 1 || "${next}" == -* ]]; then
     _ver="$( defaultVersion "${flag}" )"
     return 1
-  # --java 5.0.6 -> with version
+  # --groovy 5.0.6 -> with version
   elif [[ "${next}" =~ ^[0-9]+(\.[0-9]+)+([._-][a-zA-Z0-9]+)*$ ]]; then
     _ver="${next}"
     return 2
@@ -217,56 +198,46 @@ function _parser() {
 # print environment-setup hints for whatever was actually downloaded this run
 function printNotes() {
   local -a refLibs=() cliDirs=()
-  # groovy/latest feeds the LSP only (sources/javadoc + symbol resolution); the CLI gets groovy from its launcher
-  { test -n "${GROOVY_VERSION:-}" || "${GROOVYLIBS}"; } && refLibs+=( "${GROOVY_DIR}/latest/*" )
-  test -n "${JENKINS_VERSION:-}"  && { refLibs+=( "${JENKINS_DIR}/latest/*" ); cliDirs+=( "${JENKINS_DIR}/latest" ); }
-  [[ ${#EXTENSIONS[@]} -gt 0 ]]   && { refLibs+=( "${EXTENSIONS_DIR}/*"     ); cliDirs+=( "${EXTENSIONS_DIR}"     ); }
-  [[ ${#refLibs[@]} -eq 0    ]]   && return 0
+  # groovy/latest feeds both the LSP (referencedLibraries) and the groovy/java classpath
+  { test -n "${GROOVY_VERSION:-}" || "${WITH_LIBS}"; } && { refLibs+=( "${GROOVY_DIR}/latest/*" ); cliDirs+=( "${GROOVY_DIR}/latest" ); }
+  [[ ${#refLibs[@]} -eq 0 ]] && return 0
 
-  local refJoined
+  local refJoined cpJoined
   refJoined="$( printf '"%s", ' "${refLibs[@]}" )"; refJoined="${refJoined%, }"
+  # java classpath wildcard: <dir>/* expands to every .jar in <dir> (incl. -sources/-javadoc, useful for the LSP)
+  cpJoined="$( printf '%s/*:' "${cliDirs[@]}" )"; cpJoined="${cpJoined%:}"
 
   echo -e "$(show --bg --note ' NOTE ') $(c 0i)environment setup for the libraries above:$(c)"
   echo -e "  • nvim coc-groovy $(c 0Bui)~/.config/nvim/coc-settings.json $(c 0i)(LSP resolves against these jars):$(c)"
   echo -e "      $(c 0G)\"groovy.project.referencedLibraries\": [ ${refJoined} ]$(c)"
-  echo -e "  • groovy CLI $(c 0Bui)~/.bashrc $(c 0i)(groovy comes from your launcher; add only what it lacks):$(c)"
-  if [[ ${#cliDirs[@]} -gt 0 ]]; then
-    echo -e "      $(c 0G)export CLASSPATH=\"\${CLASSPATH:+\$CLASSPATH:}\$( find ${cliDirs[*]} -name '*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | paste -sd: - )\"$(c)"
-  else
-    echo -e "      $(c 0i)nothing to add — groovy is provided by your launcher (\$GROOVY_HOME/lib).$(c)"
-  fi
+  echo -e "  • groovy CLI $(c 0Bui)~/.bashrc $(c 0i)(add the downloaded jars to the groovy/java classpath):$(c)"
+  echo -e "      $(c 0G)export GROOVY_CLASSPATH=\"\${GROOVY_CLASSPATH:+\$GROOVY_CLASSPATH:}${cpJoined}\"$(c)"
+  echo -e "      $(c 0G)export CLASSPATH=\"\${CLASSPATH:+\$CLASSPATH:}${cpJoined}\"$(c)"
 }
 
 function main() {
-  test -n "${GROOVY_VERSION:-}"  && groovy "${GROOVY_VERSION}"
-  test -n "${JENKINS_VERSION:-}" && jenkins "${JENKINS_VERSION}"
-  "${GROOVYLIBS}"                && groovylibs "${GROOVY_VERSION}"
-  [[ ${#EXTENSIONS[@]} -gt 0 ]]  && extensions EXTENSIONS "${EXTENSIONS_DIR}"
+  test -n "${GROOVY_VERSION:-}" && groovy "${GROOVY_VERSION}"
+  "${WITH_LIBS}"                && groovylibs "${GROOVY_VERSION}"
 
   echo -e "$(show --bg --note ' ✓ ') The libraries are ready!"
   printNotes
 }
 
-declare -a EXTENSIONS=()
-
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --groovy           ) _parser groovy  GROOVY_VERSION  $# "${2-}" ; shift $? ;;
-    --jenkins          ) _parser jenkins JENKINS_VERSION $# "${2-}" ; shift $? ;;
-    -l | --groovy-libs ) GROOVYLIBS=true    ; shift   ;;
-    --with-jar         ) WITH_JAR=true      ; shift   ;;
-    -e | --extensions  ) EXTENSIONS+=("$2") ; shift 2 ;;
-    -p | --path        ) DESTINATION="$2"   ; shift 2 ;;
-    -h | --help        ) echo -e "${USAGE}" >&2; exit 0 ;;
-    *                  ) echo "ERROR: unknown option '$1'"; exit 1;;
+    --groovy         ) _parser groovy GROOVY_VERSION $# "${2-}" ; shift $? ;;
+    -l | --with-libs ) WITH_LIBS=true    ; shift ;;
+    --with-bin       ) WITH_BIN=true     ; shift ;;
+    --pre            ) PRE=true          ; shift ;;
+    -p | --path      ) DESTINATION="$2"  ; shift 2 ;;
+    -h | --help      ) echo -e "${USAGE}" >&2; exit 0 ;;
+    *                ) echo "ERROR: unknown option '$1'"; exit 1;;
   esac
 done
 
 DESTINATION="${DESTINATION:-${_DEFAULT_DESTINATION}}"
-# base dirs; each download lands in <base>/<version> with a <base>/latest symlink
-declare GROOVY_DIR="${DESTINATION}/groovy"
-declare JENKINS_DIR="${DESTINATION}/jenkins"
-declare EXTENSIONS_DIR="${DESTINATION}/extensions"
+# base dir; each download lands in <base>/<version> with a <base>/latest symlink
+declare GROOVY_DIR="${DESTINATION}"
 
 main "$@"
 
