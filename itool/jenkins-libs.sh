@@ -3,14 +3,16 @@
 #      FileName : jenkins-libs.sh
 #        Author : marslo
 #       Created : 2025-02-16 17:52:35
-#    LastChange : 2026-08-10 23:10:26
-#   Description : download + extract the latest jenkins war and a fixed set of
-#                 plugins into /opt/jenkins, maintaining `latest` symlinks.
+#    LastChange : 2026-08-11 00:03:43
+#   Description : download + extract the latest jenkins war, a fixed set of plugins,
+#                 and jenkins-core reference jars (.jar/-sources/-javadoc) into
+#                 /opt/jenkins, maintaining `latest` symlinks.
 #         Usage : jenkins-libs.sh [--lts] [--ln] [--dryrun] [-p PATH]
 #                   --lts      download the latest LTS war (default: weekly)
-#                   --ln       refresh ~/.groovy/lib: prune dangling /opt/jenkins links, then symlink core war + plugin *.jar
+#                   --ln       refresh ~/.groovy/lib: prune dangling /opt/jenkins links, then symlink war libs + jenkins-core + plugin *.jar
 #                   --dryrun   print planned actions only; install nothing
-#                   -p PATH    install root for war + plugins (default: /opt/jenkins)
+#                   -p PATH    install root for war + plugins + core (default: /opt/jenkins)
+#         Layout : <root>/<ver>/{WEB-INF/, jenkins.war, core/jenkins-core-<ver>{,-sources,-javadoc}.jar}
 # =============================================================================
 
 set -euo pipefail
@@ -26,6 +28,7 @@ declare     PLUGIN_ROOT="${JENKINS_ROOT}/plugins"  # re-derived after arg parse 
 declare -r  GROOVY_LIB="${HOME}/.groovy/lib"
 declare     LOG_ROOT="${JENKINS_ROOT}/logs"        # re-derived after arg parse (see resolvePaths)
 declare -r  UC_BASE='https://updates.jenkins.io'
+declare -r  CORE_BASE='https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-core'  # maven repo for jenkins-core reference jars
 
 # local dir name → plugin list (hardcoded)
 declare -ra PLUGINS=( badge credentials git pipeline-job workflow-support )
@@ -45,14 +48,15 @@ declare ME; ME="$( basename "${BASH_SOURCE[0]:-$0}" )"
 { test 'bash' = "${ME}" || test -z "${ME}" ; } && ME='jenkins-libs.sh'
 # shellcheck disable=SC2155
 declare USAGE="NAME
-  download + extract the latest jenkins war and a fixed set of plugins into $(c 0Wi)\${JENKINS_ROOT}$(c), maintaining $(c 0Wi)\`latest\`;$(c) symlinks.
+  download + extract the latest jenkins war, a fixed set of plugins, and jenkins-core reference jars into $(c 0Wi)\${JENKINS_ROOT}$(c), maintaining $(c 0Wi)\`latest\`;$(c) symlinks.
 
 USAGE
   $(c 0Ys)${ME} $(c 0G)[OPTIONS]$(c)
 
 OPTIONS
   $(c 0G)--lts$(c)                     download the latest Jenkins LTS war $(c 0Wi)(default: weekly)$(c)
-  $(c 0G)--ln$(c)                      refresh $(c 0Mi)${GROOVY_LIB}/$(c) (created if missing): prune dangling $(c 0Mi)\${JENKINS_ROOT}$(c) links, then symlink core war + plugin *.jar
+  $(c 0G)--ln$(c)                      refresh $(c 0Mi)${GROOVY_LIB}/$(c) (created if missing):
+                            prune dangling $(c 0Mi)\${JENKINS_ROOT}$(c) links, then symlink $(c 0Wi)war libs$(c) + $(c 0Wi)jenkins-core$(c) + $(c 0Wi)plugin *.jar$(c)
   $(c 0G)--dryrun$(c)                  print planned actions only; download/extract/link nothing
   $(c 0G)-p$(c), $(c 0G)--path $(c 0Mi)DESTINATION$(c)    install root for war + plugins $(c 0Wi)(default: ${_DEFAULT_ROOT})$(c)
   $(c 0G)-h$(c), $(c 0G)--help$(c)                show this help
@@ -203,6 +207,34 @@ function installWar() {
   log "jenkins ${ver} (${WAR_CHANNEL}); ${JENKINS_ROOT}/latest -> ${ver}"
 }
 
+# -------------------------------- core --------------------------------------
+# download jenkins-core .jar + -sources + -javadoc for the resolved war version into
+# ${JENKINS_ROOT}/<ver>/core (dev reference jars for the groovy LSP / classpath).
+# non-fatal: the war/plugins are already installed; a missing maven artifact only warns.
+function installCore() {
+  local ver="${WAR_VERSION}"
+  test -n "${ver}" || { log 'skip core jars: core version unresolved'; return 0; }
+  local dest="${JENKINS_ROOT}/${ver}/core"
+  local repo="${CORE_BASE}/${ver}"
+  local type url jar
+  if "${DRY_RUN}"; then
+    for type in '' '-sources' '-javadoc'; do
+      log "[DRYRUN] would download ${repo}/jenkins-core-${ver}${type}.jar -> ${dest}/"
+    done
+    return 0
+  fi
+  command mkdir -p "${dest}"
+  for type in '' '-sources' '-javadoc'; do
+    url="${repo}/jenkins-core-${ver}${type}.jar"
+    jar="${dest}/jenkins-core-${ver}${type}.jar"
+    log "downloading jenkins-core ${ver}${type} ..."
+    if ! command curl -fL --progress-bar --max-time 600 -o "${jar}" "${url}"; then
+      command rm -f "${jar}"                       # drop partial/empty file so --ln never links a broken jar
+      log "WARN: cannot download ${url} (skipped)"
+    fi
+  done
+}
+
 # -------------------------------- plugins -----------------------------------
 # fetch update-center.actual.json once into UC_JSON (cache in the caller's shell) must be called outside command substitution so the assignment persists
 function ensureUcJson() {
@@ -267,12 +299,13 @@ function linkDir() {
   log "  linked ${count} jar(s) from ${label}"
 }
 
-# refresh ~/.groovy/lib: prune dead links, then (re)link core war + plugin jars
+# refresh ~/.groovy/lib: prune dead links, then (re)link war libs + jenkins-core + plugin jars
 function relinkLibs() {
   log 'refreshing ~/.groovy/lib symlinks ...'
   act mkdir -p "${GROOVY_LIB}"
   pruneStaleLinks
   linkDir "${JENKINS_ROOT}/latest/WEB-INF/lib"
+  linkDir "${JENKINS_ROOT}/latest/core"
   local name
   for name in "${PLUGINS[@]}"; do
     linkDir "${PLUGIN_ROOT}/${name}/latest/WEB-INF/lib"
@@ -362,6 +395,7 @@ function main() {
   act mkdir -p "${JENKINS_ROOT}" "${PLUGIN_ROOT}"
 
   installWar
+  installCore
   local p
   for p in "${PLUGINS[@]}"; do
     installPlugin "${p}"
