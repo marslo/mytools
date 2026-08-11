@@ -4,11 +4,30 @@
 #     FileName : checkOS.sh
 #       Author : marslo
 #      Created : 2024-06-11 14:15:47
-#   LastChange : 2026-03-06 19:27:48
+#   LastChange : 2026-08-10 19:36:46
 #=============================================================================
 
 set -euo pipefail
 
+# system-wide DDR generation hint, populated by detectDDR() in main
+DDR_HINT=''
+DDR_SRC=''
+
+# ---------- helpers ---------- #
+
+# print a green section header; with '-n' keep the cursor on the same line
+function header() {
+  if test '-n' = "${1:-}"; then
+    shift
+    printf '\033[1;32m>> %s:\033[0m ' "${1}"
+  else
+    printf '\033[1;32m>> %s:\033[0m\n' "${1}"
+  fi
+}
+
+# ---------- probes ---------- #
+
+# infer HW/SW RAID level for the root block device; echoes e.g. RAID1 / none / NO RAID
 function checkRAID() {
   # 1) Find the top-level block device for '/', fallback to /dev/sda
   local rootSrc pk dev kname
@@ -121,26 +140,59 @@ function checkRAID() {
   fi
 }
 
-# -- main -- #
-echo -e "\033[1;32m>> OS:\033[0m"
-awk -F= '/^PRETTY_NAME=/ { gsub(/"/, "", $2); print $2 }' /etc/os-release
-uname -a
+# detect system-wide DDR generation via a cascade of sources (most -> least reliable)
+# echoes two tab-separated fields: "<DDRx>\t<source>"; both empty when undetermined
+function detectDDR() {
+  local t='' f
 
-echo -e "\033[1;32m>> SYSTEM INFO:\033[0m"
-sudo dmidecode | grep -A5 '^System Information'
+  # 1) kernel EDAC: memory-controller reported; e.g. Registered-DDR4, Unbuffered-DDR3, LPDDR4
+  for f in /sys/devices/system/edac/mc/mc*/dimm*/dimm_mem_type \
+           /sys/devices/system/edac/mc/mc*/csrow*/mem_type; do
+    test -r "${f}" || continue
+    t="$( command grep -hoiE 'LPDDR[0-9]+|DDR[0-9]+' "${f}" 2>/dev/null | head -1 | tr '[:lower:]' '[:upper:]' || true )"
+    test -n "${t}" && { printf '%s\tedac\n' "${t}"; return 0; }
+  done
 
-echo -e "\033[1;32m>> NIC:\033[0m"
-interface=$(/bin/ip route show default | awk '{print $5}')
-macaddress=$(/bin/ip link show "${interface}" | sed -rn 's|.*ether ([0-9a-fA-F:]{17}).*$|\1|p' | tr '[:lower:]' '[:upper:]')
-bandwidth=$(sudo /sbin/ethtool "${interface}" | sed -rn 's|\s*Speed:\s*(.+)$|\1|p')
-case "${bandwidth}" in
-  10000Mb/s ) bandwidth="\033[1;36m${bandwidth}\033[0m" ;;
-esac
-echo -e "• interface: ${interface}\n• mac address: ${macaddress}\n• bandwidth: ${bandwidth}"
+  # 2) SPD via decode-dimms (i2c-tools): ground truth read from the module SPD
+  if type -P decode-dimms >/dev/null 2>&1; then
+    t="$( decode-dimms 2>/dev/null | sed -rn 's/.*Fundamental Memory type[[:space:]:]+(LP)?DDR([0-9]*).*/\1DDR\2/p' | head -1 | tr '[:lower:]' '[:upper:]' || true )"
+    test -n "${t}" && { printf '%s\tspd\n' "${t}"; return 0; }
+  fi
 
-echo -en "\033[1;32m>> MEMORY OVERALL:\033[0m "
-sudo lshw -short | grep --color=never 'System Memory' | sed -E 's/.*\s([0-9]+[A-Za-z]+) System Memory/\1/'
-sudo dmidecode -t memory | awk -v RS="" '
+  # 3) dmidecode Type field: mode across populated modules, only when a real DDR name
+  if type -P dmidecode >/dev/null 2>&1; then
+    t="$( sudo dmidecode -t memory 2>/dev/null | command grep -oiE 'LPDDR[0-9]+|DDR[0-9]+' | sort | uniq -c | sort -rn | awk 'NR==1{print toupper($2)}' || true )"
+    test -n "${t}" && { printf '%s\tdmi\n' "${t}"; return 0; }
+  fi
+
+  printf '\t\n'   # undetermined -> per-module voltage/speed heuristic in awk
+}
+
+# ---------- sections (logic only; headers printed by main) ---------- #
+
+function osInfo() {
+  awk -F= '/^PRETTY_NAME=/ { gsub(/"/, "", $2); print $2 }' /etc/os-release
+  uname -a
+}
+
+function sysInfo() {
+  sudo dmidecode | grep -A5 '^System Information'
+}
+
+function nicInfo() {
+  local interface macaddress bandwidth
+  interface="$(/bin/ip route show default | awk '{print $5}')"
+  macaddress="$(/bin/ip link show "${interface}" | sed -rn 's|.*ether ([0-9a-fA-F:]{17}).*$|\1|p' | tr '[:lower:]' '[:upper:]')"
+  bandwidth="$(sudo /sbin/ethtool "${interface}" | sed -rn 's|\s*Speed:\s*(.+)$|\1|p')"
+  case "${bandwidth}" in
+    10000Mb/s ) bandwidth="\033[1;36m${bandwidth}\033[0m" ;;
+  esac
+  echo -e "• interface: ${interface}\n• mac address: ${macaddress}\n• bandwidth: ${bandwidth}"
+}
+
+function memOverall() {
+  sudo lshw -short | grep --color=never 'System Memory' | sed -E 's/.*\s([0-9]+[A-Za-z]+) System Memory/\1/'
+  sudo dmidecode -t memory | awk -v RS="" -v ddr="${DDR_HINT}" -v ddrsrc="${DDR_SRC}" '
 /^Handle [^\n]*\nMemory Device/ {
   if (match($0, /Size: No Module Installed/)) {
     empty_slots++;
@@ -178,11 +230,13 @@ sudo dmidecode -t memory | awk -v RS="" '
     split(m, f, ": "); volt = f[2];
   }
 
-  # smart correction of type (for other/unknown)
-  if (type == "Other" || type == "Unknown") {
-    if (volt == 1.2 || (sp >= 2133 && sp <= 3200)) type = "DDR4 (Predicted)";
-    else if (volt >= 1.35 || (sp >= 800 && sp < 2133)) type = "DDR3 (Predicted)";
-    else if (volt == 1.1 || sp >= 4800) type = "DDR5 (Predicted)";
+  # resolve DDR generation: trust valid BIOS Type, else external hint, else heuristic
+  if (type !~ /^(LP)?DDR[0-9]/) {
+    if      (ddr != "")                                type = ddr " (" ddrsrc ")";
+    else if (volt == 1.1  || sp >= 4800)               type = "DDR5 (guess)";
+    else if (volt == 1.2  || (sp >= 2133 && sp <= 3200)) type = "DDR4 (guess)";
+    else if (volt >= 1.35 || (sp >= 800 && sp < 2133)) type = "DDR3 (guess)";
+    else if (volt == 1.8  || (sp >= 400 && sp < 800))  type = "DDR2 (guess)";
   }
 
   # summary
@@ -205,12 +259,14 @@ sudo dmidecode -t memory | awk -v RS="" '
   }
   if (total > 0) printf "• Total: %d GB\n", total;
 }'
+}
 
-echo -e "\033[1;32m>> MEMORY USAGE:\033[0m"
-free -h
+function memUsage() {
+  free -h
+}
 
-echo -e "\033[1;32m>> MEMORY DETAILS:\033[0m"
-sudo dmidecode -t memory | awk -v RS="" -v FS="\n" '
+function memDetails() {
+  sudo dmidecode -t memory | awk -v RS="" -v FS="\n" -v ddr="${DDR_HINT}" -v ddrsrc="${DDR_SRC}" '
 /^Handle [^\n]*\nMemory Device/ {
   if (/Size: No Module Installed/ || /Size: Not Specified/) next;
 
@@ -223,8 +279,21 @@ sudo dmidecode -t memory | awk -v RS="" -v FS="\n" '
     }
   }
 
+  # resolve DDR generation: trust valid BIOS Type, else external hint, else heuristic
+  memType = info["Type"]
+  if ( memType !~ /^(LP)?DDR[0-9]/ ) {
+    volt = info["Configured Voltage"] + 0
+    sp   = info["Configured Memory Speed"] + 0
+    if ( sp == 0 ) sp = info["Speed"] + 0
+    if      ( ddr != "" )                                 memType = ddr " (" ddrsrc ")"
+    else if ( volt == 1.1  || sp >= 4800 )                memType = "DDR5 (guess)"
+    else if ( volt == 1.2  || (sp >= 2133 && sp <= 3200) ) memType = "DDR4 (guess)"
+    else if ( volt >= 1.35 || (sp >= 800 && sp < 2133) )  memType = "DDR3 (guess)"
+    else if ( volt == 1.8  || (sp >= 400 && sp < 800) )   memType = "DDR2 (guess)"
+  }
+
   # grouping items
-  key = info["Size"] "|" info["Type"] "|" info["Type Detail"] "|" info["Memory Technology"] "|" info["Configured Memory Speed"] "|" info["Manufacturer"] "|" info["Part Number"]
+  key = info["Size"] "|" memType "|" info["Type Detail"] "|" info["Memory Technology"] "|" info["Configured Memory Speed"] "|" info["Manufacturer"] "|" info["Part Number"]
   count[key]++
 
   # sn
@@ -248,30 +317,42 @@ END {
     print "•  Serial Number(s) \t" (sns[k] ? sns[k] : "N/A")
   }
 }'
-# sudo dmidecode -t memory | grep -E '(^Memory Device|^\s+(Size:|Type:|Type Detail:|Serial Number:|Part Number:|Memory Technology:|Configured Memory Speed:|Manufacturer))' --color=never | grep -v -E 'Not Specified|No Module|Unknow|None|Memory Technology: <OUT OF SPEC>'
-
-echo -e "\033[1;32m>> CPU INFO:\033[0m"
-sudo lscpu |
-  grep --color=none -E '^(Thread|Core|Socket|CPU\(|NUMA\ node\(|Model\ name|CPU.+MHz|BogoMIPS)' |
-  awk '{print "• ", $0}'
-echo -ne "\033[1;32m>> CORES:\033[0m "
-getconf _NPROCESSORS_ONLN
-
-echo -ne "\033[1;32m>> SERIAL NUMBER:\033[0m "
-sudo dmidecode -s system-serial-number
-
-echo -ne "\033[1;32m>> RAID INFO:\033[0m "
-type -P mdadm >/dev/null 2>&1 || { echo -e "\n.. install mdadm via \`sudo apt install -y mdadm\` first"; exit 0; }
-printf "\033[38;5;245;3m%s\033[0m\n" "$(checkRAID)"
-type -P smartctl >/dev/null 2>&1 || {
-  echo -e "\033[2;3;37m.. install smartctl via \`sudo apt install -y smartmontools\` first ..\033[0m";
-  sudo apt update -y && sudo apt install -y smartmontools;
+  # sudo dmidecode -t memory | grep -E '(^Memory Device|^\s+(Size:|Type:|Type Detail:|Serial Number:|Part Number:|Memory Technology:|Configured Memory Speed:|Manufacturer))' --color=never | grep -v -E 'Not Specified|No Module|Unknow|None|Memory Technology: <OUT OF SPEC>'
 }
-type -P smartctl >/dev/null 2>&1 && { sudo smartctl --scan | awk '{print "• ", $0}'; } || echo -e "\033[0;3;32m.. smartctl not found, cannot scan for RAID devices ..\033[0m"
 
-echo -e "\033[38;5;241;3m# ROTA: 0 (SSD); 1 (HDD); 7 (CD/DVD)\033[0m"
-echo -en "\033[1;32m>> SSD/HHD INFO:\033[0m "
-lsblk -d -e 7 -o NAME,ROTA,DISC-MAX,MODEL,TYPE | awk '
+function cpuInfo() {
+  sudo lscpu |
+    grep --color=none -E '^(Thread|Core|Socket|CPU\(|NUMA\ node\(|Model\ name|CPU.+MHz|BogoMIPS)' |
+    awk '{print "• ", $0}'
+}
+
+function cores() {
+  getconf _NPROCESSORS_ONLN
+}
+
+function serialNumber() {
+  sudo dmidecode -s system-serial-number
+}
+
+function raidInfo() {
+  if ! type -P mdadm >/dev/null 2>&1; then
+    echo -e "\n.. install mdadm via \`sudo apt install -y mdadm\` first"
+    return 0
+  fi
+  printf "\033[38;5;245;3m%s\033[0m\n" "$(checkRAID)"
+  if ! type -P smartctl >/dev/null 2>&1; then
+    echo -e "\033[2;3;37m.. install smartctl via \`sudo apt install -y smartmontools\` first ..\033[0m"
+    sudo apt update -y && sudo apt install -y smartmontools
+  fi
+  if type -P smartctl >/dev/null 2>&1; then
+    sudo smartctl --scan | awk '{print "• ", $0}'
+  else
+    echo -e "\033[0;3;32m.. smartctl not found, cannot scan for RAID devices ..\033[0m"
+  fi
+}
+
+function storageType() {
+  lsblk -d -e 7 -o NAME,ROTA,DISC-MAX,MODEL,TYPE | awk '
   NR == 1 {
     line = $0
     sub(/[[:space:]]+TYPE$/, "", line)
@@ -296,9 +377,10 @@ lsblk -d -e 7 -o NAME,ROTA,DISC-MAX,MODEL,TYPE | awk '
     for ( j = 1; j <= i; ++j ) print lines[j]
   }
 '
+}
 
-echo -en "\033[1;32m>> DISK INFO:\033[0m "
-sudo fdisk -l | awk '
+function diskInfo() {
+  sudo fdisk -l | awk '
   /^Disk \/dev\/(sd[a-z]|nvme[0-9]+n[0-9]+|vd[a-z]|xvd[a-z]|hd[a-z]|mmcblk[0-9]+):/ {
     device = $2
     size   = $3
@@ -322,12 +404,13 @@ sudo fdisk -l | awk '
     for ( j = 1; j <= i; j++ ) print lines[j]
   }
 '
-# sudo fdisk -l \
-#   | awk '/^Disk \/dev\/nvme/ {print $2, $3, $4}' \
-#   | sed 's/,$//'
+  # sudo fdisk -l \
+  #   | awk '/^Disk \/dev\/nvme/ {print $2, $3, $4}' \
+  #   | sed 's/,$//'
+}
 
-echo -en "\033[1;32m>> DISK LVM INFO:\033[0m "
-lsblk -b -o TYPE,SIZE | awk '
+function lvmInfo() {
+  lsblk -b -o TYPE,SIZE | awk '
   BEGIN  { flag = 0; size = 0;   }
   /^lvm/ { flag = 1; size += $2; }
   END    {
@@ -346,8 +429,10 @@ lsblk -b -o TYPE,SIZE | awk '
     }
   }
 '
+}
 
-# deprecated
+# ---------- deprecated ---------- #
+
 function raidScan(){
   type -P mdadm >/dev/null 2>&1 || { echo -e "\n.. install mdadm via \`sudo apt install -y mdadm\` first"; exit 0; }
   RAID_SCAN=$(sudo mdadm --detail --scan)
@@ -368,5 +453,103 @@ function raidScan(){
     fi
   fi
 }
+
+# ───── groups (header + section, grouped bay selector flag) ──────────────────
+
+function osGroup() {
+  header 'OS'
+  osInfo
+  header 'SYSTEM INFO'
+  sysInfo
+}
+
+function networkGroup() {
+  header 'NIC'
+  nicInfo
+}
+
+function memGroup() {
+  # detect DDR generation once; shared by the memory sections
+  IFS=$'\t' read -r DDR_HINT DDR_SRC < <(detectDDR)
+  header -n 'MEMORY OVERALL'
+  memOverall
+  header 'MEMORY DETAILS'
+  memDetails
+  header 'MEMORY USAGE'
+  memUsage
+}
+
+function cpuGroup() {
+  header 'CPU INFO'
+  cpuInfo
+  header -n 'CORES'
+  cores
+  header -n 'SERIAL NUMBER'
+  serialNumber
+}
+
+function diskGroup() {
+  header -n 'RAID INFO'
+  raidInfo
+  echo -e "\033[38;5;241;3m# ROTA: 0 (SSD); 1 (HDD); 7 (CD/DVD)\033[0m"
+  header -n 'SSD/HHD INFO'
+  storageType
+  header -n 'DISK INFO'
+  diskInfo
+  header -n 'DISK LVM INFO'
+  lvmInfo
+}
+
+# ---------- main ---------- #
+
+function usage() {
+  cat <<'EOF'
+Usage: checkOS.sh [OPTIONS]...
+
+Show host hardware / OS summary. With no options, show everything.
+Options may be combined, e.g. `checkOS.sh --mem --cpu`.
+
+Options:
+  --os, --system   OS release + DMI system information
+  --network        NIC (interface, MAC, bandwidth)
+  --mem            memory overall / details / usage (+ DDR detection)
+  --cpu            CPU info / cores / serial number
+  --disk           RAID / SSD-HDD / disk / LVM
+  -h, --help       show this help and exit
+EOF
+}
+
+function main() {
+  local showOS=0 showNet=0 showMem=0 showCpu=0 showDisk=0 selected=0
+
+  while (( $# )); do
+    case "${1}" in
+      --os | --system ) showOS=1;   selected=1 ;;
+      --network        ) showNet=1;  selected=1 ;;
+      --mem            ) showMem=1;  selected=1 ;;
+      --cpu            ) showCpu=1;  selected=1 ;;
+      --disk           ) showDisk=1; selected=1 ;;
+      -h | --help      ) usage; return 0 ;;
+      --               ) shift; break ;;
+      -*               ) echo "checkOS.sh: unknown option '${1}'" >&2; usage >&2; return 2 ;;
+      *                ) echo "checkOS.sh: unexpected argument '${1}'" >&2; usage >&2; return 2 ;;
+    esac
+    shift
+  done
+
+  # no selector -> show all
+  if (( selected == 0 )); then
+    showOS=1; showNet=1; showMem=1; showCpu=1; showDisk=1
+  fi
+
+  # fixed order reproduces the original full-output layout
+  if (( showOS   )); then osGroup;      fi
+  if (( showNet  )); then networkGroup; fi
+  if (( showMem  )); then memGroup;     fi
+  if (( showCpu  )); then cpuGroup;     fi
+  if (( showDisk )); then diskGroup;    fi
+}
+
+main "$@"
 
 # vim:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:filetype=sh
