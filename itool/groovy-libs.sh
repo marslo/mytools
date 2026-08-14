@@ -4,42 +4,73 @@
 #      FileName : groovy-libs.sh
 #        Author : marslo
 #       Created : 2026-05-29 23:20:19
-#    LastChange : 2026-08-11 02:10:17
+#    LastChange : 2026-08-14 00:21:42
 #         Usage : curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --groovy --with-libs --with-bin
 #                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --help
 # =============================================================================
 # download matrix:
 #   target                 | binary (.jar)        | -sources / -javadoc | version selection
 #   -----------------------+----------------------+---------------------+----------------------------------------
-#   --groovy / --with-libs | only with --with-bin | always              | latest stable; --pre adds alpha/beta/rc
-#   -e extensions          | always               | always              | latest release; jenkins-core: weekly (X.Y), --extension-lts picks LTS (X.Y.Z)
-# note: jenkins-libs.sh also ships -e/--extensions; the duplicated feature is intentional (standalone use)
+#   --groovy / --with-libs | only with --with-bin | always              | system version; --latest stable; --pre alpha/beta/rc
+#   -e extensions          | always               | always              | latest release; jenkins-core: weekly (X.Y), --extension-lts LTS (X.Y.Z)
 # =============================================================================
+
+# require bash >= 4.3 (associative arrays + namerefs used throughout)
+if test "${BASH_VERSINFO[0]:-0}" -lt 4 || { test "${BASH_VERSINFO[0]}" -eq 4 && test "${BASH_VERSINFO[1]:-0}" -lt 3; }; then
+  echo "error: bash >= 4.3 required (found ${BASH_VERSION:-unknown}); on macOS install & run via homebrew bash (brew install bash)" >&2
+  exit 1
+fi
 
 # @credit: https://github.com/ppo/bash-colors
 # shellcheck disable=SC2015,SC2059
 c() { [ $# == 0 ] && printf "\033[0m" || printf "$1" | sed 's/\(.\)/\1;/g;s/\([SDIUFNHT]\)/2\1/g;s/\([KRGYBMCW]\)/3\1/g;s/\([krgybmcw]\)/4\1/g;y/SDIUFNHTsdiufnhtKRGYBMCWkrgybmcw/12345789123457890123456701234567/;s/^\(.*\);$/\\033[\1m/g'; }
 
 readonly MAVEN_BASE="https://repo1.maven.org/maven2"
-# base dir; default destination is <base>/libs unless overridden by --path
+# default install root (-p overrides)
 declare _DEFAULT_DESTINATION='/opt/groovy'
-# pinned fallback used only when the online lookup fails
+# fallback version if lookup fails
 declare _GROOVY_FALLBACK='5.0.8'
-declare -a CURL=( 'curl' '-sSLfO' )
+# system groovy home; auto-detected in main()
+declare _GROOVY_SYS_HOME="${GROOVY_HOME:-}"
 declare WITH_LIBS=false
-# groovy binaries default off (the launcher already ships them); -sources/-javadoc always download
+# groovy binaries off by default; -sources/-javadoc always
 declare WITH_BIN=false
-# --pre: resolve the newest groovy version including alpha/beta/rc (default: stable only)
+# --pre: newest incl. alpha/beta/rc
 declare PRE=false
-# --extension-lts: for jenkins-style extensions, pick the latest LTS (X.Y.Z) instead of the latest weekly (X.Y)
+# --latest: maven latest stable
+declare LATEST=false
+# --extension-lts: pick latest LTS (X.Y.Z) not weekly (X.Y)
 declare EXT_LTS=false
-# -e/--extensions: maven artifacts fetched with bin+sources+javadoc; default list, merged with -e, deduped
+# --clean: remove downloaded libs + extensions + latest, then exit
+declare CLEAN=false
+# extensions (bin+sources+javadoc); merged with -e, deduped
 declare -a EXTENSIONS=( groovy-cps jenkins-core )
-# per-extension overrides; anything not listed defaults to ${MAVEN_BASE} + group 'com/cloudbees'
+# per-extension repo / group overrides
 declare -rA EXTENSION_REPO=(  [jenkins-core]='https://repo.jenkins-ci.org/public' )
 declare -rA EXTENSION_GROUP=( [jenkins-core]='org/jenkins-ci/main' )
-# extensions following jenkins weekly/lts versioning: default latest weekly (X.Y); --extension-lts picks latest LTS (X.Y.Z)
+# extensions using jenkins weekly/lts versioning
 declare -rA EXTENSION_LTS=( [jenkins-core]=1 )
+# maven group per artifact for jars without pom.properties (prefix families in resolveGroup)
+declare -rA LIB_GROUP=(
+  [junit]='junit'                      [testng]='org.testng'
+  [gpars]='org.codehaus.gpars'         [hamcrest-core]='org.hamcrest'
+  [ivy]='org.apache.ivy'               [jcommander]='org.jcommander'
+  [jna]='net.java.dev.jna'             [jsr166y]='org.codehaus.jsr166-mirror'
+  [opentest4j]='org.opentest4j'        [javaparser-core]='com.github.javaparser'
+  [jquery]='org.webjars'               [multiverse-core]='org.multiverse'
+  [mxparser]='io.github.x-stream'      [qdox]='com.thoughtworks.qdox'
+  [slf4j-api]='org.slf4j'              [snakeyaml]='org.yaml'
+  [xstream]='com.thoughtworks.xstream' [commons-cli]='commons-cli'
+  [org.abego.treelayout.core]='org.abego.treelayout'
+)
+# groovy modules for the no-system fallback (from org.apache.groovy)
+declare -ra GROOVY_MODULES=(
+  groovy groovy-ant groovy-astbuilder groovy-cli-commons groovy-cli-picocli groovy-console
+  groovy-contracts groovy-datetime groovy-dateutil groovy-docgenerator groovy-ginq
+  groovy-groovydoc groovy-groovysh groovy-jmx groovy-json groovy-jsr223 groovy-macro
+  groovy-macro-library groovy-nio groovy-servlet groovy-sql groovy-swing groovy-templates
+  groovy-test groovy-test-junit5 groovy-testng groovy-toml groovy-typecheckers groovy-xml groovy-yaml
+)
 declare ME; ME="$( basename "${BASH_SOURCE[0]:-$0}" )"
 { test 'bash' = "${ME}" || test -z "${ME}" ; } && ME='groovy-libs.sh'
 readonly ME
@@ -51,13 +82,15 @@ USAGE
   $(c 0Ys)\$ ${ME}$(c) [OPTIONS]
 
 OPTIONS
-  $(c 0G)--groovy $(c Mi)VERSION$(c)            download the Groovy library. Optionally specify the version $(c 0Wi)(default: latest stable, fallback $(c 0Mi)${_GROOVY_FALLBACK}$(c 0Wi))$(c)
-  $(c 0G)-l$(c), $(c 0G)--with-libs$(c)             download the Groovy standard library modules
+  $(c 0G)--groovy $(c Mi)VERSION$(c)            download the Groovy library. Optionally specify the version $(c 0Wi)(default: the system groovy version; fallback $(c 0Mi)${_GROOVY_FALLBACK}$(c 0Wi))$(c)
+  $(c 0G)-l$(c), $(c 0G)--with-libs$(c)             fetch -sources/-javadoc for every jar in the system groovy lib $(c 0Wi)(each at its own version; auto-detects brew/sdkman/apt/\$GROOVY_HOME)$(c)
       $(c 0G)--with-bin$(c)              also fetch the compiled groovy '.jar' $(c 0Wi)(default: only -sources/-javadoc, since your launcher already ships the binaries)$(c)
+      $(c 0G)--latest$(c)                resolve the latest stable groovy from maven central $(c 0Wi)(default: use the system groovy version)$(c)
       $(c 0G)--pre$(c)                   resolve the newest groovy version including alpha/beta/rc $(c 0Wi)(default: stable only)$(c)
   $(c 0G)-e$(c), $(c 0G)--extensions $(c 0Mi)ARTIFACT$(c)   download a Jenkins/cloudbees extension jar with bin+sources+javadoc $(c 0Wi)(repeatable; default list [$(c 0Mi)${EXTENSIONS[*]}$(c 0Wi)], deduped)$(c)
       $(c 0G)--extension-lts$(c)         for jenkins-style extensions (jenkins-core), pick the latest LTS $(c 0Mi)X.Y.Z$(c 0Wi) instead of the latest weekly $(c 0Mi)X.Y$(c)
   $(c 0G)-p, $(c 0G)--path $(c 0Mi)DESTINATION$(c)      specify the destination directory $(c 0Wi)(default: ${_DEFAULT_DESTINATION})$(c)
+  $(c 0G)--clean$(c)                     remove downloaded version dirs + $(c 0Wi)latest$(c) + $(c 0Wi)extensions$(c) under the destination, then exit $(c 0Wi)(keeps the script)$(c)
   $(c 0G)-h, $(c 0G)--help$(c)                  show this help message and exit
 
 EXAMPLE
@@ -90,13 +123,22 @@ function show() {
 }
 function info() { echo -e "$(show --info --bg 'INFO') $(c 0i)$*$(c)"; }
 
+# download one jar into <outdir>; on 404/failure print "skip: <name> (not found - <code>)"
+function fetchJar() {
+  local url="${1}" outdir="${2}" name code
+  name="${url##*/}"
+  if code="$( command curl -sfL -o "${outdir}/${name}" -w '%{http_code}' "${url}" 2>/dev/null )"; then return 0; fi
+  command rm -f "${outdir}/${name}"
+  info "  $(c 0Y)skip$(c 0i): ${name%.jar} $(c 0Wdi)(not found - ${code:-000})$(c)"
+  return 1
+}
+
 function getVersion() {
   local metadataUrl="${1:?metadata URL is required}"
   command curl -fsSL "${metadataUrl}" 2>/dev/null | sed -n 's/.*<release>\(.*\)<\/release>.*/\1/p'
 }
 
-# latest groovy from maven central; skips alpha/beta/rc unless --pre is set
-# BSD/GNU-portable: extract all <version> entries (ascending), optionally drop pre-releases, take the last
+# latest groovy from maven central (skips alpha/beta/rc unless --pre)
 function latestGroovy() {
   local xml
   xml="$( command curl -fsSL "${MAVEN_BASE}/org/apache/groovy/groovy/maven-metadata.xml" 2>/dev/null )"
@@ -106,16 +148,50 @@ function latestGroovy() {
   printf '%s\n' "${versions}" | tail -1
 }
 
-# resolve the default version on demand; fall back to the pinned constant on failure
+# system groovy home: $GROOVY_HOME, brew, sdkman, apt, or the groovy launcher on PATH
+function detectGroovyHome() {
+  local -a candidates=(
+    "${GROOVY_HOME:-}"
+    '/opt/homebrew/opt/groovy/libexec'
+    '/usr/local/opt/groovy/libexec'
+    "${HOME}/.sdkman/candidates/groovy/current"
+    '/usr/share/groovy'
+    '/opt/groovy/current'
+  )
+  local bin; bin="$( command -v groovy 2>/dev/null )"
+  if test -n "${bin}"; then
+    local real; real="$( readlink -f "${bin}" 2>/dev/null || printf '%s' "${bin}" )"
+    candidates+=( "$( dirname "$( dirname "${real}" )" )" )
+  fi
+  local d
+  for d in "${candidates[@]}"; do
+    test -n "${d}" || continue
+    compgen -G "${d}/lib/groovy-[0-9]*.jar" >/dev/null 2>&1 && { printf '%s' "${d}"; return 0; }
+  done
+  return 1
+}
+
+# version of the system groovy (<sys-home>/lib/groovy-*.jar)
+function systemGroovyVersion() {
+  local ver
+  ver="$( command ls -1 "${_GROOVY_SYS_HOME}"/lib/groovy-[0-9]*.jar 2>/dev/null | head -1 \
+          | sed -nE 's:.*/groovy-([0-9][0-9.]*)\.jar:\1:p' )"
+  test -n "${ver}" || ver="$( command groovy --version 2>/dev/null | sed -nE 's/.*Groovy Version:[[:space:]]*([0-9][0-9._-]*).*/\1/p' | head -1 )"
+  printf '%s' "${ver}"
+}
+
+# default version: system groovy; --latest/--pre → maven newest; fallback constant
 function defaultVersion() {
   local kind="${1:?kind is required}"
   local version=''
   case "${kind}" in
-    groovy ) version="$(latestGroovy)" ; echo "${version:-${_GROOVY_FALLBACK}}" ;;
+    # maven newest || system groovy
+    groovy ) if "${LATEST}" || "${PRE}"; then version="$(latestGroovy)"; else version="$(systemGroovyVersion)"; fi
+             echo "${version:-${_GROOVY_FALLBACK}}" ;;
   esac
 }
 
-# (re)point <baseDir>/latest at the downloaded <version> subdir (relative symlink)
+# point <baseDir>/latest at <version>
 function linkLatest() {
   local baseDir="${1:?base dir is required}"
   local version="${2:?version is required}"
@@ -123,39 +199,13 @@ function linkLatest() {
   info "linked $(c 0G)${baseDir}/latest $(c 0i)-> $(c 0G)${version}$(c)"
 }
 
-# build the list of jar suffixes to fetch: always -sources/-javadoc; binary '' only when withJar is true
-# usage: readFetchTypes <true|false> <arrayName>
+# jar suffixes to fetch: -sources/-javadoc, plus '' when withJar
+# usage: fetchTypes <true|false> <arrayName>
 function fetchTypes() {
   local withJar="${1:?withJar is required}"
   local -n _types="${2:?types array name is required}"
   _types=( '-sources' '-javadoc' )
   "${withJar}" && _types=( '' "${_types[@]}" )
-}
-
-# download groovy library modules from maven central into ${2:-destDir}; if no version ($4) is specified, it will try to get the latest version from maven-metadata.xml
-#   ${MAVEN_BASE}/${3:-group}/${1:-artifact}/${4:-version}{,-sources,-javadoc}.jar
-function extensions() {
-  # nameref
-  local -n artifacts="${1:?artifact is required}"
-  local destDir="${2:?destination dir is required}"
-  local group="${3:-com/cloudbees}"
-  local version="${4:-}"
-  local withJar="${5:-true}"
-  local -a types=()
-  fetchTypes "${withJar}" types
-  mkdir -p "${destDir}"
-  cd "${destDir}" || exit
-
-  for artifact in "${artifacts[@]}"; do
-    local url="${MAVEN_BASE}/${group}/${artifact}"
-    test -n "${version}" || version="$(getVersion "${url}/maven-metadata.xml")"
-    test -n "${version}" || { echo -e "$(show --bg --error 'ERROR') $(c 0i)failed to get the latest version of $(c 0G)${artifact} $(c 0i)from $(c 0Bui)${url}$(c 0i) ..."; exit 1; }
-
-    info "downloading libs $(c 0G)${artifact} v${version} $(c 0i)from $(c 0Bui)${url}$(c 0i) ..."
-    for type in "${types[@]}"; do
-      "${CURL[@]}" "${url}/${version}/${artifact}-${version}${type}.jar"
-    done
-  done
 }
 
 function groovy() {
@@ -169,27 +219,70 @@ function groovy() {
 
   info "downloading $(c 0G)${artifact} v${version} $(c 0i)from $(c 0Bui)${repo}$(c 0i) ..."
   mkdir -p "${target}"
-  cd "${target}" || exit
   for type in "${types[@]}"; do
-    "${CURL[@]}" "${repo}/groovy-${version}${type}.jar"
+    fetchJar "${repo}/groovy-${version}${type}.jar" "${target}"
   done
   linkLatest "${GROOVY_DIR}" "${version}"
 }
 
-function groovylibs() {
-  local version="${1:-$(defaultVersion groovy)}"
-  local group='org/apache/groovy'
-  local target="${GROOVY_DIR}/${version}"
-  local -a _modules=()
-  while read -r module _version; do
-    _modules+=("${module}")
-  done< <( /bin/ls --color=never -1 "${GROOVYH_HOME:-/opt/homebrew/opt/groovy/libexec}"/lib/groovy-*.jar | sed -nE 's:^.*/([^/]+.)-([0-9.]+)\.jar:\1 \2:p' )
-  [[ ${#_modules[@]} -gt 0 ]] && { extensions _modules "${target}" "${group}" "${version}" "${WITH_BIN}"; linkLatest "${GROOVY_DIR}" "${version}"; }
+# maven group for an artifact: prefix families, then LIB_GROUP (empty if unknown)
+function resolveGroup() {
+  case "${1}" in
+    groovy | groovy-*    ) printf 'org.apache.groovy'                ;;
+    ant | ant-*          ) printf 'org.apache.ant'                   ;;
+    jline-* | jansi      ) printf 'org.jline'                        ;;
+    jackson-dataformat-* ) printf 'com.fasterxml.jackson.dataformat' ;;
+    jackson-*            ) printf 'com.fasterxml.jackson.core'       ;;
+    junit-jupiter-*      ) printf 'org.junit.jupiter'                ;;
+    junit-platform-*     ) printf 'org.junit.platform'               ;;
+    *                    ) printf '%s' "${LIB_GROUP[${1}]:-}"        ;;
+  esac
 }
 
-# download one maven extension (bin+sources+javadoc) into <EXTENSIONS_DIR>/<artifact>/<version>,
-# then (re)point <artifact>/latest at it. version resolved from maven-metadata.xml.
-# repo/group default to maven central + com/cloudbees; override per artifact via EXTENSION_REPO/EXTENSION_GROUP.
+# fetch -sources/-javadoc (+bin with --with-bin) for every system-lib jar;
+# no system install → standard groovy modules at ${version}
+function groovylibs() {
+  local version="${1:-$(defaultVersion groovy)}"
+  local libDir="${_GROOVY_SYS_HOME}/lib"
+  local target="${GROOVY_DIR}/${version}"
+  local -a types=()
+  fetchTypes "${WITH_BIN}" types
+  mkdir -p "${target}"
+
+  if test -n "${_GROOVY_SYS_HOME}" && test -d "${libDir}" && compgen -G "${libDir}/*.jar" >/dev/null; then
+    info "scanning system groovy libs $(c 0Bui)${libDir}$(c 0i) ..."
+    local jar base aid ver group type missing=0
+    shopt -s nullglob
+    for jar in "${libDir}"/*.jar; do
+      case "${jar}" in *-sources.jar | *-javadoc.jar ) continue ;; esac
+      base="$( basename "${jar}" .jar )"
+      aid="${base%%-[0-9]*}"                                            # artifactId = up to the first -<digit>
+      ver="${base#"${aid}-"}"                                           # version    = the remainder
+      { test -n "${aid}" && test "${ver}" != "${base}"; } || continue   # no version (icns, etc.)
+      group="$( resolveGroup "${aid}" )"
+      test -n "${group}" || { info "  $(c 0Y)skip$(c 0i) unknown group: $(c 0G)${aid}-${ver}$(c)"; missing=$(( missing + 1 )); continue; }
+      for type in "${types[@]}"; do
+        test -f "${target}/${aid}-${ver}${type}.jar" && continue        # skip if present
+        fetchJar "${MAVEN_BASE}/${group//.//}/${aid}/${ver}/${aid}-${ver}${type}.jar" "${target}"
+      done
+    done
+    shopt -u nullglob
+    test "${missing}" -eq 0 || info "$(c 0Y)${missing}$(c 0i) jar(s) unmapped; add them to $(c 0G)LIB_GROUP$(c) to include"
+  else
+    info "no system groovy libs at $(c 0Bui)${libDir}$(c 0i); fetching standard modules at $(c 0G)v${version}$(c) ..."
+    info "  $(c 0Y)note$(c 0i): third-party deps can't be enumerated without a system install; groovy modules only"
+    local m type
+    for m in "${GROOVY_MODULES[@]}"; do
+      for type in "${types[@]}"; do
+        test -f "${target}/${m}-${version}${type}.jar" && continue
+        fetchJar "${MAVEN_BASE}/org/apache/groovy/${m}/${version}/${m}-${version}${type}.jar" "${target}"
+      done
+    done
+  fi
+  linkLatest "${GROOVY_DIR}" "${version}"
+}
+
+# download an extension (bin+sources+javadoc) into <EXTENSIONS_DIR>/<artifact>/<version>, point latest
 function installExtension() {
   local artifact="${1:?artifact is required}"
   local repo="${EXTENSION_REPO[${artifact}]:-${MAVEN_BASE}}"
@@ -198,7 +291,7 @@ function installExtension() {
   local url="${repo}/${group}/${artifact}"
   local version
   if test -n "${EXTENSION_LTS[${artifact}]:-}"; then
-    # jenkins-style weekly/lts: default latest weekly (X.Y); --extension-lts picks latest LTS (X.Y.Z)
+    # weekly (X.Y) by default; --extension-lts → LTS (X.Y.Z)
     local pat='^[0-9]+\.[0-9]+$'
     "${EXT_LTS}" && pat='^[0-9]+\.[0-9]+\.[0-9]+$'
     version="$( command curl -fsSL "${url}/maven-metadata.xml" 2>/dev/null | sed -nE 's:.*<version>(.*)</version>.*:\1:p' | command grep -E "${pat}" | tail -1 )"
@@ -211,9 +304,8 @@ function installExtension() {
   fetchTypes true types                          # extensions always include the binary jar
   info "downloading extensions $(c 0G)${artifact} v${version} $(c 0i)from $(c 0Bui)${url}$(c 0i) ..."
   mkdir -p "${target}"
-  cd "${target}" || exit
   for type in "${types[@]}"; do
-    "${CURL[@]}" "${url}/${version}/${artifact}-${version}${type}.jar"
+    fetchJar "${url}/${version}/${artifact}-${version}${type}.jar" "${target}"
   done
   linkLatest "${base}" "${version}"
 }
@@ -225,11 +317,11 @@ function _parser() {
   local argc="$3"
   local next="${4-}"
 
-  # --groovy -> without version, resolve the latest on demand
+  # --groovy without version: defer to main() via the '@default' sentinel
   if [[ ${argc} -le 1 || "${next}" == -* ]]; then
-    _ver="$( defaultVersion "${flag}" )"
+    _ver='@default'
     return 1
-  # --groovy 5.0.6 -> with version
+  # --groovy 5.0.6
   elif [[ "${next}" =~ ^[0-9]+(\.[0-9]+)+([._-][a-zA-Z0-9]+)*$ ]]; then
     _ver="${next}"
     return 2
@@ -239,10 +331,10 @@ function _parser() {
   fi
 }
 
-# print environment-setup hints for whatever was actually downloaded this run
+# print environment-setup hints
 function printNotes() {
   local -a refLibs=() cliDirs=()
-  # groovy/latest + extensions feed both the LSP (referencedLibraries) and the groovy/java classpath
+  # groovy/latest + extensions → referencedLibraries + classpath
   { test -n "${GROOVY_VERSION:-}" || "${WITH_LIBS}"; } && { refLibs+=( "${GROOVY_DIR}/latest/*" ); cliDirs+=( "${GROOVY_DIR}/latest" ); }
   local ext
   for ext in "${EXTENSIONS[@]}"; do refLibs+=( "${EXTENSIONS_DIR}/${ext}/latest/*" ); cliDirs+=( "${EXTENSIONS_DIR}/${ext}/latest" ); done
@@ -250,7 +342,7 @@ function printNotes() {
 
   local refJoined cpJoined
   refJoined="$( printf '"%s", ' "${refLibs[@]}" )"; refJoined="${refJoined%, }"
-  # java classpath wildcard: <dir>/* expands to every .jar in <dir> (incl. -sources/-javadoc, useful for the LSP)
+  # classpath: <dir>/* = every jar in <dir>
   cpJoined="$( printf '%s/*:' "${cliDirs[@]}" )"; cpJoined="${cpJoined%:}"
 
   echo -e "$(show --bg --note ' NOTE ') $(c 0i)environment setup for the libraries above:$(c)"
@@ -261,7 +353,7 @@ function printNotes() {
   echo -e "      $(c 0G)export CLASSPATH=\"\${CLASSPATH:+\$CLASSPATH:}${cpJoined}\"$(c)"
 }
 
-# dedup EXTENSIONS in place, preserving first-seen order (default list + any -e artifacts)
+# dedup EXTENSIONS, keep first-seen order
 function dedupExtensions() {
   local -a merged=()
   local -A seen=()
@@ -274,8 +366,28 @@ function dedupExtensions() {
   EXTENSIONS=( "${merged[@]}" )
 }
 
+# --clean: remove version dirs + latest + extensions under ${GROOVY_DIR} (keeps the script)
+function cleanEnv() {
+  info "clean: removing groovy libs under $(c 0Bui)${GROOVY_DIR}$(c 0i) ..."
+  local d count=0
+  shopt -s nullglob
+  for d in "${GROOVY_DIR}"/[0-9]* "${GROOVY_DIR}"/latest "${GROOVY_DIR}"/extensions; do
+    { test -e "${d}" || test -L "${d}"; } || continue
+    rm -rf "${d}"
+    info "  removed $(c 0G)${d}$(c)"
+    count=$(( count + 1 ))
+  done
+  shopt -u nullglob
+  info "removed $(c 0G)${count}$(c 0i) item(s)"
+}
+
 function main() {
+  "${CLEAN}" && { cleanEnv; exit 0; }
   dedupExtensions
+  # detect the system groovy home (cross-platform) unless GROOVY_HOME already set it
+  test -n "${_GROOVY_SYS_HOME}" || _GROOVY_SYS_HOME="$( detectGroovyHome || true )"
+  # resolve the deferred default now that every flag (--latest/--pre) is parsed
+  test '@default' = "${GROOVY_VERSION:-}" && GROOVY_VERSION="$( defaultVersion groovy )"
   test -n "${GROOVY_VERSION:-}" && groovy "${GROOVY_VERSION}"
   "${WITH_LIBS}"                && groovylibs "${GROOVY_VERSION}"
   local ext
@@ -291,6 +403,8 @@ while [[ $# -gt 0 ]]; do
     -l | --with-libs  ) WITH_LIBS=true      ; shift   ;;
     --with-bin        ) WITH_BIN=true       ; shift   ;;
     --pre             ) PRE=true            ; shift   ;;
+    --latest          ) LATEST=true         ; shift   ;;
+    --clean           ) CLEAN=true          ; shift   ;;
     --extension-lts   ) EXT_LTS=true        ; shift   ;;
     -e | --extensions ) EXTENSIONS+=("$2")  ; shift 2 ;;
     -p | --path       ) DESTINATION="$2"    ; shift 2 ;;

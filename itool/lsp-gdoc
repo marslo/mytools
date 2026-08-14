@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+# =============================================================================
+#      FileName : lsp-gdoc
+#        Author : marslo
+#       Created : 2026-08-13 22:28:15
+#    LastChange : 2026-08-14 01:27:51
+# =============================================================================
+#   build an offline javadoc index from *-sources.jar on the groovy classpath, so nvim can show docs for classpath symbols. reuses ctags (line numbers) + the same "javadoc block above the def" extraction used by groovy_tags.
+#   jar files in ROOTS:
+#     * sources.jar  -- unzip '*.java''*.groovy' ----►  ~/.cache/nvim/gdoc/src/  -- ctags --►  ~/.cache/nvim/gdoc/.tags
+#     * javadoc.jar  -- (list HTML manifest ONLY) ---►  ~/.cache/nvim/gdoc/javadoc-map.tsv
+#
+#   layout under ${GDOC_HOME}:
+#     src/              extracted .java / .groovy from every *-sources.jar
+#     .tags             universal-ctags index over src/ (with line: field)
+#     javadoc-map.tsv   FQN \t /path/to/*-javadoc.jar \t internal/Class.html
+#
+#   usage:
+#     lsp-gdoc --build [DIR ...]    (re)build the index from the given roots
+#     lsp-gdoc --clean              wipe the cache
+# =============================================================================
+
+set -euo pipefail
+
+declare -r GDOC_HOME="${GDOC_HOME:-${HOME}/.cache/nvim/gdoc}"
+declare -r GDOC_SRC="${GDOC_HOME}/src"
+declare -r GDOC_TAGS="${GDOC_HOME}/.tags"
+declare -r GDOC_JDMAP="${GDOC_HOME}/javadoc-map.tsv"
+
+# shellcheck disable=SC2155
+declare -r ME="$( basename "${BASH_SOURCE[0]:-$0}" )"
+# shellcheck disable=SC2155
+declare -r USAGE="NAME
+  ${ME} - build an offline javadoc index from *-sources.jar on the groovy classpath
+
+OPTIONS
+  --build [DIR ...]     (re)build the index from the given roots
+  --clean               wipe the cache
+  -h, --help            show this help
+
+USAGE
+  ${ME} --build [DIR ...]   (re)build the index from the given roots
+  ${ME} --clean             wipe the cache
+"
+
+# default roots holding *-sources.jar / *-javadoc.jar
+declare -a ROOTS=(
+  '/opt/groovy/latest'
+  "${HOME}/.groovy/lib"
+  '/opt/jenkins/latest/WEB-INF/lib'
+)
+
+# echo the *-sources.jar (arg1=suffix) found directly under the given roots
+function jarsOf() {
+  local suffix="${1}"; shift
+  local d
+  for d in "${@}"; do
+    test -d "${d}" && command find -L "${d}" -maxdepth 1 -name "*${suffix}"
+  done
+}
+
+function gdocBuild() {
+  local -a roots
+  if test ${#} -gt 0; then roots=( "${@}" ); else roots=( "${ROOTS[@]}" ); fi
+
+  command rm -rf "${GDOC_SRC}"
+  command mkdir -p "${GDOC_SRC}"
+
+  # 1. extract source files from every *-sources.jar
+  local jar; local -i sjars=0
+  while IFS= read -r jar; do
+    unzip -o -q "${jar}" '*.java' '*.groovy' -d "${GDOC_SRC}" 2>/dev/null || true
+    sjars=$(( sjars + 1 ))
+  done < <( jarsOf '-sources.jar' "${roots[@]}" )
+  printf '>> sources : %d jars extracted -> %s\n' "${sjars}" "${GDOC_SRC}"
+
+  # 2. ctags over the tree, with line numbers (line:) and qualified extras
+  ctags -R --languages=Java,groovy --fields=+n --extras=+q -f "${GDOC_TAGS}" "${GDOC_SRC}" 2>/dev/null || true
+  printf '>> tags    : %s symbols -> %s\n' "$( command grep -vc '^!' "${GDOC_TAGS}" 2>/dev/null || echo 0 )" "${GDOC_TAGS}"
+
+  # 3. javadoc html map: FQN \t jar \t internal.html  (for literal class hover)
+  : > "${GDOC_JDMAP}"
+  local -i jjars=0
+  while IFS= read -r jar; do
+    unzip -Z1 "${jar}" '*.html' 2>/dev/null |
+    while IFS= read -r html; do
+      case "${html}" in
+        */class-use/*|*/doc-files/*|*-summary.html|*index*|*package-*|*deprecated*|*help-doc*|*overview*|*allclasses*|*serialized-form*|*constant-values*|*search*) continue ;;
+      esac
+      local fqn="${html%.html}"
+      printf '%s\t%s\t%s\n' "${fqn//\//.}" "${jar}" "${html}"
+    done >> "${GDOC_JDMAP}"
+    jjars=$(( jjars + 1 ))
+  done < <( jarsOf '-javadoc.jar' "${roots[@]}" )
+  printf '>> javadoc : %d jars, %s classes -> %s\n' "${jjars}" "$( command wc -l < "${GDOC_JDMAP}" | tr -d ' ' )" "${GDOC_JDMAP}"
+}
+
+function gdocClean() {
+  if test -d "${GDOC_HOME}"; then
+    local sz; sz="$( command du -sh "${GDOC_HOME}" 2>/dev/null | command cut -f1 )"
+    command rm -rf "${GDOC_HOME}"
+    printf '>> removed %s (%s)\n' "${GDOC_HOME}" "${sz:-?}"
+  else
+    printf '>> nothing to clean (%s absent)\n' "${GDOC_HOME}"
+  fi
+}
+
+case "${1:-}" in
+  --build     ) shift; gdocBuild "${@}"     ;;
+  --clean     ) shift; gdocClean; exit 0    ;;
+  -h | --help ) echo "${USAGE}" >&2; exit 0 ;;
+  ''          ) echo "${USAGE}" >&2; exit 1 ;;
+  *           ) echo "ERROR: unknown option '${1}'" >&2; echo "${USAGE}" >&2; exit 1 ;;
+esac
+
+# vim:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:filetype=sh:

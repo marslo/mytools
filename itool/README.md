@@ -1,17 +1,49 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [groovy-libs.sh](#groovy-libssh)
+- [jenkins-libs.sh](#jenkins-libssh)
+- [lsp-gdoc](#lsp-gdoc)
+- [environment variable](#environment-variable)
+- [vimrc & coc-settings.json](#vimrc--coc-settingsjson)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## groovy-libs.sh
 
 ```bash
-# download/setup
-$ cp groovy-libs.sh /opt/groovy
-$ bash /opt/groovy/groovy-libs.sh --groovy --groovy-libs --jenkins
+# download <name>-sources.jar and <name>-javadoc.jar
+$ curl -fsSL https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --groovy --with-libs --path /opt/groovy
+
+#                                                                                                      + <name>-sources.jar and <name>-javadoc.jar
+#                                                                                                      v           + <name>.jar
+$ curl -fsSL https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --groovy --with-libs --with-bin --path /opt/groovy
+
+# ── to cleanup ──
+$ curl -fsSL https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --clean
 ```
 
 ## jenkins-libs.sh
 
 ```bash
-$ cp jenkins-libs.sh /opt/jenkins
-$ bash /opt/jenkins/jenkins-libs.sh --lts --ln
+#                                                                                                  + ln -sf to ~/.groovy/lib
+#                                                                                                  |      + <name>-sources.jar
+#                                                                                                  v      v       + <name>-javadoc.jar
+$ curl -fsSL https://github.com/marslo/mytools/raw/main/itool/jenkins-libs.sh | bash -s -- --lts --ln --sources --javadoc --path /opt/jenkins
+
+# ── to cleanup ──
+$ curl -fsSL https://github.com/marslo/mytools/raw/main/itool/jenkins-libs.sh | bash -s -- --clean
+```
+
+
+## lsp-gdoc
+```bash
+# - sources.jar : unzip '*.java''*.groovy' ----►  ~/.cache/nvim/gdoc/src/  -- ctags --►  ~/.cache/nvim/gdoc/.tags
+# - javadoc.jar : (list HTML manifest ONLY) ---►  ~/.cache/nvim/gdoc/javadoc-map.tsv
+$ curl -fsSL https://github.com/marslo/mytools/raw/main/itool/lsp-gdoc | bash -s -- --build
+
+# ── to cleanup ──
+$ curl -fsSL https://github.com/marslo/mytools/raw/main/itool/lsp-gdoc | bash -s -- --clean
 ```
 
 ## environment variable
@@ -39,20 +71,28 @@ test -f "${HOMEBREW_OPT}/coreutils/libexec/gnubin/paste" &&
 unset _GROOVY_LIBS _JENKINS_LIBS
 ```
 
+## vimrc & coc-settings.json
+
 ```jsonc
 // ~/.config/nvim/coc-settings.json
 {
   "groovy.enable": true,
   "groovy.java.home": "/opt/homebrew/Cellar/openjdk@21/21.0.12/libexec/openjdk.jdk/Contents/Home",
   "groovy.project.referencedLibraries": [
-    "/opt/groovy/libs/groovy/latest/*",
-    "/opt/groovy/libs/jenkins/latest/*",
-    "/opt/homebrew/opt/groovy/libexec/lib/*",
-    "/Users/marslo/.groovy/lib/*",
-    "/opt/jenkins/latest/WEB-INF/lib/*"
+    "/opt/homebrew/opt/groovy/libexec/lib/*",                     // brew install groovy
+    "/opt/groovy/latest/*",                                       // groovy-libs.sh --groovy --with-libs
+    "/opt/jenkins/latest/WEB-INF/lib/*",                          // jenkins-libs.sh --lts --sources --groovydcoc
+    "/Users/marslo/.groovy/lib/*"                                 // jenkins-libs.sh [OPTION] --ln
   ],
   "groovy.ls.vmargs": "-noverify -Xmx2G -XX:+UseG1GC -XX:+UseStringDeduplication",
   "groovy.trace.server": "off",
   "groovy.ls.feature.noRoot": true
 }
+```
+
+```vim
+# ~/.vimrc
+augroup Groovy
+  autocmd FileType  groovy,Jenkinsfile  setlocal tags+=~/.cache/nvim/gdoc/.tags
+augroup END
 ```
