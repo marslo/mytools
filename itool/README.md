@@ -91,7 +91,7 @@ unset _GROOVY_LIBS _JENKINS_LIBS
 ```
 
 ```vim
-# ~/.vimrc
+" ~/.vimrc
 augroup Groovy
   autocmd FileType  groovy,Jenkinsfile  setlocal tags+=~/.cache/nvim/gdoc/.tags
 augroup END
