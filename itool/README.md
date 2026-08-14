@@ -35,7 +35,6 @@ $ curl -fsSL https://github.com/marslo/mytools/raw/main/itool/jenkins-libs.sh | 
 $ curl -fsSL https://github.com/marslo/mytools/raw/main/itool/jenkins-libs.sh | bash -s -- --clean
 ```
 
-
 ## lsp-gdoc
 ```bash
 # - sources.jar : unzip '*.java''*.groovy' ----►  ~/.cache/nvim/gdoc/src/  -- ctags --►  ~/.cache/nvim/gdoc/.tags
@@ -93,6 +92,12 @@ unset _GROOVY_LIBS _JENKINS_LIBS
 ```vim
 " ~/.vimrc
 augroup Groovy
-  autocmd FileType  groovy,Jenkinsfile  setlocal tags+=~/.cache/nvim/gdoc/.tags
+  autocmd FileType groovy,Jenkinsfile setlocal tags+=~/.cache/nvim/gdoc/.tags
 augroup END
+
+augroup JavaMarkdownDoc
+  autocmd!
+  autocmd ColorScheme * highlight default link markdownLineStart markdownH1
+augroup END
+silent! highlight default link markdownLineStart markdownH1
 ```
