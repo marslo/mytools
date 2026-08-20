@@ -3,7 +3,7 @@
 #      FileName : getVersion.sh
 #        Author : marslo
 #       Created : 2025-12-15 15:00:49
-#    LastChange : 2026-08-18 16:43:30
+#    LastChange : 2026-08-19 15:57:29
 # =============================================================================
 
 set -euo pipefail
@@ -30,15 +30,16 @@ function hr() { local cols; cols="$(tput cols 2>/dev/null || echo 80)"; printf '
         local="$( /usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "${plist}" 2>/dev/null || true )"
         build="$( /usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "${plist}" 2>/dev/null || true )"
         bundleId="$( /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "${plist}" 2>/dev/null || true )"
-        online="$( bash ./appStoreVersion.sh "${bundleId}" || true )"
+        online="$( bash ./masVersion.sh "${bundleId}" || true )"
       fi
 
       # fallback: Spotlight metadata
       if test -z "${local}"; then
         local="$( /usr/bin/mdls -name kMDItemVersion -raw "${app}" 2>/dev/null || true )"
-        test "${local}" == "(null)" && local=''
+        { test "${local}" == "(null)" || test -z "${local}"; } && local='-'
       fi
 
+      test -z "${build}" && build='-'
       [[ "${online}" != "${local}" ]] && online="$(tput setaf 202)${online}$(tput sgr0)"
 
       (( ++i ))
