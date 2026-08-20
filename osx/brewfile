@@ -45,7 +45,7 @@ brew "create-dmg"
 brew "curl"
 # Display user-friendly message boxes from shell scripts
 brew "dialog"
-# Good-lookin' diffs with diff-highlight and more
+# Good-looking' diffs with diff-highlight and more
 brew "diff-so-fancy", args: ["HEAD"]
 # Diff that understands syntax
 brew "difftastic"
@@ -72,7 +72,7 @@ brew "file-formula"
 # Collection of GNU find, xargs, and locate
 brew "findutils"
 # Command-line outline and bitmap font editor/converter
-brew "fontforge"
+brew "fontforge", args: ["HEAD"]
 # Library for manipulating fonts
 brew "fonttools", args: ["HEAD"]
 # Infamous electronic fortune-cookie generator
@@ -429,7 +429,7 @@ vscode "vscjava.vscode-java-debug"
 vscode "vscjava.vscode-java-pack"
 vscode "vscjava.vscode-java-test"
 vscode "vscodevim.vim"
-vscode "wowbox.code-debuger"
+vscode "wowbox.code-debugger"
 cargo "cargo-cache"
 npm "@commitlint/cli"
 npm "@commitlint/config-conventional"

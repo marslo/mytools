@@ -1,0 +1,27 @@
+[files]
+ignore-hidden = true
+ignore-files = true
+ignore-dot = true
+ignore-vcs = true
+ignore-global = true
+ignore-parent = true
+extend-exclude = []
+
+[default]
+binary = false
+check-filename = true
+check-file = true
+unicode=true
+locale = "en"
+extend-ignore-re = []
+
+[default.extend-words]
+# <typo> = "<correction>"
+debuger = 'debuger'
+infomation = 'infomation'
+kno = 'kno'
+transparant = 'transparant'
+Apperance = 'Apperance'
+Ue = 'Ue'
+Ba = 'Ba'
+Gae = 'Gae'
