@@ -30,3 +30,6 @@ seperator = 'seperator'
 pannel = 'pannel'
 # brewfile
 lookin = 'lookin'
+# groovy-libs.sh
+testng = 'testng'
+Bui = 'Bui'

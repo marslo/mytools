@@ -1,6 +1,9 @@
 # yamllint disable rule:indentation
 ---
 
+default_install_hook_types: [pre-commit, commit-msg]
+default_stages: [pre-commit]
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -69,6 +72,12 @@ repos:
       - id: typos
         name: Typos
         args: ['--write-changes', '--force-exclude']
+      # scan the commit message itself; no --write-changes -> only fail, never rewrite the message
+      - id: typos
+        name: Typos (commit message)
+        alias: typos-commit-msg
+        stages: [commit-msg]
+        args: ['--force-exclude']
 
   - repo: local
     hooks:

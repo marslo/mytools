@@ -4,15 +4,17 @@
 #      FileName : groovy-libs.sh
 #        Author : marslo
 #       Created : 2026-05-29 23:20:19
-#    LastChange : 2026-08-14 00:21:42
-#         Usage : curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --groovy --with-libs --with-bin
+#    LastChange : 2026-09-02 02:47:43
+#         Usage : curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --jar --with-libs --with-bin
+#                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --runtime --latest
 #                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --help
 # =============================================================================
 # download matrix:
-#   target                 | binary (.jar)        | -sources / -javadoc | version selection
-#   -----------------------+----------------------+---------------------+----------------------------------------
-#   --groovy / --with-libs | only with --with-bin | always              | system version; --latest stable; --pre alpha/beta/rc
-#   -e extensions          | always               | always              | latest release; jenkins-core: weekly (X.Y), --extension-lts LTS (X.Y.Z)
+#   target              | binary (.jar)        | -sources / -javadoc | version selection
+#   --------------------+----------------------+---------------------+-----------------------------------------
+#   --jar / --with-libs | only with --with-bin | always              | system version; --latest stable; --pre alpha/beta/rc
+#   --runtime           | full binary zip      | (bundled in zip)    | latest stable (default); --pre alpha/beta/rc
+#   -e extensions       | always               | always              | latest release; jenkins-core: weekly (X.Y), --extension-lts LTS (X.Y.Z)
 # =============================================================================
 
 # require bash >= 4.3 (associative arrays + namerefs used throughout)
@@ -26,6 +28,8 @@ fi
 c() { [ $# == 0 ] && printf "\033[0m" || printf "$1" | sed 's/\(.\)/\1;/g;s/\([SDIUFNHT]\)/2\1/g;s/\([KRGYBMCW]\)/3\1/g;s/\([krgybmcw]\)/4\1/g;y/SDIUFNHTsdiufnhtKRGYBMCWkrgybmcw/12345789123457890123456701234567/;s/^\(.*\);$/\\033[\1m/g'; }
 
 readonly MAVEN_BASE="https://repo1.maven.org/maven2"
+# --runtime: full binary distribution zip (apache-groovy-binary-<ver>.zip)
+readonly RUNTIME_BASE="https://groovy.jfrog.io/artifactory/dist-release-local/groovy-zips"
 # default install root (-p overrides)
 declare _DEFAULT_DESTINATION='/opt/groovy'
 # fallback version if lookup fails
@@ -35,6 +39,8 @@ declare _GROOVY_SYS_HOME="${GROOVY_HOME:-}"
 declare WITH_LIBS=false
 # groovy binaries off by default; -sources/-javadoc always
 declare WITH_BIN=false
+# --runtime: download the full binary distribution and link <dest>/current at it
+declare RUNTIME=false
 # --pre: newest incl. alpha/beta/rc
 declare PRE=false
 # --latest: maven latest stable
@@ -82,26 +88,33 @@ USAGE
   $(c 0Ys)\$ ${ME}$(c) [OPTIONS]
 
 OPTIONS
-  $(c 0G)--groovy $(c Mi)VERSION$(c)            download the Groovy library. Optionally specify the version $(c 0Wi)(default: the system groovy version; fallback $(c 0Mi)${_GROOVY_FALLBACK}$(c 0Wi))$(c)
-  $(c 0G)-l$(c), $(c 0G)--with-libs$(c)             fetch -sources/-javadoc for every jar in the system groovy lib $(c 0Wi)(each at its own version; auto-detects brew/sdkman/apt/\$GROOVY_HOME)$(c)
-      $(c 0G)--with-bin$(c)              also fetch the compiled groovy '.jar' $(c 0Wi)(default: only -sources/-javadoc, since your launcher already ships the binaries)$(c)
-      $(c 0G)--latest$(c)                resolve the latest stable groovy from maven central $(c 0Wi)(default: use the system groovy version)$(c)
-      $(c 0G)--pre$(c)                   resolve the newest groovy version including alpha/beta/rc $(c 0Wi)(default: stable only)$(c)
+  $(c 0G)--latest$(c)                    for $(c 0Mi)--jar$(c): use the latest stable groovy from maven central $(c 0Wi)(default: system groovy version; $(c 0Mi)--runtime$(c 0Wi) already installs latest)$(c)
+  $(c 0G)--pre$(c)                       for $(c 0Mi)--jar$(c)/$(c 0Mi)--runtime$(c): use the newest groovy including alpha/beta/rc $(c 0Wi)(default: stable only)$(c)
+  $(c 0G)-p, $(c 0G)--path $(c 0Mi)DESTINATION$(c)      specify the destination directory $(c 0Wi)(default: ${_DEFAULT_DESTINATION})$(c)
+
+  $(c 0G)--runtime$(c)                   download the full binary distribution ($(c 0Mi)apache-groovy-binary-<ver>.zip$(c)) and link $(c 0Wi)<dest>/current$(c) -> it $(c 0Wi)(latest stable)$(c)
+  $(c 0G)--jar $(c Mi)VERSION$(c)               download the Groovy core jar(s). Optionally specify the version $(c 0Wi)(default: system groovy; fallback $(c 0Mi)${_GROOVY_FALLBACK}$(c 0Wi); alias: $(c 0Mi)--groovy$(c 0Wi))$(c)
+  $(c 0G)-l$(c), $(c 0G)--with-libs$(c)             fetch -sources/-javadoc for every jar in the system groovy lib $(c 0Wi)(requires $(c 0Mi)--jar$(c 0Wi); auto-detects brew/sdkman/apt/\$GROOVY_HOME)$(c)
+      $(c 0G)--with-bin$(c)              also fetch the compiled groovy '.jar' $(c 0Wi)(requires $(c 0Mi)--jar$(c 0Wi))$(c)
+
   $(c 0G)-e$(c), $(c 0G)--extensions $(c 0Mi)ARTIFACT$(c)   download a Jenkins/cloudbees extension jar with bin+sources+javadoc $(c 0Wi)(repeatable; default list [$(c 0Mi)${EXTENSIONS[*]}$(c 0Wi)], deduped)$(c)
       $(c 0G)--extension-lts$(c)         for jenkins-style extensions (jenkins-core), pick the latest LTS $(c 0Mi)X.Y.Z$(c 0Wi) instead of the latest weekly $(c 0Mi)X.Y$(c)
-  $(c 0G)-p, $(c 0G)--path $(c 0Mi)DESTINATION$(c)      specify the destination directory $(c 0Wi)(default: ${_DEFAULT_DESTINATION})$(c)
+
   $(c 0G)--clean$(c)                     remove downloaded version dirs + $(c 0Wi)latest$(c) + $(c 0Wi)extensions$(c) under the destination, then exit $(c 0Wi)(keeps the script)$(c)
   $(c 0G)-h, $(c 0G)--help$(c)                  show this help message and exit
 
 EXAMPLE
   $(c 0Wdi)# download groovy 6.0.1 jar files and groovy libs, and groovy-cps extension$(c)
-  $(c 0Y)\$ ${ME} $(c 0Gi)--groovy $(c 0Mi)6.0.1 $(c 0Gi)--with-libs --with-bin$(c) $(c 0Gi)--extensions$(c) $(c 0Mi)groovy-cps$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--jar $(c 0Mi)6.0.1 $(c 0Gi)--with-libs --with-bin$(c) $(c 0Gi)--extensions$(c) $(c 0Mi)groovy-cps$(c)
 
-  $(c 0Wdi)# download groovy (latest) to path '/tmp/libs'$(c)
-  $(c 0Y)\$ ${ME} $(c 0Gi)--groovy --path $(c 0Mi)/tmp/libs$(c)
+  $(c 0Wdi)# download groovy (latest stable) jars to path '/tmp/libs'$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--jar --latest --path $(c 0Mi)/tmp/libs$(c)
 
   $(c 0Wdi)# download alpha/beta/rc groovy + groovy libs including the compiled jars$(c)
-  $(c 0Y)\$ ${ME} $(c 0Gi)--groovy --with-libs --with-bin --pre$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--jar --with-libs --with-bin --pre$(c)
+
+  $(c 0Wdi)# install the full groovy binary distribution (latest stable) and link <dest>/current -> it$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--runtime --latest$(c)
 "
 
 function show() {
@@ -223,6 +236,60 @@ function groovy() {
     fetchJar "${repo}/groovy-${version}${type}.jar" "${target}"
   done
   linkLatest "${GROOVY_DIR}" "${version}"
+}
+
+# --runtime: download the full binary distribution (apache-groovy-binary-<ver>.zip),
+# extract under <GROOVY_DIR>, and point <GROOVY_DIR>/current at groovy-<ver>
+function installRuntime() {
+  # --runtime installs precisely because there is no system groovy, so never
+  # resolve against the system: default to the latest stable (or the newest
+  # incl. alpha/beta/rc with --pre). an explicit --jar VERSION pin still wins.
+  local version="${1-}"
+  { test -z "${version}" || test '@default' = "${version}"; } && version="$( latestGroovy )"
+  version="${version:-${_GROOVY_FALLBACK}}"
+  command -v unzip >/dev/null 2>&1 || {
+    echo -e "$(show --bg --error 'ERROR') $(c 0i)$(c 0G)unzip$(c 0i) is required for $(c 0G)--runtime$(c 0i) but not found$(c)" >&2
+    exit 1
+  }
+
+  local dist="apache-groovy-binary-${version}.zip"
+  local extracted="${GROOVY_DIR}/groovy-${version}"
+
+  # reuse a previous extraction; otherwise download + verify + unzip
+  if test -d "${extracted}" && compgen -G "${extracted}/lib/groovy-[0-9]*.jar" >/dev/null 2>&1; then
+    info "reuse existing groovy runtime $(c 0G)${extracted}$(c)"
+  else
+    local zip="${GROOVY_DIR}/${dist}"
+    # jfrog primary; maven central (byte-identical) fallback
+    local -a sources=(
+      "${RUNTIME_BASE}/${dist}"
+      "${MAVEN_BASE}/org/apache/groovy/groovy-binary/${version}/groovy-binary-${version}.zip"
+    )
+    mkdir -p "${GROOVY_DIR}"
+    local url ok=false
+    for url in "${sources[@]}"; do
+      info "downloading $(c 0G)groovy runtime v${version} $(c 0i)from $(c 0Bui)${url}$(c 0i) ..."
+      command curl -fsSL --retry 3 --retry-delay 2 -o "${zip}" "${url}" || continue
+      unzip -tqq "${zip}" >/dev/null 2>&1 && { ok=true; break; }        # reject a truncated/corrupt archive
+      info "  $(c 0Y)skip$(c 0i): incomplete archive from this source"
+    done
+    "${ok}" || {
+      command rm -f "${zip}"
+      echo -e "$(show --bg --error 'ERROR') $(c 0i)failed to download a valid $(c 0G)${dist}$(c)" >&2
+      exit 1
+    }
+    # true top-level dir from the archive (groovy-<ver> by convention)
+    local top; top="$( unzip -Z1 "${zip}" | sed -nE 's:^([^/]+)/.*:\1:p' | head -1 )"
+    extracted="${GROOVY_DIR}/${top}"
+    command rm -rf "${extracted}"
+    info "extracting $(c 0G)${dist} $(c 0i)-> $(c 0G)${extracted}$(c) ..."
+    unzip -q "${zip}" -d "${GROOVY_DIR}"
+    command rm -f "${zip}"
+  fi
+
+  local name; name="$( basename "${extracted}" )"
+  ln -sfn "${name}" "${GROOVY_DIR}/current"
+  info "linked $(c 0G)${GROOVY_DIR}/current $(c 0i)-> $(c 0G)${name}$(c)"
 }
 
 # maven group for an artifact: prefix families, then LIB_GROUP (empty if unknown)
@@ -368,10 +435,12 @@ function dedupExtensions() {
 
 # --clean: remove version dirs + latest + extensions under ${GROOVY_DIR} (keeps the script)
 function cleanEnv() {
-  info "clean: removing groovy libs under $(c 0Bui)${GROOVY_DIR}$(c 0i) ..."
+  info "clean: removing groovy libs/runtime under $(c 0Bui)${GROOVY_DIR}$(c 0i) ..."
   local d count=0
   shopt -s nullglob
-  for d in "${GROOVY_DIR}"/[0-9]* "${GROOVY_DIR}"/latest "${GROOVY_DIR}"/extensions; do
+  for d in "${GROOVY_DIR}"/[0-9]* "${GROOVY_DIR}"/groovy-[0-9]* "${GROOVY_DIR}"/current \
+           "${GROOVY_DIR}"/latest "${GROOVY_DIR}"/extensions \
+           "${GROOVY_DIR}"/apache-groovy-binary-*.zip; do
     { test -e "${d}" || test -L "${d}"; } || continue
     rm -rf "${d}"
     info "  removed $(c 0G)${d}$(c)"
@@ -383,10 +452,17 @@ function cleanEnv() {
 
 function main() {
   "${CLEAN}" && { cleanEnv; exit 0; }
+  # --with-libs/--with-bin augment --jar; refuse them without --jar
+  if { "${WITH_LIBS}" || "${WITH_BIN}"; } && test -z "${GROOVY_VERSION:-}"; then
+    echo -e "$(show --bg --error 'ERROR') $(c 0i)$(c 0G)--with-libs$(c 0i)/$(c 0G)--with-bin$(c 0i) require $(c 0G)--jar$(c 0i) $(c 0Mi)[VERSION]$(c)" >&2
+    exit 1
+  fi
   dedupExtensions
   # detect the system groovy home (cross-platform) unless GROOVY_HOME already set it
   test -n "${_GROOVY_SYS_HOME}" || _GROOVY_SYS_HOME="$( detectGroovyHome || true )"
-  # resolve the deferred default now that every flag (--latest/--pre) is parsed
+  # --runtime resolves its own version (latest stable, or --pre), never the system
+  "${RUNTIME}"                  && installRuntime "${GROOVY_VERSION:-}"
+  # resolve the deferred --jar default now that every flag (--latest/--pre) is parsed
   test '@default' = "${GROOVY_VERSION:-}" && GROOVY_VERSION="$( defaultVersion groovy )"
   test -n "${GROOVY_VERSION:-}" && groovy "${GROOVY_VERSION}"
   "${WITH_LIBS}"                && groovylibs "${GROOVY_VERSION}"
@@ -399,7 +475,9 @@ function main() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --jar             ) _parser jar GROOVY_VERSION $# "${2-}"    ; shift $? ;;
     --groovy          ) _parser groovy GROOVY_VERSION $# "${2-}" ; shift $? ;;
+    --runtime         ) RUNTIME=true        ; shift   ;;
     -l | --with-libs  ) WITH_LIBS=true      ; shift   ;;
     --with-bin        ) WITH_BIN=true       ; shift   ;;
     --pre             ) PRE=true            ; shift   ;;
