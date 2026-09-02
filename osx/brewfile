@@ -1,10 +1,11 @@
-tap "buo/cask-upgrade", trusted: true
-tap "carlocab/personal", trusted: true
-tap "hashicorp/tap", trusted: true
-tap "homebrew/command-not-found"
-tap "laishulu/homebrew", trusted: true
-tap "riodelphino/tap", trusted: true
-tap "vitorgalvao/tiny-scripts", trusted: true
+tap "buo/cask-upgrade", "https://git::@github.com/buo/homebrew-cask-upgrade", trusted: true
+tap "carlocab/personal", "https://git::@github.com/carlocab/homebrew-personal", trusted: true
+tap "hashicorp/tap", "https://git::@github.com/hashicorp/homebrew-tap", trusted: true
+tap "homebrew/command-not-found", "https://git::@github.com/Homebrew/homebrew-command-not-found"
+tap "laishulu/homebrew", "https://git::@github.com/laishulu/homebrew-homebrew", trusted: true
+tap "macpaw/taps"
+tap "riodelphino/tap", "https://git::@github.com/riodelphino/homebrew-tap", trusted: true
+tap "vitorgalvao/tiny-scripts", "https://git::@github.com/vitorgalvao/homebrew-tiny-scripts", trusted: true
 # Search tool like grep, but optimized for programmers
 brew "ack"
 # Static analysis and lint tool, for (ba)sh scripts
@@ -45,7 +46,7 @@ brew "create-dmg"
 brew "curl"
 # Display user-friendly message boxes from shell scripts
 brew "dialog"
-# Good-looking' diffs with diff-highlight and more
+# Good-lookin' diffs with diff-highlight and more
 brew "diff-so-fancy", args: ["HEAD"]
 # Diff that understands syntax
 brew "difftastic"
@@ -73,8 +74,6 @@ brew "file-formula"
 brew "findutils"
 # Command-line outline and bitmap font editor/converter
 brew "fontforge", args: ["HEAD"]
-# Library for manipulating fonts
-brew "fonttools", args: ["HEAD"]
 # Infamous electronic fortune-cookie generator
 brew "fortune"
 # Command-line fuzzy finder written in Go
@@ -93,6 +92,8 @@ brew "gh"
 brew "ghostscript"
 # Distributed revision control system
 brew "git", args: ["HEAD"]
+# Syntax-highlighting pager for git and diff output
+brew "git-delta", args: ["HEAD"]
 # Small git utilities
 brew "git-extras", args: ["HEAD"]
 # Quickly rewrite git repository history
@@ -348,12 +349,10 @@ cask "alfred"
 cask "baiduinput"
 # Compare files and folders
 cask "beyond-compare"
-# Desktop app for GPT-4 / GPT-3.5 (OpenAI API)
-cask "chatbox"
-# Desktop client that supports multiple LLM providers
-cask "cherry-studio"
 # Tool to remove unnecessary files and folders from disk
 cask "cleanmymac"
+# Command-line interface for CleanMyMac
+cask "macpaw/taps/cleanmymac-cli", trusted: true
 # Brings the power of Copilot coding agent directly to your terminal
 cask "copilot-cli"
 # API documentation browser and code snippet manager
@@ -390,7 +389,6 @@ cask "vimr"
 cask "warp"
 # Free messaging and calling application
 cask "wechat"
-mas "iShot Pro", id: 1611347086
 mas "Numbers", id: 409203825
 mas "Overlap", id: 1516950324
 mas "pwSafe", id: 520993579
@@ -429,7 +427,7 @@ vscode "vscjava.vscode-java-debug"
 vscode "vscjava.vscode-java-pack"
 vscode "vscjava.vscode-java-test"
 vscode "vscodevim.vim"
-vscode "wowbox.code-debugger"
+vscode "wowbox.code-debuger"
 cargo "cargo-cache"
 npm "@commitlint/cli"
 npm "@commitlint/config-conventional"

@@ -1,0 +1,1696 @@
+{
+    "pipx_spec_version": "0.1",
+    "venvs": {
+        "ansible": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "ansible",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-community",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "ansible-core": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-config",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-console",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-doc",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-galaxy",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-inventory",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-playbook",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-pull",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-test",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/ansible-vault",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "cffi": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ansible/bin/cffi-gen-src",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "ansible-community"
+                    ],
+                    "apps_of_dependencies": [
+                        "ansible",
+                        "ansible-config",
+                        "ansible-console",
+                        "ansible-doc",
+                        "ansible-galaxy",
+                        "ansible-inventory",
+                        "ansible-playbook",
+                        "ansible-pull",
+                        "ansible-test",
+                        "ansible-vault",
+                        "cffi-gen-src"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": true,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "ansible",
+                    "package_or_url": "ansible",
+                    "package_version": "14.3.1",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "argcomplete": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "argcomplete",
+                "exposure_enabled": false,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/argcomplete/bin/activate-global-python-argcomplete",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/argcomplete/bin/register-python-argcomplete",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {},
+                    "apps": [
+                        "activate-global-python-argcomplete",
+                        "register-python-argcomplete"
+                    ],
+                    "apps_of_dependencies": [],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "argcomplete",
+                    "package_or_url": "argcomplete",
+                    "package_version": "3.7.2",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "autopep8": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "autopep8",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/autopep8/bin/autopep8",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "pycodestyle": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/autopep8/bin/pycodestyle",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "autopep8"
+                    ],
+                    "apps_of_dependencies": [
+                        "pycodestyle"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "autopep8",
+                    "package_or_url": "autopep8",
+                    "package_version": "2.3.2",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "codeformat": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "codeformat",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/codeformat/bin/codeformat",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "charset-normalizer": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/codeformat/bin/normalizer",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "idna": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/codeformat/bin/idna",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "codeformat"
+                    ],
+                    "apps_of_dependencies": [
+                        "normalizer",
+                        "idna"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "codeformat",
+                    "package_or_url": "git+https://github.com/Marvell-Lab/storage-ssdfw-codeformat",
+                    "package_version": "0.2.4",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "commitizen": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "commitizen",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/commitizen/bin/cz",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/commitizen/bin/git-cz",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "argcomplete": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/commitizen/bin/activate-global-python-argcomplete",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/commitizen/bin/register-python-argcomplete",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "charset-normalizer": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/commitizen/bin/normalizer",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "cz",
+                        "git-cz"
+                    ],
+                    "apps_of_dependencies": [
+                        "activate-global-python-argcomplete",
+                        "register-python-argcomplete",
+                        "normalizer"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "commitizen",
+                    "package_or_url": "commitizen",
+                    "package_version": "4.18.0",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "cr-manager": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "cr-manager",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/cr-manager/bin/cr-manager",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {},
+                    "apps": [
+                        "cr-manager"
+                    ],
+                    "apps_of_dependencies": [],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "cr-manager",
+                    "package_or_url": "git+https://github.com/Marvell-Lab/cr-manager",
+                    "package_version": "4.0.2",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "git-tools": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "git-tools",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/git-tools/bin/git-review",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/git-tools/bin/git-version",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "charset-normalizer": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/git-tools/bin/normalizer",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "idna": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/git-tools/bin/idna",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "git-review",
+                        "git-version"
+                    ],
+                    "apps_of_dependencies": [
+                        "normalizer",
+                        "idna"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "git-tools",
+                    "package_or_url": "git+https://github.com/Marvell-Lab/Flash-devops-git-tools.git@main",
+                    "package_version": "0.7.4",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "keyring": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "keyring",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/keyring/bin/keyring",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {},
+                    "apps": [
+                        "keyring"
+                    ],
+                    "apps_of_dependencies": [],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "keyring",
+                    "package_or_url": "keyring",
+                    "package_version": "25.7.0",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "klocflow": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "klocflow",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/klocflow/bin/klocflow",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "charset-normalizer": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/klocflow/bin/normalizer",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "idna": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/klocflow/bin/idna",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "jira": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/klocflow/bin/jirashell",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "markdown-it-py": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/klocflow/bin/markdown-it",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pygments": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/klocflow/bin/pygmentize",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "klocflow"
+                    ],
+                    "apps_of_dependencies": [
+                        "jirashell",
+                        "normalizer",
+                        "idna",
+                        "markdown-it",
+                        "pygmentize"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "klocflow",
+                    "package_or_url": "git+https://github.com/Marvell-Lab/storage-ssdfw-klocflow.git",
+                    "package_version": "1.18.2",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "pdf2docx": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "pdf2docx",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pdf2docx/bin/pdf2docx",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "fonttools": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdf2docx/bin/fonttools",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdf2docx/bin/pyftmerge",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdf2docx/bin/pyftsubset",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdf2docx/bin/ttx",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "numpy": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdf2docx/bin/f2py",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdf2docx/bin/numpy-config",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pymupdf": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdf2docx/bin/pymupdf",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "pdf2docx"
+                    ],
+                    "apps_of_dependencies": [
+                        "pymupdf",
+                        "fonttools",
+                        "pyftmerge",
+                        "pyftsubset",
+                        "ttx",
+                        "f2py",
+                        "numpy-config"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [
+                        "man1/ttx.1"
+                    ],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {
+                        "fonttools": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdf2docx/share/man/man1/ttx.1",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "package": "pdf2docx",
+                    "package_or_url": "pdf2docx",
+                    "package_version": "0.5.13",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "pdfminer-six": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "pdfminer-six",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pdfminer-six/bin/dumppdf.py",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pdfminer-six/bin/pdf2txt.py",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "cffi": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdfminer-six/bin/cffi-gen-src",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "charset-normalizer": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pdfminer-six/bin/normalizer",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "dumppdf.py",
+                        "pdf2txt.py"
+                    ],
+                    "apps_of_dependencies": [
+                        "normalizer",
+                        "cffi-gen-src"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "pdfminer-six",
+                    "package_or_url": "pdfminer-six",
+                    "package_version": "20260107",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "poetry": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "poetry",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/poetry",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "build": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/pyproject-build",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "cachecontrol": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/doesitcache",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "cffi": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/cffi-gen-src",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "charset-normalizer": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/normalizer",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "dulwich": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/dul-receive-pack",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/dul-upload-pack",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/dulwich",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "findpython": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/findpython",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "httpx": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/httpx",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "idna": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/idna",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "keyring": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/keyring",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pbs-installer": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/pbs-install",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pkginfo": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/pkginfo",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "trove-classifiers": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/trove-classifiers",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "virtualenv": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/virtualenv",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "xattr": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/poetry/bin/xattr",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "poetry"
+                    ],
+                    "apps_of_dependencies": [
+                        "pyproject-build",
+                        "doesitcache",
+                        "normalizer",
+                        "idna",
+                        "dul-receive-pack",
+                        "dul-upload-pack",
+                        "dulwich",
+                        "findpython",
+                        "keyring",
+                        "pbs-install",
+                        "httpx",
+                        "pkginfo",
+                        "trove-classifiers",
+                        "virtualenv",
+                        "xattr",
+                        "cffi-gen-src"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "poetry",
+                    "package_or_url": "poetry",
+                    "package_version": "2.4.1",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "pre-commit": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "pre-commit",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pre-commit/bin/pre-commit",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "identify": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pre-commit/bin/identify-cli",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "nodeenv": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pre-commit/bin/nodeenv",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "virtualenv": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pre-commit/bin/virtualenv",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "pre-commit"
+                    ],
+                    "apps_of_dependencies": [
+                        "identify-cli",
+                        "nodeenv",
+                        "virtualenv"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "pre-commit",
+                    "package_or_url": "pre-commit",
+                    "package_version": "4.6.2",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "pylint": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "pylint",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pylint/bin/pylint",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pylint/bin/pylint-config",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pylint/bin/pyreverse",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pylint/bin/symilar",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "dill": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pylint/bin/get_gprof",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pylint/bin/get_objgraph",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pylint/bin/undill",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "isort": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pylint/bin/isort",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pylint/bin/isort-identify-imports",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "pylint",
+                        "pylint-config",
+                        "pyreverse",
+                        "symilar"
+                    ],
+                    "apps_of_dependencies": [
+                        "get_gprof",
+                        "get_objgraph",
+                        "undill",
+                        "isort",
+                        "isort-identify-imports"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "pylint",
+                    "package_or_url": "pylint",
+                    "package_version": "4.0.7",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "pythia": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "pythia",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pythia/bin/hosioi",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pythia/bin/morphe",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pythia/bin/pneuma",
+                            "__type__": "Path"
+                        },
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/pythia/bin/pythia",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "charset-normalizer": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pythia/bin/normalizer",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "idna": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pythia/bin/idna",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "markdown-it-py": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pythia/bin/markdown-it",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pygments": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/pythia/bin/pygmentize",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "hosioi",
+                        "morphe",
+                        "pneuma",
+                        "pythia"
+                    ],
+                    "apps_of_dependencies": [
+                        "normalizer",
+                        "idna",
+                        "markdown-it",
+                        "pygmentize"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "pythia",
+                    "package_or_url": "pythia",
+                    "package_version": "5.1.3.1",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "ruff": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "ruff",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/ruff/bin/ruff",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {},
+                    "apps": [
+                        "ruff"
+                    ],
+                    "apps_of_dependencies": [],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "ruff",
+                    "package_or_url": "ruff",
+                    "package_version": "0.16.4",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "ssd-fwhelpers": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "ssd-fwhelpers",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/tt",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "cffi": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/cffi-gen-src",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "charset-normalizer": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/normalizer",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "commonmark": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/cmark",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "idna": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/idna",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "invoke": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/inv",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/invoke",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "keyring": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/keyring",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pbr": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/pbr",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pygments": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/pygmentize",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pyserial": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/pyserial-miniterm",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/pyserial-ports",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "tabulate": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/tabulate",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "tqdm": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/tqdm",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "websocket-client": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/ssd-fwhelpers/bin/wsdump",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "tt"
+                    ],
+                    "apps_of_dependencies": [
+                        "cffi-gen-src",
+                        "normalizer",
+                        "idna",
+                        "wsdump",
+                        "keyring",
+                        "inv",
+                        "invoke",
+                        "pyserial-miniterm",
+                        "pyserial-ports",
+                        "pbr",
+                        "cmark",
+                        "pygmentize",
+                        "tabulate",
+                        "tqdm"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "ssd_fwhelpers",
+                    "package_or_url": "git+https://github.com/Marvell-Lab/storage-ssdfw-TitaniaFW-ssd-fwhelpers.git@develop",
+                    "package_version": "1.99.2",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "terminal-colors": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "terminal-colors",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/terminal-colors/bin/terminal-colors",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {},
+                    "apps": [
+                        "terminal-colors"
+                    ],
+                    "apps_of_dependencies": [],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "terminal-colors",
+                    "package_or_url": "terminal-colors",
+                    "package_version": "3.0.0",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "thonny": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "thonny",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/thonny",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {
+                        "dill": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/get_gprof",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/get_objgraph",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/undill",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "docutils": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/docutils",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2html",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2html4",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2html5",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2latex",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2man",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2odt",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2pseudoxml",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2s5",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2xetex",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/rst2xml",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "isort": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/isort",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/isort-identify-imports",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "mypy": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/dmypy",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/mypy",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/mypyc",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/stubgen",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/stubtest",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pylint": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/pylint",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/pylint-config",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/pyreverse",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/symilar",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "pyserial": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/pyserial-miniterm",
+                                "__type__": "Path"
+                            },
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/pyserial-ports",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "send2trash": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/send2trash",
+                                "__type__": "Path"
+                            }
+                        ],
+                        "wheel": [
+                            {
+                                "__Path__": "/Users/marslo/.local/pipx/venvs/thonny/bin/wheel",
+                                "__type__": "Path"
+                            }
+                        ]
+                    },
+                    "apps": [
+                        "thonny"
+                    ],
+                    "apps_of_dependencies": [
+                        "pyserial-miniterm",
+                        "pyserial-ports",
+                        "pylint",
+                        "pylint-config",
+                        "pyreverse",
+                        "symilar",
+                        "get_gprof",
+                        "get_objgraph",
+                        "undill",
+                        "isort",
+                        "isort-identify-imports",
+                        "docutils",
+                        "rst2html",
+                        "rst2html4",
+                        "rst2html5",
+                        "rst2latex",
+                        "rst2man",
+                        "rst2odt",
+                        "rst2pseudoxml",
+                        "rst2s5",
+                        "rst2xetex",
+                        "rst2xml",
+                        "dmypy",
+                        "mypy",
+                        "mypyc",
+                        "stubgen",
+                        "stubtest",
+                        "send2trash",
+                        "wheel"
+                    ],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "thonny",
+                    "package_or_url": "thonny",
+                    "package_version": "5.0.0",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        },
+        "typos": {
+            "metadata": {
+                "backend": "pip",
+                "environment": "typos",
+                "exposure_enabled": true,
+                "injected_packages": {},
+                "main_package": {
+                    "app_paths": [
+                        {
+                            "__Path__": "/Users/marslo/.local/pipx/venvs/typos/bin/typos",
+                            "__type__": "Path"
+                        }
+                    ],
+                    "app_paths_of_dependencies": {},
+                    "apps": [
+                        "typos"
+                    ],
+                    "apps_of_dependencies": [],
+                    "completion_paths": [],
+                    "completion_paths_of_dependencies": {},
+                    "completions": [],
+                    "completions_of_dependencies": [],
+                    "cooldown_days": null,
+                    "expected_apps": [],
+                    "include_apps": true,
+                    "include_dependencies": false,
+                    "include_resources_from": [],
+                    "lock_file": null,
+                    "man_pages": [],
+                    "man_pages_of_dependencies": [],
+                    "man_paths": [],
+                    "man_paths_of_dependencies": {},
+                    "package": "typos",
+                    "package_or_url": "typos",
+                    "package_version": "1.49.0",
+                    "pinned": false,
+                    "pip_args": [],
+                    "suffix": ""
+                },
+                "pipx_metadata_version": "0.12",
+                "python_version": "Python 3.14.6",
+                "source_interpreter": {
+                    "__Path__": "/opt/homebrew/bin/python3.14",
+                    "__type__": "Path"
+                },
+                "venv_args": []
+            }
+        }
+    }
+}

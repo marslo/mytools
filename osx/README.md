@@ -1,17 +1,36 @@
 
-## backup brew packages
+## brew
+
 ```bash
+# backup brew packages
 $ brew bundle dump --file=./brewfile --describe
-```
 
-## restore brew packages
-```bash
+# restore brew packages
 $ brew bundle --file=./brewfile
+
+# cleanup brew packages
+$ brew bundle cleanup --file=./brewfile
 ```
 
-## cleanup brew packages
+## pip and pipx
+
 ```bash
-$ brew bundle cleanup --file=./brewfile
+# ─── backup pip & pipx packages ───
+$ ./pipfile.sh
+# -> requirements.txt   (pip freeze)
+# -> pipx.json          (pipx list --json, full metadata incl. git URLs)
+# -> pipx.txt           (flat spec list: pkg name or git+URL)
+```
+
+```bash
+# ─── restore pip & pipx packages ───
+# pip (homebrew python is externally-managed, hence --break-system-packages)
+$ python3 -m pip install --break-system-packages -r requirements.txt
+
+# pipx (pipx >= 1.x)
+$ pipx install-all pipx.json
+# or, older pipx without install-all
+$ xargs -n1 pipx install < pipx.txt
 ```
 
 ## mas list
