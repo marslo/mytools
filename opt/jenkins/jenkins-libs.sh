@@ -3,7 +3,7 @@
 #      FileName : jenkins-libs.sh
 #        Author : marslo
 #       Created : 2025-02-16 17:52:35
-#    LastChange : 2026-08-14 01:13:44
+#    LastChange : 2026-08-14 01:22:06
 #   Description : download + extract the latest jenkins war, a fixed set of plugins, jenkins-core reference jars (.jar/-sources/-javadoc), and cloudbees/maven extension jars into /opt/jenkins, maintaining `latest` symlinks.
 #         Usage : jenkins-libs.sh [--lts] [--ln] [--dryrun] [-p PATH] [-P PLUGIN ...] [-e ARTIFACT ...]
 #                   --lts             download the latest LTS war (default: weekly)
@@ -54,7 +54,7 @@ declare -rA EXTENSION_GROUP=()
 # -------------------------------- options -----------------------------------
 declare WAR_CHANNEL='weekly'          # weekly | lts
 declare DO_LINK=false                 # --ln
-declare CLEANUP=false                 # --cleanup : remove managed links + downloaded content, then exit
+declare CLEAN=false                   # --clean : remove managed links + downloaded content, then exit
 declare DO_DOCS=false                 # --sources : also fetch reference doc jars for war + plugin lib jars
 declare -a DOC_TYPES=( '-sources' )   # doc jar types fetched under --sources; --javadoc appends '-javadoc'
 declare DRY_RUN=false                 # --dryrun
@@ -79,7 +79,7 @@ OPTIONS
   $(c 0G)--sources$(c)                  fetch $(c 0Wi)-sources.jar$(c) for war + plugin $(c 0Wi)WEB-INF/lib$(c) jars $(c 0Wi)(binary-only otherwise; resolved via each jar's pom.properties)$(c)
   $(c 0G)--javadoc$(c)                  also fetch $(c 0Wi)-javadoc.jar$(c) $(c 0Wi)(implies --sources)$(c)
   $(c 0G)--dryrun$(c)                   print planned actions only; download/extract/link nothing
-  $(c 0G)--cleanup$(c)                  remove managed $(c 0Mi)${GROOVY_LIB}$(c) links + downloaded content under $(c 0Wi)\${JENKINS_ROOT}$(c), then exit $(c 0Wi)(respects --dryrun; keeps the script)$(c)
+  $(c 0G)--clean$(c)                    remove managed $(c 0Mi)${GROOVY_LIB}$(c) links + downloaded content under $(c 0Wi)\${JENKINS_ROOT}$(c), then exit $(c 0Wi)(respects --dryrun; keeps the script)$(c)
   $(c 0G)-P$(c), $(c 0G)--plugin $(c 0Mi)PLUGIN$(c)        extra jenkins plugin $(c 0Wi)(repeatable; default list [$(c 0Mi)${PLUGINS[*]}$(c 0Wi)], deduped)$(c)
   $(c 0G)-e$(c), $(c 0G)--extensions $(c 0Mi)ARTIFACT$(c)  extra maven extension artifact $(c 0Wi)(repeatable; default list [$(c 0Mi)${EXTENSIONS[*]}$(c 0Wi)], deduped)$(c)
   $(c 0G)-p$(c), $(c 0G)--path $(c 0Mi)DESTINATION$(c)     install root for war + plugins + core + extensions $(c 0Wi)(default: ${_DEFAULT_ROOT})$(c)
@@ -169,7 +169,7 @@ function ok() {
 function logf() { if test -n "${LOG_FILE}"; then printf '>> %s\n' "${*}" >> "${LOG_FILE}" || true; fi; }
 # update-center metadata channel: stable for lts, current for weekly
 function ucMeta() { test 'lts' = "${WAR_CHANNEL}" && printf 'stable' || printf 'current'; }
-function cleanup() { if test -n "${UC_JSON}"; then command rm -f "${UC_JSON}"; fi; }
+function clean() { if test -n "${UC_JSON}"; then command rm -f "${UC_JSON}"; fi; }
 # run a command, or print it under --dryrun
 function act() { if "${DRY_RUN}"; then log "[DRYRUN] ${*}"; else command "${@}"; fi; }
 
@@ -448,9 +448,9 @@ function relinkLibs() {
   done
 }
 
-# --cleanup: remove ~/.groovy/lib links into ${JENKINS_ROOT} + downloaded trees (keeps the script)
-function cleanupEnv() {
-  log "cleanup: removing managed links + downloaded content under ${JENKINS_ROOT} ..."
+# --clean: remove ~/.groovy/lib links into ${JENKINS_ROOT} + downloaded trees (keeps the script)
+function cleanEnv() {
+  log "clean: removing managed links + downloaded content under ${JENKINS_ROOT} ..."
   local link count=0
   if test -d "${GROOVY_LIB}"; then
     shopt -s nullglob
@@ -528,7 +528,7 @@ function parseArgs() {
       --sources                       ) DO_DOCS=true      ;;
       --javadoc                       ) DO_DOCS=true; DOC_TYPES+=( '-javadoc' ) ;;
       --dryrun | --dry-run            ) DRY_RUN=true      ;;
-      --cleanup                       ) CLEANUP=true      ;;
+      --clean                         ) CLEAN=true        ;;
       -p | --path                     ) test -n "${2:-}" || die '--path requires a directory argument'; JENKINS_ROOT="${2}"; shift ;;
       -e | --extension | --extensions ) test -n "${2:-}" || die '--extensions requires an artifact argument'; EXTENSIONS+=( "${2}" ); shift ;;
       -P | --plugin | --plugins       ) test -n "${2:-}" || die '--plugin requires an artifact argument'; PLUGINS+=( "${2}" ); shift ;;
@@ -565,8 +565,8 @@ function main() {
   resolvePaths
   dedupArray PLUGINS
   dedupArray EXTENSIONS
-  trap cleanup EXIT
-  if "${CLEANUP}"; then cleanupEnv; exit 0; fi
+  trap clean EXIT
+  if "${CLEAN}"; then cleanEnv; exit 0; fi
   command mkdir -p "${LOG_ROOT}"
   if "${DRY_RUN}"; then
     LOG_FILE="${LOG_ROOT}/dryrun-$( command date +'%y%m%d%H%M%S' ).log"
