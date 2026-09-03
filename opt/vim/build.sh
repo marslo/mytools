@@ -3,7 +3,7 @@
 #      FileName : build.sh
 #        Author : marslo
 #       Created : 2025-10-27 18:48:29
-#    LastChange : 2026-09-02 18:15:26
+#    LastChange : 2026-09-02 19:14:10
 #   RequiredEnv : - gcc/make : sudo apt install build-essential
 #                 - dev packages: sudo apt install libperl-dev ruby-dev python3-dev liblua5.4-dev libncurses-dev libsodium-dev
 # =============================================================================
@@ -12,6 +12,7 @@ set -euo pipefail
 
 # shellcheck disable=SC2155
 declare -r HERE="$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )" && pwd )"
+declare -r VIM_REPO="${HERE}/vim.git"
 declare ME; ME="$( basename "${BASH_SOURCE[0]:-$0}" )"
 declare -r BRANCH='master'
 
@@ -48,9 +49,16 @@ TIP
 
 function clean() {
   local _branch="${1:-${BRANCH}}"
-  git clean -dffx
-  git fetch --all --progress --prune
-  git reset --hard origin/"${BRANCH}"
+
+  if test -d "${VIM_REPO}" && git -C "${VIM_REPO}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git -C "${VIM_REPO}" clean -dffx
+    git -C "${VIM_REPO}" fetch --all --progress --prune
+    git -C "${VIM_REPO}" reset --hard origin/"${BRANCH}"
+    printf "vim.git has been updated to the latest revision %s in %s\n" "$(git -C "${VIM_REPO}" rev-parse --short=9 HEAD)" "${VIM_REPO}"
+  else
+    git clone https://git::@github.com/vim/vim.git "${VIM_REPO}"
+    printf "vim.git has been cloned to %s\n" "${VIM_REPO}"
+  fi
 }
 
 function config() {
@@ -89,9 +97,8 @@ declare CLEAN=false
 declare INSTALL=false
 
 function main() {
-  test -d "${HERE}"/vim.git || https://git::@github.com/vim/vim.git "${HERE}"/vim.git
-  pushd . >/dev/null   || exit 1
-  cd "${HERE}"/vim.git || exit 1
+  pushd . >/dev/null || exit 1
+  cd "${VIM_REPO}"   || exit 1
 
   if ! "${CLEAN}" && ! "${INSTALL}" ; then
     CLEAN=true; INSTALL=true
