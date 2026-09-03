@@ -4,7 +4,7 @@
 #      FileName : update.sh
 #        Author : marslo
 #       Created : 2026-09-02 18:18:01
-#    LastChange : 2026-09-02 21:51:44
+#    LastChange : 2026-09-02 23:48:44
 #         Usage : to install/upgrade btop in Linux/ubuntu
 #                 $ mkdir -p /opt/btop
 #                 $ cp update.sh /opt/btop/ && cd /opt/btop/
@@ -34,13 +34,33 @@ function setup() {
 
   test -L "${HERE}/latest" && unlink "${HERE}/latest"
   ln -sf "${HERE}/${VERSION}" "${HERE}/latest"
-  printf "==> SUCCESS: %s %s has been installed to %s → %s\n" "${BIN_NAME}" "${VERSION}" "${HERE}/latest" "${HERE}/${VERSION}"
+  printf '==> SUCCESS: %s %s has been installed to %s → %s\n' "${BIN_NAME}" "${VERSION}" "${HERE}/latest" "${HERE}/${VERSION}"
+}
+
+# shellcheck disable=SC2015
+function theme() {
+  local _dir="${HERE}/btop-themes"
+  local _theme_path="${HOME}"/.config/btop/themes
+
+  if test -d "${_dir}" && git -C "${_dir}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git -C "${_dir}" fetch --depth 1 origin && git -C "${_dir}" reset --hard '@{u}' || { printf 'ERROR: Failed to clone btop theme repository.\n' >&2; exit 1; }
+    printf '%s themes has been updated to the latest version in %s\n' "${BIN_NAME}" "${_dir}"
+  else
+    git clone --depth 1 --filter=blob:none --sparse "https://git::@github.com/${REPO_PATH}.git" "${_dir}" || { printf 'ERROR: Failed to clone btop theme repository.\n' >&2; exit 1; }
+    git -C "${_dir}" sparse-checkout set themes
+    printf '%s themes has been cloned to %s\n' "${BIN_NAME}" "${_dir}"
+  fi
+
+  test -d "${_theme_path}" || mkdir -p "${_theme_path}"
+  command cp -f "${_dir}"/themes/*.theme "${_theme_path}" || { echo -e "ERROR: copy btop themes to '${_theme_path}' failed." >&2; exit 1; }
+  printf '==> SUCCESS: btop themes have been installed to %s\n' "${_theme_path}"
 }
 
 function main() {
-  printf "==> %s/%s\n" "${VERSION}" "${PACKAGE_NAME}"
+  printf '==> %s/%s\n' "${VERSION}" "${PACKAGE_NAME}"
   cleanup
   setup
+  theme
 }
 
 main "$@"
