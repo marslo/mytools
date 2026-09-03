@@ -3,7 +3,7 @@
 #      FileName : build.sh
 #        Author : marslo
 #       Created : 2025-10-27 18:48:29
-#    LastChange : 2026-09-02 19:14:10
+#    LastChange : 2026-09-02 21:52:40
 #   RequiredEnv : - gcc/make : sudo apt install build-essential
 #                 - dev packages: sudo apt install libperl-dev ruby-dev python3-dev liblua5.4-dev libncurses-dev libsodium-dev
 # =============================================================================
@@ -11,8 +11,9 @@
 set -euo pipefail
 
 # shellcheck disable=SC2155
-declare -r HERE="$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )" && pwd )"
-declare -r VIM_REPO="${HERE}/vim.git"
+declare -r HERE="$( cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd -P )"
+declare -r LOCAL_REPO="${HERE}/vim.git"
+declare -r BIN_NAME='vim'
 declare ME; ME="$( basename "${BASH_SOURCE[0]:-$0}" )"
 declare -r BRANCH='master'
 
@@ -50,14 +51,14 @@ TIP
 function clean() {
   local _branch="${1:-${BRANCH}}"
 
-  if test -d "${VIM_REPO}" && git -C "${VIM_REPO}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    git -C "${VIM_REPO}" clean -dffx
-    git -C "${VIM_REPO}" fetch --all --progress --prune
-    git -C "${VIM_REPO}" reset --hard origin/"${BRANCH}"
-    printf "vim.git has been updated to the latest revision %s in %s\n" "$(git -C "${VIM_REPO}" rev-parse --short=9 HEAD)" "${VIM_REPO}"
+  if test -d "${LOCAL_REPO}" && git -C "${LOCAL_REPO}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git -C "${LOCAL_REPO}" clean -dffx
+    git -C "${LOCAL_REPO}" fetch --all --progress --prune
+    git -C "${LOCAL_REPO}" reset --hard origin/"${BRANCH}"
+    printf "==> %s repo has been updated to the latest revision %s in %s\n" ${BIN_NAME} "$(git -C "${LOCAL_REPO}" rev-parse --short=9 HEAD)" "${LOCAL_REPO}"
   else
-    git clone https://git::@github.com/vim/vim.git "${VIM_REPO}"
-    printf "vim.git has been cloned to %s\n" "${VIM_REPO}"
+    git clone https://git::@github.com/vim/vim.git "${LOCAL_REPO}"
+    printf "==> %s repo has been cloned to %s\n" "${BIN_NAME}" "${LOCAL_REPO}"
   fi
 }
 
@@ -98,18 +99,19 @@ declare INSTALL=false
 
 function main() {
   pushd . >/dev/null || exit 1
-  cd "${VIM_REPO}"   || exit 1
 
   if ! "${CLEAN}" && ! "${INSTALL}" ; then
     CLEAN=true; INSTALL=true
   fi
 
   "${CLEAN}" && { clean "${BRANCH}" || exit $?; }
+  cd "${LOCAL_REPO}" || exit 1
+
   if "${INSTALL}" ; then
     config || { local _ce=$?; echo -e "ERROR: configure failed, please check the output above for details." >&2; exit "${_ce}"; }
     build  || { local _be=$?; echo -e "ERROR: build failed, please check the output above for details." >&2; exit "${_be}"; }
-    echo -e ">> SUCCEED: Vim has been installed to ${PREFIX}/vim/bin/vim"
-    echo -e "            setup your PATH via \`export PATH=${PREFIX}/vim/bin:\$PATH\`"
+    printf "==> SUCCEED: Vim has been installed to %s. setup your PATH via:\n" "${PREFIX}/vim/bin/${BIN_NAME}"
+    printf "            \`export PATH=%s:\$PATH\`" "${PREFIX}/vim/bin"
   fi
 
   popd >/dev/null || exit 1
