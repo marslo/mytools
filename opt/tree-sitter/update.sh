@@ -4,13 +4,17 @@
 #      FileName : update.sh
 #        Author : marslo
 #       Created : 2026-09-02 22:21:09
-#    LastChange : 2026-09-02 22:33:49
+#    LastChange : 2026-09-03 01:54:53
 #   Description : standalone install of the latest tree-sitter CLI (prebuilt binary), also can be installed by :
 #                 - cargo: cargo install tree-sitter-cli
 #                 - npm: npm install -g tree-sitter-cli
 # =============================================================================
 
 set -euo pipefail
+
+# @credit: https://github.com/ppo/bash-colors
+# shellcheck disable=SC2015,SC2059
+c() { [ $# == 0 ] && printf "\033[0m" || printf "$1" | sed 's/\(.\)/\1;/g;s/\([SDIUFNHT]\)/2\1/g;s/\([KRGYBMCW]\)/3\1/g;s/\([krgybmcw]\)/4\1/g;y/SDIUFNHTsdiufnhtKRGYBMCWkrgybmcw/12345789123457890123456701234567/;s/^\(.*\);$/\\033[\1m/g'; }
 
 declare -r HERE="$( cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd -P )"
 declare -r REPO_PATH='tree-sitter/tree-sitter'
@@ -45,17 +49,18 @@ function setup() {
   test -d "${HERE}/${VERSION}" || mkdir -p "${HERE}/${VERSION}"
   gunzip -c "${HERE}/${PACKAGE_NAME}" > "${HERE}/${VERSION}/${BIN_NAME}" || { echo -e "ERROR: Failed to extract ${PACKAGE_NAME}." >&2; exit 1; }
   chmod +x "${HERE}/${VERSION}/${BIN_NAME}" || { echo -e "ERROR: Failed to make ${BIN_NAME} executable." >&2; exit 1; }
-  printf '==> installed: %s\n' "${HERE}/${VERSION}/${BIN_NAME}"
+  printf "==> installed: $(c Mi)%s$(c)\n" "${HERE}/${VERSION}/${BIN_NAME}"
 
   test -L "${HERE}/latest" && unlink "${HERE}/latest"
   ln -sf "${HERE}/${VERSION}" "${HERE}/latest"
-  printf "==> SUCCESS: %s %s has been download and extract to %s → %s\n" "${BIN_NAME}" "${VERSION}" "${HERE}/latest" "${HERE}/${VERSION}"
+  printf "==> SUCCESS: $(c 0Yi)%s $(c 0Ci)%s$(c) has been installed to $(c 0B)%s → %s$(c)\n" "${BIN_NAME}" "${VERSION}" "${HERE}/latest" "${HERE}/${VERSION}"
 
   install -m 0755 "${HERE}/latest/${BIN_NAME}" "${LOCAL_BIN_DIR}/${BIN_NAME}"
-  printf "==> installed: %s\n" "${LOCAL_BIN_DIR}/${BIN_NAME}"
+  printf "==> installed: $(c Mi)%s$(c)\n" "${LOCAL_BIN_DIR}/${BIN_NAME}"
 }
 
 function verify() {
+  printf '==> VERIFY:  '
   "${LOCAL_BIN_DIR}/${BIN_NAME}" --version || { echo -e "ERROR: Failed to verify ${BIN_NAME} installation." >&2; exit 1; }
 }
 
