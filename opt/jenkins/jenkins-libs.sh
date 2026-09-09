@@ -3,7 +3,7 @@
 #      FileName : jenkins-libs.sh
 #        Author : marslo
 #       Created : 2025-02-16 17:52:35
-#    LastChange : 2026-08-14 01:22:06
+#    LastChange : 2026-09-08 21:36:00
 #   Description : download + extract the latest jenkins war, a fixed set of plugins, jenkins-core reference jars (.jar/-sources/-javadoc), and cloudbees/maven extension jars into /opt/jenkins, maintaining `latest` symlinks.
 #         Usage : jenkins-libs.sh [--lts] [--ln] [--dryrun] [-p PATH] [-P PLUGIN ...] [-e ARTIFACT ...]
 #                   --lts             download the latest LTS war (default: weekly)
@@ -42,7 +42,7 @@ declare -r  EXT_GROUP='com/cloudbees'                           # default maven 
 declare     EXT_ROOT="${JENKINS_ROOT}/extensions"               # set in resolvePaths
 
 # default plugins (merged with -P, deduped)
-declare -a  PLUGINS=( badge credentials git pipeline-job workflow-support )
+declare -a  PLUGINS=( badge credentials git pipeline-job workflow-support workflow-step-api )
 # local-dir name → jenkins artifact id
 declare -rA PLUGIN_ARTIFACT=( [pipeline-job]='workflow-job' )
 
@@ -134,6 +134,8 @@ function show() {
 # highlight tokens: versions/names green, paths/urls blue
 function hl() {
   local s="${*}" indent rest
+  # already carries manual color codes ($(c ...) → \033[, or a raw ESC) — leave it untouched
+  case "${s}" in *'\033['* | *$'\033'* ) printf '%s' "${s}"; return 0 ;; esac
   indent="${s%%[![:space:]]*}"                                    # leading whitespace (preserve indent)
   rest="${s#"${indent}"}"
   local -a toks=()
