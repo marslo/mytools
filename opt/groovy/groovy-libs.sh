@@ -4,9 +4,9 @@
 #      FileName : groovy-libs.sh
 #        Author : marslo
 #       Created : 2026-05-29 23:20:19
-#    LastChange : 2026-09-30 19:31:23
+#    LastChange : 2026-09-30 21:07:16
 #         Usage : curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --jar --with-libs --with-bin
-#                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --runtime --latest
+#                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --runtime
 #                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --help
 # =============================================================================
 # download matrix:
@@ -41,6 +41,8 @@ declare WITH_LIBS=false
 declare WITH_BIN=false
 # --runtime: download the full binary distribution and link <dest>/current at it
 declare RUNTIME=false
+# --runtime [VERSION]: pinned runtime version; empty/@default → latest stable
+declare RUNTIME_VERSION=''
 # --pre: newest incl. alpha/beta/rc
 declare PRE=false
 # --latest: maven latest stable
@@ -82,22 +84,28 @@ declare -ra GROOVY_MODULES=(
 declare ME; ME="$( basename "${BASH_SOURCE[0]:-$0}" )"
 { test 'bash' = "${ME}" || test -z "${ME}" ; } && ME='groovy-libs.sh'
 readonly ME
-# shellcheck disable=SC2155
-declare -r USAGE="NAME
+# print help; resolves the system groovy version lazily so it shows in the defaults
+function usage() {
+  local sysHome sysVer
+  sysHome="${_GROOVY_SYS_HOME}"
+  test -n "${sysHome}" || sysHome="$( detectGroovyHome || true )"
+  sysVer="$( _GROOVY_SYS_HOME="${sysHome}" systemGroovyVersion 2>/dev/null )"
+  sysVer="${sysVer:-unknown}"
+  echo -e "NAME
   $(c 0Ys)${ME}$(c) - Download Groovy core, standard library modules, and jenkins/cloudbees extensions with their sources and javadocs
 
 USAGE
   $(c 0Ys)\$ ${ME}$(c) [OPTIONS]
 
 OPTIONS
-  $(c 0G)--latest$(c)                    for $(c 0Mi)--jar$(c): use the latest stable groovy from maven central $(c 0Wi)(default: system groovy version; $(c 0Mi)--runtime$(c 0Wi) already installs latest)$(c)
-  $(c 0G)--pre$(c)                       for $(c 0Mi)--jar$(c)/$(c 0Mi)--runtime$(c): use the newest groovy including alpha/beta/rc $(c 0Wi)(default: stable only)$(c)
+  $(c 0G)--latest$(c)                    for $(c 0Gi)--jar$(c): use the latest stable groovy from maven central $(c 0Wi)(default: system groovy version $(c 0Mi)${sysVer}$(c 0Wi))$(c)
+  $(c 0G)--pre$(c)                       for $(c 0Gi)--jar$(c)/$(c 0Gi)--runtime$(c): use the newest groovy including alpha/beta/rc
   $(c 0G)-p, $(c 0G)--path $(c 0Mi)DESTINATION$(c)      specify the destination directory $(c 0Wi)(default: ${_DEFAULT_DESTINATION})$(c)
 
-  $(c 0G)--runtime$(c)                   download the full binary distribution ($(c 0Mi)apache-groovy-binary-<ver>.zip$(c)) and link $(c 0Wi)<dest>/current$(c) -> it $(c 0Wi)(latest stable)$(c)
-  $(c 0G)--jar $(c Mi)VERSION$(c)               download the Groovy core jar(s). Optionally specify the version $(c 0Wi)(default: system groovy; fallback $(c 0Mi)${_GROOVY_FALLBACK}$(c 0Wi); alias: $(c 0Mi)--groovy$(c 0Wi))$(c)
-  $(c 0G)-l$(c), $(c 0G)--with-libs$(c)             fetch -sources/-javadoc for every jar in the system groovy lib $(c 0Wi)(requires $(c 0Mi)--jar$(c 0Wi); auto-detects brew/sdkman/apt/\$GROOVY_HOME)$(c)
-      $(c 0G)--with-bin$(c)              also fetch the compiled groovy '.jar' $(c 0Wi)(requires $(c 0Mi)--jar$(c 0Wi))$(c)
+  $(c 0G)--runtime $(c Mi)VERSION$(c)           download the full binary distribution ($(c 0Mi)apache-groovy-binary-<ver>.zip$(c)) and link $(c 0Wi)<dest>/current$(c) -> it $(c 0Wi)(default: latest stable; support $(c 0Mi)--pre$(c 0Wi))$(c)
+  $(c 0G)--jar $(c Mi)VERSION$(c)               download the Groovy core jar(s). Optionally specify the version $(c 0Wi)(default: system groovy $(c 0Mi)[${sysVer}]$(c 0Wi); fallback $(c 0Mi)${_GROOVY_FALLBACK}$(c 0Wi))$(c)
+  $(c 0G)-l$(c), $(c 0G)--with-libs$(c)             fetch $(c 0Ci)<name>-sources.jar$(c)/$(c 0Ci)<name>-javadoc.jar$(c) for every jar in the system groovy lib $(c 0Wi)(requires $(c 0Gi)--jar$(c 0Wi); auto-detects brew/sdkman/apt/\$GROOVY_HOME)$(c)
+  $(c 0G)--with-bin$(c)                  fetch the compiled groovy $(c 0Ci)<name>.jar$(c) $(c 0Wi)(requires $(c 0Gi)--jar$(c 0Wi))$(c)
 
   $(c 0G)-e$(c), $(c 0G)--extensions $(c 0Mi)ARTIFACT$(c)   download a Jenkins/cloudbees extension jar with bin+sources+javadoc $(c 0Wi)(repeatable; default list [$(c 0Mi)${EXTENSIONS[*]}$(c 0Wi)], deduped)$(c)
       $(c 0G)--extension-lts$(c)         for jenkins-style extensions (jenkins-core), pick the latest LTS $(c 0Mi)X.Y.Z$(c 0Wi) instead of the latest weekly $(c 0Mi)X.Y$(c)
@@ -107,7 +115,9 @@ OPTIONS
 
 EXAMPLE
   $(c 0Wdi)# download groovy 6.0.1 jar files and groovy libs, and groovy-cps extension$(c)
-  $(c 0Y)\$ ${ME} $(c 0Gi)--jar $(c 0Mi)6.0.1 $(c 0Gi)--with-libs$(c) $(c 0Gi)--extensions$(c) $(c 0Mi)groovy-cps$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--jar $(c 0Mi)6.0.1 $(c 0Gi)--with-libs --with-bin$(c) $(c 0Gi)--extensions$(c) $(c 0Mi)groovy-cps$(c)
+  $(c 0Wdi)                                   |          + <name>.jar ( brew install contains this jar )$(c)
+  $(c 0Wdi)                                   + <name>-sources.jar & <name>-javadoc.jar$(c)
 
   $(c 0Wdi)# download groovy (latest stable) jars to path '/tmp/libs'$(c)
   $(c 0Y)\$ ${ME} $(c 0Gi)--jar --latest --path $(c 0Mi)/tmp/libs$(c)
@@ -115,9 +125,11 @@ EXAMPLE
   $(c 0Wdi)# download alpha/beta/rc groovy + groovy libs including the compiled jars$(c)
   $(c 0Y)\$ ${ME} $(c 0Gi)--jar --with-libs --with-bin --pre$(c)
 
-  $(c 0Wdi)# install the full groovy binary distribution (latest stable) and link <dest>/current -> it$(c)
-  $(c 0Y)\$ ${ME} $(c 0Gi)--runtime --latest$(c)
+  $(c 0Wdi)# install the full groovy binary distribution and link <dest>/current -> it (latest stable; pass VERSION to pin)$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--runtime$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--runtime $(c 0Mi)6.0.1$(c)
 "
+}
 
 function show() {
   local layer='38' color='151'
@@ -298,7 +310,8 @@ function installRuntime() {
 function verGE() {
   local v1="${1}" v2="${2}" IFS='.'
   v1="${v1%%[!0-9.]*}"; v2="${v2%%[!0-9.]*}"               # keep leading numeric-dotted core only
-  local -a a=( "${v1}" ) b=( "${v2}" )
+  # shellcheck disable=SC2206  # intentional word-split on IFS='.' into version fields
+  local -a a=( ${v1} ) b=( ${v2} )
   local i x y
   for i in 0 1 2; do
     x="${a[i]:-0}"; x="${x%%[!0-9]*}"; x="${x:-0}"
@@ -414,11 +427,11 @@ function _parser() {
   local argc="$3"
   local next="${4-}"
 
-  # --groovy without version: defer to main() via the '@default' sentinel
+  # --jar without version: defer to main() via the '@default' sentinel
   if [[ ${argc} -le 1 || "${next}" == -* ]]; then
     _ver='@default'
     return 1
-  # --groovy 5.0.6
+  # --jar 5.0.6
   elif [[ "${next}" =~ ^[0-9]+(\.[0-9]+)+([._-][a-zA-Z0-9]+)*$ ]]; then
     _ver="${next}"
     return 2
@@ -491,7 +504,7 @@ function main() {
   # detect the system groovy home (cross-platform) unless GROOVY_HOME already set it
   test -n "${_GROOVY_SYS_HOME}" || _GROOVY_SYS_HOME="$( detectGroovyHome || true )"
   # --runtime resolves its own version (latest stable, or --pre), never the system
-  "${RUNTIME}"                  && installRuntime "${GROOVY_VERSION:-}"
+  "${RUNTIME}"                  && installRuntime "${RUNTIME_VERSION:-}"
   # resolve the deferred --jar default now that every flag (--latest/--pre) is parsed
   test '@default' = "${GROOVY_VERSION:-}" && GROOVY_VERSION="$( defaultVersion groovy )"
   test -n "${GROOVY_VERSION:-}" && groovy "${GROOVY_VERSION}"
@@ -506,8 +519,7 @@ function main() {
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --jar             ) _parser jar GROOVY_VERSION $# "${2-}"    ; shift $? ;;
-    --groovy          ) _parser groovy GROOVY_VERSION $# "${2-}" ; shift $? ;;
-    --runtime         ) RUNTIME=true        ; shift   ;;
+    --runtime         ) RUNTIME=true; _parser runtime RUNTIME_VERSION $# "${2-}" ; shift $? ;;
     -l | --with-libs  ) WITH_LIBS=true      ; shift   ;;
     --with-bin        ) WITH_BIN=true       ; shift   ;;
     --pre             ) PRE=true            ; shift   ;;
@@ -516,7 +528,7 @@ while [[ $# -gt 0 ]]; do
     --extension-lts   ) EXT_LTS=true        ; shift   ;;
     -e | --extensions ) EXTENSIONS+=("$2")  ; shift 2 ;;
     -p | --path       ) DESTINATION="$2"    ; shift 2 ;;
-    -h | --help       ) echo -e "${USAGE}" >&2; exit 0 ;;
+    -h | --help       ) usage >&2; exit 0 ;;
     *                 ) echo "ERROR: unknown option '$1'"; exit 1;;
   esac
 done
