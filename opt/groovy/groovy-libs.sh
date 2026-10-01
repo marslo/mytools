@@ -4,7 +4,7 @@
 #      FileName : groovy-libs.sh
 #        Author : marslo
 #       Created : 2026-05-29 23:20:19
-#    LastChange : 2026-09-02 02:47:43
+#    LastChange : 2026-09-30 19:31:23
 #         Usage : curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --jar --with-libs --with-bin
 #                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --runtime --latest
 #                 curl -fsSL  https://github.com/marslo/mytools/raw/main/itool/groovy-libs.sh | bash -s -- --help
@@ -67,6 +67,8 @@ declare -rA LIB_GROUP=(
   [mxparser]='io.github.x-stream'      [qdox]='com.thoughtworks.qdox'
   [slf4j-api]='org.slf4j'              [snakeyaml]='org.yaml'
   [xstream]='com.thoughtworks.xstream' [commons-cli]='commons-cli'
+  [jsvg]='com.github.weisj'            [reactive-streams]='org.reactivestreams'
+  [error_prone_annotations]='com.google.errorprone'
   [org.abego.treelayout.core]='org.abego.treelayout'
 )
 # groovy modules for the no-system fallback (from org.apache.groovy)
@@ -105,7 +107,7 @@ OPTIONS
 
 EXAMPLE
   $(c 0Wdi)# download groovy 6.0.1 jar files and groovy libs, and groovy-cps extension$(c)
-  $(c 0Y)\$ ${ME} $(c 0Gi)--jar $(c 0Mi)6.0.1 $(c 0Gi)--with-libs --with-bin$(c) $(c 0Gi)--extensions$(c) $(c 0Mi)groovy-cps$(c)
+  $(c 0Y)\$ ${ME} $(c 0Gi)--jar $(c 0Mi)6.0.1 $(c 0Gi)--with-libs$(c) $(c 0Gi)--extensions$(c) $(c 0Mi)groovy-cps$(c)
 
   $(c 0Wdi)# download groovy (latest stable) jars to path '/tmp/libs'$(c)
   $(c 0Y)\$ ${ME} $(c 0Gi)--jar --latest --path $(c 0Mi)/tmp/libs$(c)
@@ -136,13 +138,15 @@ function show() {
 }
 function info() { echo -e "$(show --info --bg 'INFO') $(c 0i)$*$(c)"; }
 
-# download one jar into <outdir>; on 404/failure print "skip: <name> (not found - <code>)"
+# download one jar into <outdir>; retries transient failures (not 404)
+# on failure print "skip: <name> (<reason> - <code>)"; 000 = no HTTP response (network/proxy), 404 = absent
 function fetchJar() {
   local url="${1}" outdir="${2}" name code
   name="${url##*/}"
-  if code="$( command curl -sfL -o "${outdir}/${name}" -w '%{http_code}' "${url}" 2>/dev/null )"; then return 0; fi
+  if code="$( command curl -sfL --retry 3 --retry-delay 2 -o "${outdir}/${name}" -w '%{http_code}' "${url}" 2>/dev/null )"; then return 0; fi
   command rm -f "${outdir}/${name}"
-  info "  $(c 0Y)skip$(c 0i): ${name%.jar} $(c 0Wdi)(not found - ${code:-000})$(c)"
+  local reason='not found'; test '000' = "${code:-000}" && reason='no response'
+  info "  $(c 0Y)skip$(c 0i): ${name%.jar} $(c 0Wdi)(${reason} - ${code:-000})$(c)"
   return 1
 }
 
@@ -238,12 +242,9 @@ function groovy() {
   linkLatest "${GROOVY_DIR}" "${version}"
 }
 
-# --runtime: download the full binary distribution (apache-groovy-binary-<ver>.zip),
-# extract under <GROOVY_DIR>, and point <GROOVY_DIR>/current at groovy-<ver>
+# --runtime: download the full binary distribution (apache-groovy-binary-<ver>.zip), extract under <GROOVY_DIR>, point <GROOVY_DIR>/current at groovy-<ver>
 function installRuntime() {
-  # --runtime installs precisely because there is no system groovy, so never
-  # resolve against the system: default to the latest stable (or the newest
-  # incl. alpha/beta/rc with --pre). an explicit --jar VERSION pin still wins.
+  # version: latest stable (newest incl. alpha/beta/rc with --pre); an explicit --jar VERSION still wins
   local version="${1-}"
   { test -z "${version}" || test '@default' = "${version}"; } && version="$( latestGroovy )"
   version="${version:-${_GROOVY_FALLBACK}}"
@@ -292,6 +293,28 @@ function installRuntime() {
   info "linked $(c 0G)${GROOVY_DIR}/current $(c 0i)-> $(c 0G)${name}$(c)"
 }
 
+# true if dotted version ${1} >= ${2}, comparing numeric major.minor.patch only
+# any pre-release tail (-rc-1, .beta, _alpha, -SNAPSHOT, …) is dropped first, so 6.0.1.beta / 6.0.0-rc-1 → 6.0.1 / 6.0.0
+function verGE() {
+  local v1="${1}" v2="${2}" IFS='.'
+  v1="${v1%%[!0-9.]*}"; v2="${v2%%[!0-9.]*}"               # keep leading numeric-dotted core only
+  local -a a=( "${v1}" ) b=( "${v2}" )
+  local i x y
+  for i in 0 1 2; do
+    x="${a[i]:-0}"; x="${x%%[!0-9]*}"; x="${x:-0}"
+    y="${b[i]:-0}"; y="${y%%[!0-9]*}"; y="${y:-0}"
+    (( 10#${x} > 10#${y} )) && return 0
+    (( 10#${x} < 10#${y} )) && return 1
+  done
+  return 0
+}
+
+# maven groupId embedded in a jar (META-INF/maven/<g>/<a>/pom.properties); empty if absent
+function groupFromJar() {
+  command unzip -p "${1}" 'META-INF/maven/*/*/pom.properties' 2>/dev/null \
+    | command sed -nE 's/^groupId=(.*)/\1/p' | head -1
+}
+
 # maven group for an artifact: prefix families, then LIB_GROUP (empty if unknown)
 function resolveGroup() {
   case "${1}" in
@@ -302,6 +325,9 @@ function resolveGroup() {
     jackson-*            ) printf 'com.fasterxml.jackson.core'       ;;
     junit-jupiter-*      ) printf 'org.junit.jupiter'                ;;
     junit-platform-*     ) printf 'org.junit.platform'               ;;
+    flatlaf | flatlaf-*  ) printf 'com.formdev'                      ;;
+    reactor-core         ) printf 'io.projectreactor'                ;;
+    rxjava               ) printf 'io.reactivex.rxjava3'             ;;
     *                    ) printf '%s' "${LIB_GROUP[${1}]:-}"        ;;
   esac
 }
@@ -326,8 +352,12 @@ function groovylibs() {
       aid="${base%%-[0-9]*}"                                            # artifactId = up to the first -<digit>
       ver="${base#"${aid}-"}"                                           # version    = the remainder
       { test -n "${aid}" && test "${ver}" != "${base}"; } || continue   # no version (icns, etc.)
-      group="$( resolveGroup "${aid}" )"
-      test -n "${group}" || { info "  $(c 0Y)skip$(c 0i) unknown group: $(c 0G)${aid}-${ver}$(c)"; missing=$(( missing + 1 )); continue; }
+      group=''
+      # 6.0.0+ bundles jars whose groupId isn't in the static map; read it from the jar.
+      # below 6.0.0 keep the original prefix/LIB_GROUP-only path.
+      verGE "${version}" '6.0.0' && group="$( groupFromJar "${jar}" )"  # jar-embedded maven groupId
+      test -n "${group}" || group="$( resolveGroup "${aid}" )"          # fall back to prefix families + LIB_GROUP
+      test -n "${group}" || { info "  $(c 0Y)skip$(c 0i): ${aid}-${ver} $(c 0Wdi)(unknown group)$(c)"; missing=$(( missing + 1 )); continue; }
       for type in "${types[@]}"; do
         test -f "${target}/${aid}-${ver}${type}.jar" && continue        # skip if present
         fetchJar "${MAVEN_BASE}/${group//.//}/${aid}/${ver}/${aid}-${ver}${type}.jar" "${target}"
