@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>build</key>
-	<string>2282</string>
+	<string>2356</string>
 	<key>preferences</key>
 	<dict>
 		<key>CPU.Menu.Graph.GPU.Color</key>
@@ -134,9 +134,9 @@
 		<key>License.Validation.license</key>
 		<string>zapp-lost-nubs-iffy-1232-7</string>
 		<key>License.Validation.signature</key>
-		<string>MIGIAkIBBDffluNcUhGu5ZDAFd2AC0hH4SNpvxMhFPUSqE8Rp2LQFi1DGMu46iW/QhWDilwOSaAcjyhdo/OFdSKX/hyqjvQCQgGb7I+OrTjGj3CVa3TDLUXl3tCe3BiRBAAZfcsBM6AI/PrgNPfeEvGYoiDxmSTYcM29YaR9eoOSGy6eGTfjpK96YA==</string>
+		<string>MIGHAkIBqHolpBtupWk3azbmztq7enflMwUOgQmxvpmikttssBBpE+k8Kl37I+BQsDzy8xU1W2Ib7SQ5aa8+Xp/CQfE0QcsCQUiWjK80kiYTR7e31Eha6qoP/OCCWJv1evQh1UfhjaO3ivlU5b4FZJ0seHjENQCgd8a575hsSUVRB4Hg2d4ipIHw</string>
 		<key>License.Validation.time</key>
-		<string>1787032123</string>
+		<string>1791235269</string>
 		<key>Memory.Menu.Processes.Count</key>
 		<integer>10</integer>
 		<key>Memory.Menu.Processes.Format</key>
@@ -302,6 +302,22 @@
 		</array>
 		<key>Profiles.Available.identifier</key>
 		<string>default</string>
+		<key>Profiles.Settings.default.Astronomy.Menubar.Enabled</key>
+		<integer>1</integer>
+		<key>Profiles.Settings.default.Astronomy.Menubar.Items</key>
+		<array>
+			<dict>
+				<key>options</key>
+				<dict>
+					<key>moon</key>
+					<true/>
+				</dict>
+				<key>source</key>
+				<integer>22</integer>
+				<key>type</key>
+				<integer>8</integer>
+			</dict>
+		</array>
 		<key>Profiles.Settings.default.Battery.Menubar.DetailedState</key>
 		<integer>1</integer>
 		<key>Profiles.Settings.default.Battery.Menubar.Enabled</key>
@@ -404,15 +420,6 @@
 					<integer>1</integer>
 				</dict>
 			</dict>
-			<dict>
-				<key>source</key>
-				<integer>15</integer>
-				<key>useroptions</key>
-				<dict>
-					<key>width</key>
-					<integer>4</integer>
-				</dict>
-			</dict>
 		</array>
 		<key>Profiles.Settings.default.Combined.Menubar.Enabled</key>
 		<integer>0</integer>
@@ -436,15 +443,6 @@
 				<key>type</key>
 				<integer>10</integer>
 			</dict>
-			<dict>
-				<key>source</key>
-				<integer>15</integer>
-				<key>useroptions</key>
-				<dict>
-					<key>width</key>
-					<integer>4</integer>
-				</dict>
-			</dict>
 		</array>
 		<key>Profiles.Settings.default.Memory.Menubar.Items</key>
 		<array>
@@ -456,15 +454,6 @@
 				<key>type</key>
 				<integer>7</integer>
 			</dict>
-			<dict>
-				<key>source</key>
-				<integer>15</integer>
-				<key>useroptions</key>
-				<dict>
-					<key>width</key>
-					<integer>4</integer>
-				</dict>
-			</dict>
 		</array>
 		<key>Profiles.Settings.default.Network.Menubar.Items</key>
 		<array>
@@ -473,15 +462,6 @@
 				<integer>6</integer>
 				<key>type</key>
 				<integer>5</integer>
-			</dict>
-			<dict>
-				<key>source</key>
-				<integer>15</integer>
-				<key>useroptions</key>
-				<dict>
-					<key>width</key>
-					<integer>4</integer>
-				</dict>
 			</dict>
 		</array>
 		<key>Profiles.Settings.default.Sensors.Menubar.Enabled</key>
@@ -647,12 +627,6 @@
 							<key>type</key>
 							<string>token</string>
 						</dict>
-						<dict>
-							<key>type</key>
-							<string>string</string>
-							<key>value</key>
-							<string>   </string>
-						</dict>
 					</array>
 				</dict>
 				<key>lines</key>
@@ -795,9 +769,9 @@
 		<key>Status.BackgroundInstall</key>
 		<true/>
 		<key>Status.Build.Last</key>
-		<real>2282</real>
+		<real>2356</real>
 		<key>Status.Version.Last</key>
-		<real>7.3000001907348633</real>
+		<real>7.5</real>
 		<key>Time.Global.FirstWeekday</key>
 		<integer>1</integer>
 		<key>Time.Global.WeekNumberType</key>
