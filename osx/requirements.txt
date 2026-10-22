@@ -50,6 +50,6 @@ typing-inspection==0.4.4
 typing_extensions==4.16.0
 urllib3==2.7.0
 userpath==1.9.2
-virtualenv==21.7.1
+virtualenv==21.7.13
 wcwidth==0.8.2
 wheel==0.47.0
