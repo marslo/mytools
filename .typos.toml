@@ -15,13 +15,20 @@ unicode=true
 locale = "en"
 extend-ignore-re = []
 
+# case sensitive
+[default.extend-identifiers]
+fRcLaf = 'fRcLaf'
+ZFiwCf = 'ZFiwCf'
+izN7If = 'izN7If'
+
+# case insensitive
 [default.extend-words]
 # <typo> = "<correction>"
 debuger = 'debuger'
 infomation = 'infomation'
 kno = 'kno'
 transparant = 'transparant'
-Apperance = 'Apperance'
+apperance = 'apperance'
 Ue = 'Ue'
 Ba = 'Ba'
 Gae = 'Gae'
@@ -32,4 +39,4 @@ pannel = 'pannel'
 lookin = 'lookin'
 # groovy-libs.sh
 testng = 'testng'
-Bui = 'Bui'
+bui = 'bui'
