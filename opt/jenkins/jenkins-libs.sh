@@ -3,7 +3,7 @@
 #      FileName : jenkins-libs.sh
 #        Author : marslo
 #       Created : 2025-02-16 17:52:35
-#    LastChange : 2026-09-08 21:36:00
+#    LastChange : 2026-10-23 19:16:50
 #   Description : download + extract the latest jenkins war, a fixed set of plugins, jenkins-core reference jars (.jar/-sources/-javadoc), and cloudbees/maven extension jars into /opt/jenkins, maintaining `latest` symlinks.
 #         Usage : jenkins-libs.sh [--lts] [--ln] [--dryrun] [-p PATH] [-P PLUGIN ...] [-e ARTIFACT ...]
 #                   --lts             download the latest LTS war (default: weekly)
@@ -30,23 +30,25 @@ c() { [ $# == 0 ] && printf "\033[0m" || printf "$1" | sed 's/\(.\)/\1;/g;s/\([S
 
 # -------------------------------- constants ---------------------------------
 declare -r  _DEFAULT_ROOT='/opt/jenkins'
-declare     JENKINS_ROOT="${_DEFAULT_ROOT}"                     # install root; overridable via -p/--path
-declare     PLUGIN_ROOT="${JENKINS_ROOT}/plugins"               # set in resolvePaths
+declare     JENKINS_ROOT="${_DEFAULT_ROOT}"                                                  # install root; overridable via -p/--path
+declare     PLUGIN_ROOT="${JENKINS_ROOT}/plugins"                                            # set in resolvePaths
 declare -r  GROOVY_LIB="${HOME}/.groovy/lib"
-declare     LOG_ROOT="${JENKINS_ROOT}/logs"                     # set in resolvePaths
+declare     LOG_ROOT="${JENKINS_ROOT}/logs"                                                  # set in resolvePaths
 declare -r  UC_BASE='https://updates.jenkins.io'
 declare -r  CORE_BASE='https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-core'  # maven repo for jenkins-core reference jars
-declare -r  MAVEN_BASE='https://repo1.maven.org/maven2'         # maven central for extension reference jars
-declare -r  JENKINS_MVN='https://repo.jenkins-ci.org/public'    # jenkins-ci maven repo for bundled-jar docs
-declare -r  EXT_GROUP='com/cloudbees'                           # default maven group for extensions
-declare     EXT_ROOT="${JENKINS_ROOT}/extensions"               # set in resolvePaths
+declare -r  MAVEN_BASE='https://repo1.maven.org/maven2'                                      # maven central for extension reference jars
+declare -r  JENKINS_MVN='https://repo.jenkins-ci.org/public'                                 # jenkins-ci maven repo for bundled-jar docs
+declare -r  EXT_GROUP='com/cloudbees'                                                        # default maven group for extensions
+declare     EXT_ROOT="${JENKINS_ROOT}/extensions"                                            # set in resolvePaths
 
-# default plugins (merged with -P, deduped)
-declare -a  PLUGINS=( badge credentials git pipeline-job workflow-support workflow-step-api )
+# default plugins ( merged with -P, deduped )
+# - kubernetes            : org.csanchez.jenkins.plugins.kubernetes.KubernetesComputer / org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+# - kubernetes-client-api : io.fabric8.kubernetes.api.model.Container / io.fabric8.kubernetes.api.model.EnvVar /  io.fabric8.kubernetes.api.model.VolumeMount
+declare -a  PLUGINS=( badge credentials git kubernetes kubernetes-client-api pipeline-job workflow-support workflow-step-api )
 # local-dir name → jenkins artifact id
 declare -rA PLUGIN_ARTIFACT=( [pipeline-job]='workflow-job' )
 
-# default extensions (merged with -e, deduped)
+# default extensions ( merged with -e, deduped )
 declare -a  EXTENSIONS=( groovy-cps )
 # per-artifact maven group overrides
 declare -rA EXTENSION_GROUP=()
