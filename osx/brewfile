@@ -167,7 +167,7 @@ brew "jsonlint"
 # Colorize your kubectl output
 brew "kubecolor"
 # Kubernetes command-line interface
-brew "kubernetes-cli", args: ["HEAD"]
+brew "kubernetes-cli"
 # Pager program similar to more
 brew "less"
 # Sophisticated file transfer program
@@ -254,6 +254,8 @@ brew "pv"
 brew "pyenv"
 # Python interface to Tcl/Tk
 brew "python-tk@3.14"
+# Python interface to Tcl/Tk
+brew "python-tk@3.15"
 # Tools for and transforming and inspecting PDF files
 brew "qpdf"
 # Perl-powered file rename script with many helpful built-ins
@@ -263,9 +265,7 @@ brew "ripgrep"
 # Readline wrapper: adds readline support to tools that lack it
 brew "rlwrap"
 # Powerful, clean, object-oriented scripting language
-brew "ruby", args: ["HEAD"]
-# Safe, concurrent, practical language
-brew "rust"
+brew "ruby"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
 # Autoformat shell script source code
@@ -346,6 +346,7 @@ brew "hashicorp/tap/vault", trusted: true
 brew "riodelphino/tap/macime"
 # Application launcher and productivity software
 cask "alfred"
+# Chinese input method
 cask "baiduinput"
 # Compare files and folders
 cask "beyond-compare"
@@ -353,8 +354,6 @@ cask "beyond-compare"
 cask "cleanmymac"
 # Command-line interface for CleanMyMac
 cask "macpaw/taps/cleanmymac-cli", trusted: true
-# Brings the power of Copilot coding agent directly to your terminal
-cask "copilot-cli"
 # API documentation browser and code snippet manager
 cask "dash"
 # App to build and share containerised applications and microservices
@@ -371,10 +370,14 @@ cask "istat-menus"
 cask "iterm2@nightly", args: { appdir: "~/Applications" }
 # Keep your computer awake
 cask "jiggler"
+# Menu bar manager
+cask "jordanbaird-ice"
 # Open-source keystroke visualiser
 cask "keycastr"
 # Text editor
 cask "macvim-app"
+# Interactive tool for analyzing MongoDB data
+cask "mongodb-compass"
 # Utility to move and zoom windows—on one display
 cask "moom"
 # Screenshot measurement and annotation tool
@@ -383,12 +386,12 @@ cask "shottr"
 cask "sip-app"
 # Snip or pin screenshots
 cask "snipaste"
-# GUI for the Neovim text editor
-cask "vimr"
 # Rust-based terminal
 cask "warp"
 # Free messaging and calling application
 cask "wechat"
+mas "Bob", id: 1630034110
+mas "iShot Pro", id: 1611347086
 mas "Numbers", id: 409203825
 mas "Overlap", id: 1516950324
 mas "pwSafe", id: 520993579
