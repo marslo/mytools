@@ -10,7 +10,7 @@ cryptography==50.0.1
 dill==0.4.1
 distlib==0.4.3
 et_xmlfile==2.0.0
-filelock==3.32.2
+filelock==4.2.1
 fontforge==2025.10.9
 fonttools==4.64.0
 greenlet==3.5.4
