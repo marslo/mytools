@@ -24,7 +24,7 @@ markdown-it-py==4.2.0
 mccabe==0.7.0
 mdurl==0.1.2
 more-itertools==11.1.0
-msgpack==1.2.1
+msgpack==1.2.3
 ndiff==7.991
 numpy==2.5.1
 openpyxl==3.1.5
