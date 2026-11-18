@@ -10,18 +10,25 @@ Refined GitHub's `show-whitespace` injects `<span data-rgh-whitespace="space|tab
 
 Two layers work together:
 
-| Layer               | Role                                               | Tool                      |
-| ------------------- | -------------------------------------------------- | ------------------------- |
-| **CSS**             | Controls which pages show whitespace dots          | Refined GitHub Custom CSS |
-| **Tampermonkey JS** | Highlights trailing whitespace with red background | Tampermonkey userscript   |
+| Layer               | Role                                               | Tool                                         |
+| ------------------- | -------------------------------------------------- | -------------------------------------------- |
+| **CSS**             | Controls which pages show whitespace dots          | Refined GitHub Custom CSS / Stylus userstyle |
+| **Tampermonkey JS** | Highlights trailing whitespace with red background | Tampermonkey userscript                      |
 
-CSS is the gate — if it hides the `background-image`, the JS highlight is also invisible. JS only enhances what CSS allows.
+CSS hides only the dots ( `background-image` ); the JS highlight is an inline `background-color`, so that CSS does not hide it. The JS runs only on PR pages ( `@include` ).
 
 ---
 
 ## Current State
 
-### CSS (Refined GitHub Custom CSS)
+### CSS (Refined GitHub Custom CSS / Stylus)
+
+Either place works:
+
+| WHERE | NOTE |
+| --- | --- |
+| Refined GitHub → Options → Custom CSS | fine for this rule alone; the options storage is small ( ~8 kB ) |
+| Stylus userstyle [`github-optimized-layout.user.css`](https://github.com/marslo/github-optimized-layout/blob/main/github-optimized-layout.user.css) | current setup, section `6. Accessibility`, alongside the full layout style |
 
 ```css
 /* ── Whitespace markers: hide ONLY space dots on non-PR pages ── */
@@ -37,13 +44,18 @@ body:not(:has(#diff-comparison-viewer-container)) [data-rgh-whitespace="space"] 
 
 ### Tampermonkey Userscript
 
-Script: **GitHub PR trailing whitespace highlighter** (v1.2)
+Script: **GitHub PR trailing whitespace highlighter** (v1.1.0) — [`gitHub-PR-trailing-whitespace-highlighter.user.js`](gitHub-PR-trailing-whitespace-highlighter.user.js)
 
 - Runs on `https://github.com/*/pull/*`
-- Finds all `[data-rgh-whitespace="space"]` spans
-- Walks backwards from the end of each line's child nodes
-- If the last child nodes are whitespace spans → marks them with red background
+- Finds all `[data-rgh-whitespace]` spans ( space + tab ) and groups them by line container ( `.diff-text-inner` / `.blob-code-inner` / `td` )
+- Walks the line's **text nodes** backwards, across nested syntax-token spans
+- Marks whitespace spans red until the first non-blank character
 - Uses `MutationObserver` to catch dynamically loaded content
+
+| VERSION | CHANGE |
+| --- | --- |
+| 1.1.0 | judge "trailing" per whole line; fixes false positives on alignment spaces before an inline comment; tabs included |
+| 1.0.0 | per parent element: last child nodes that are space spans |
 
 ---
 
@@ -142,6 +154,8 @@ Hide whitespace globally, re-enable on specific pages. Best when you only want w
 | Wiki                        | `.wiki-body`                                              |
 | Gist                        | `.gist-content`                                           |
 | Embedded code block         | `.blob-wrapper-embedded`                                  |
+| Diff code line ( new view ) | `.diff-text-inner` ( inside `td.diff-text-cell` )         |
+| Diff code line ( classic )  | `.blob-code-inner`                                        |
 
 ---
 
@@ -193,29 +207,27 @@ if (!el) { console.log('No whitespace spans found'); } else {
 
 ### 3. Find trailing whitespace spans (manual test)
 
+Same logic as the userscript ( v1.1.0 ): per line container, walk text nodes from the end.
+
 ```javascript
-const parents = new Set();
-for (const span of document.querySelectorAll('[data-rgh-whitespace="space"]')) {
-  parents.add(span.parentElement);
+const lines = new Set();
+for (const span of document.querySelectorAll('[data-rgh-whitespace]')) {
+  lines.add(span.closest('.blob-code-inner, .diff-text-inner, td') || span.parentElement);
 }
-console.log('Line parents found:', parents.size);
+console.log('Lines with whitespace spans:', lines.size);
 
 let count = 0;
-for (const line of parents) {
-  const children = [...line.childNodes];
-  let i = children.length - 1;
-  while (i >= 0) {
-    const node = children[i];
-    if (node.nodeType === 1 && node.dataset?.rghWhitespace === 'space') {
-      node.style.backgroundColor = 'rgba(255, 60, 60, 0.3)';
-      count++;
-      i--;
-    } else {
-      break;
-    }
+for (const line of lines) {
+  const texts = [];
+  const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) texts.push(walker.currentNode);
+  for (let i = texts.length - 1; i >= 0; i--) {
+    const ws = texts[i].parentElement.closest('[data-rgh-whitespace]');
+    if (ws && line.contains(ws)) { ws.style.backgroundColor = 'rgba(255, 60, 60, 0.3)'; count++; continue; }
+    if (/\S/.test(texts[i].nodeValue)) break;
   }
 }
-console.log('Trailing spaces highlighted:', count);
+console.log('Trailing whitespace spans highlighted:', count);
 ```
 
 ### 4. Dump layout hierarchy (for width debugging)
@@ -272,4 +284,5 @@ console.log('Trailing spaces highlighted:', count);
 3. **Class name hashes change** — GitHub uses CSS Modules with hashed suffixes (e.g. `Conversations-module__layout__as5PR`). Always use `[class*="..."]` substring matching, never the full class name.
 4. **Plural matters** — The module is `Conversations-module` (with **s**), not `Conversation-module`.
 5. **`#diff-comparison-viewer-container`** wraps ALL PR tabs (Conversation, Files Changed, Commits, Checks). It is the `container-xl` element whose default `max-width: 1280px` caps the page width.
-6. **`data-side-panel-open` attribute** exists on `#diff-comparison-viewer-container` on all PR tabs. Value is `"true"` only when the file tree panel is open (Files Changed tab). Use `="true"` not just the attribute presence selector.
+6. **Whitespace spans can sit inside a syntax-token span** — e.g. YAML `types: [published]          # comment` renders the alignment spaces inside `<span class="pl-s">`, with the comment `<span class="pl-c">` as the next sibling. Judging "trailing" by the span's parent marks them falsely; judge by the whole line ( `.diff-text-inner` ) instead.
+7. **`data-side-panel-open` attribute** exists on `#diff-comparison-viewer-container` on all PR tabs. Value is `"true"` only when the file tree panel is open (Files Changed tab). Use `="true"` not just the attribute presence selector.
