@@ -2,25 +2,20 @@
 
 ## Overview
 
-This document describes how to control Refined GitHub's `show-whitespace` feature
-so that whitespace markers (space dots `·` and tab arrows `→`) are only visible
-on specific pages, and how trailing whitespace is highlighted via Tampermonkey.
+This document describes how to control Refined GitHub's `show-whitespace` feature so that whitespace markers (space dots `·` and tab arrows `→`) are only visible on specific pages, and how trailing whitespace is highlighted via Tampermonkey.
 
 ### How It Works
 
-Refined GitHub's `show-whitespace` injects `<span data-rgh-whitespace="space|tab">` 
-elements into code lines. The dots/arrows are rendered via **`background-image`** 
-(an inline SVG), not `::before` pseudo-elements.
+Refined GitHub's `show-whitespace` injects `<span data-rgh-whitespace="space|tab">` elements into code lines. The dots/arrows are rendered via **`background-image`** (an inline SVG), not `::before` pseudo-elements.
 
 Two layers work together:
 
-| Layer         | Role                        | Tool              |
-|---------------|-----------------------------|-------------------|
-| **CSS**       | Controls which pages show whitespace dots | Refined GitHub Custom CSS |
-| **Tampermonkey JS** | Highlights trailing whitespace with red background | Tampermonkey userscript |
+| Layer               | Role                                               | Tool                      |
+| ------------------- | -------------------------------------------------- | ------------------------- |
+| **CSS**             | Controls which pages show whitespace dots          | Refined GitHub Custom CSS |
+| **Tampermonkey JS** | Highlights trailing whitespace with red background | Tampermonkey userscript   |
 
-CSS is the gate — if it hides the `background-image`, the JS highlight is also
-invisible. JS only enhances what CSS allows.
+CSS is the gate — if it hides the `background-image`, the JS highlight is also invisible. JS only enhances what CSS allows.
 
 ---
 
@@ -56,8 +51,7 @@ Script: **GitHub PR trailing whitespace highlighter** (v1.2)
 
 ### Approach 1: Blacklist (Current — hide on specific pages)
 
-Keep whitespace visible by default, hide on specific pages. Best when you want
-whitespace on most pages and only need to suppress a few.
+Keep whitespace visible by default, hide on specific pages. Best when you want whitespace on most pages and only need to suppress a few.
 
 **Pattern:**
 
@@ -93,8 +87,7 @@ body:not(:has(#diff-comparison-viewer-container)) [data-rgh-whitespace="space"] 
 
 ### Approach 2: Whitelist (opt-in — show on specific pages)
 
-Hide whitespace globally, re-enable on specific pages. Best when you only want
-whitespace on a few specific pages.
+Hide whitespace globally, re-enable on specific pages. Best when you only want whitespace on a few specific pages.
 
 **Pattern:**
 
@@ -274,25 +267,9 @@ console.log('Trailing spaces highlighted:', count);
 
 ## Key Gotchas
 
-1. **`revert` does not restore Refined GitHub styles** — RGH injects author-level
-   CSS; `revert` only rolls back to the UA stylesheet. Use the original SVG data URI.
-
-2. **CSS `:has()` cannot detect text nodes** — trailing whitespace detection via
-   pure CSS (`:not(:has(~ :not([data-rgh-whitespace])))`) produces false positives
-   on lines where code content is a raw text node (not wrapped in `<span>`).
-   Use the Tampermonkey JS approach instead.
-
-3. **Class name hashes change** — GitHub uses CSS Modules with hashed suffixes
-   (e.g. `Conversations-module__layout__as5PR`). Always use `[class*="..."]`
-   substring matching, never the full class name.
-
-4. **Plural matters** — The module is `Conversations-module` (with **s**),
-   not `Conversation-module`.
-
-5. **`#diff-comparison-viewer-container`** wraps ALL PR tabs (Conversation,
-   Files Changed, Commits, Checks). It is the `container-xl` element whose
-   default `max-width: 1280px` caps the page width.
-
-6. **`data-side-panel-open` attribute** exists on `#diff-comparison-viewer-container`
-   on all PR tabs. Value is `"true"` only when the file tree panel is open
-   (Files Changed tab). Use `="true"` not just the attribute presence selector.
+1. **`revert` does not restore Refined GitHub styles** — RGH injects author-level CSS; `revert` only rolls back to the UA stylesheet. Use the original SVG data URI.
+2. **CSS `:has()` cannot detect text nodes** — trailing whitespace detection via pure CSS (`:not(:has(~ :not([data-rgh-whitespace])))`) produces false positives on lines where code content is a raw text node (not wrapped in `<span>`). Use the Tampermonkey JS approach instead.
+3. **Class name hashes change** — GitHub uses CSS Modules with hashed suffixes (e.g. `Conversations-module__layout__as5PR`). Always use `[class*="..."]` substring matching, never the full class name.
+4. **Plural matters** — The module is `Conversations-module` (with **s**), not `Conversation-module`.
+5. **`#diff-comparison-viewer-container`** wraps ALL PR tabs (Conversation, Files Changed, Commits, Checks). It is the `container-xl` element whose default `max-width: 1280px` caps the page width.
+6. **`data-side-panel-open` attribute** exists on `#diff-comparison-viewer-container` on all PR tabs. Value is `"true"` only when the file tree panel is open (Files Changed tab). Use `="true"` not just the attribute presence selector.
